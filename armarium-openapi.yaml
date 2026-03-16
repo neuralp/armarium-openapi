@@ -1,0 +1,452 @@
+openapi: 3.1.0
+x-stoplight:
+  id: ghx7kwq17g852
+info:
+  title: armarium
+  version: '1.0'
+  license:
+    identifier: BSD-2-Clause
+    name: BSD
+  description: Interface to the Armarium Documentation Server API
+  contact:
+    name: Nicholas Pepper
+servers:
+  - url: /api/v1
+    description: Same origin server
+paths:
+  /token:
+    post:
+      summary: ''
+      operationId: post-token
+      responses:
+        '200':
+          description: OK
+      description: Authorization endopoint for acquiring the JWT token
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  maxLength: 255
+                  pattern: '^[A-Za-z_-]+'
+                password:
+                  type: string
+                  maxLength: 255
+                  format: password
+      parameters: []
+      tags:
+        - authentication
+  /user:
+    post:
+      summary: Create New User
+      operationId: post-user
+      responses:
+        '200':
+          description: User Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+              examples:
+                New User Bob Fellow:
+                  value:
+                    id: 12
+                    firstName: Bob
+                    lastName: Fellow
+                    email: bob.fellow@gmail.com
+                    dateOfBirth: '1996-08-24'
+                    emailVerified: false
+                    createDate: '2020-11-18'
+        '400':
+          description: Required information missing.
+        '409':
+          description: Username already taken
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+            examples:
+              Create User Bob Fellow:
+                value:
+                  firstName: Bob
+                  lastName: Fellow
+                  email: bob.fellow@gmail.com
+                  dateOfBirth: '1996-08-24'
+        description: Post the necessary fields for the API to create a new user.
+      description: Create a new user.
+      tags:
+        - user
+  '/users/{userId}':
+    parameters:
+      - schema:
+          type: string
+        name: userId
+        in: path
+        required: true
+        description: Username of an existing user
+    get:
+      summary: Get User Info by User ID
+      tags:
+        - user
+      responses:
+        '200':
+          description: User Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+              examples:
+                Get User Alice Smith:
+                  value:
+                    id: 142
+                    firstName: Alice
+                    lastName: Smith
+                    email: alice.smith@gmail.com
+                    dateOfBirth: '1997-10-31'
+                    emailVerified: true
+                    signUpDate: '2019-08-24'
+        '404':
+          description: User Not Found
+        '500':
+          description: Internal Server Error
+      operationId: get-users-userId
+      description: Retrieve the information of the user with the matching user ID.
+    patch:
+      summary: Update User Information
+      operationId: patch-users-userId
+      responses:
+        '200':
+          description: User Updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  password:
+                    type: string
+                    maxLength: 255
+                  firstName:
+                    type: string
+                    maxLength: 255
+                  lastName:
+                    type: string
+                    maxLength: 255
+                  email:
+                    type: string
+                    maxLength: 255
+                  accountLocked:
+                    type: boolean
+              examples:
+                Updated User Rebecca Baker:
+                  value:
+                    id: 13
+                    firstName: Rebecca
+                    lastName: Baker
+                    email: rebecca@gmail.com
+                    dateOfBirth: '1985-10-02'
+                    emailVerified: false
+                    createDate: '2019-08-24'
+        '404':
+          description: User Not Found
+        '500':
+          description: Internal Server Error
+      description: Update the information of an existing user.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+                  maxLength: 255
+                firstName:
+                  type: string
+                  maxLength: 255
+                lastName:
+                  type: string
+                  maxLength: 255
+                email:
+                  type: string
+                  description: 'If a new email is given, the user''s email verified property will be set to false.'
+                  maxLength: 255
+                accountLocked:
+                  type: boolean
+            examples:
+              Update First Name:
+                value:
+                  firstName: Rebecca
+              Update Email:
+                value:
+                  email: rebecca@gmail.com
+              Update Last Name & Date of Birth:
+                value:
+                  lastName: Baker
+                  dateOfBirth: '1985-10-02'
+        description: Patch user properties to update.
+      tags:
+        - user
+  /clients:
+    get:
+      summary: Your GET endpoint
+      tags:
+        - client
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/QueryResult'
+                  - type: array
+                    items:
+                      $ref: '#/components/schemas/Client'
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+      operationId: get-clients
+      description: Gets a list of all of the clients on the server.
+      parameters:
+        - schema:
+            type: integer
+          in: query
+          name: page
+          description: The page of results to return based on the limit.
+        - schema:
+            type: integer
+            maximum: 1000
+            default: 500
+          in: query
+          name: limit
+          description: The number of entries to return in a single query.
+  /locations:
+    get:
+      summary: Your GET endpoint
+      tags:
+        - location
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/QueryResult'
+                  - type: array
+                    items:
+                      $ref: '#/components/schemas/Location'
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+      operationId: get-locations
+      description: Gets a list of all of the locations on the server.
+      parameters:
+        - schema:
+            type: integer
+          in: query
+          name: page
+          description: The page of results to return based on the limit.
+        - schema:
+            type: integer
+            maximum: 1000
+            default: 500
+          in: query
+          name: limit
+          description: The number of entries to return in a single query.
+    parameters: []
+  /groups:
+    get:
+      summary: Your GET endpoint
+      tags:
+        - location
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/QueryResult'
+                  - type: array
+                    items:
+                      $ref: '#/components/schemas/Group'
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+      operationId: get-groups
+      description: Gets a list of all of the security groups on the server.
+      parameters:
+        - schema:
+            type: integer
+          in: query
+          name: page
+          description: The page of results to return based on the limit.
+        - schema:
+            type: integer
+            maximum: 1000
+            default: 500
+          in: query
+          name: limit
+          description: The number of entries to return in a single query.
+    parameters: []
+components:
+  schemas:
+    BaseModel:
+      title: BaseModel
+      x-stoplight:
+        id: 7s3ud4syrv0ys
+      type: object
+      description: Base model to be combined with all other models
+      x-internal: true
+      properties:
+        id:
+          type:
+            - integer
+            - 'null'
+          format: int64
+          description: Autogenerated ID from the database.
+        created:
+          type: string
+          format: date-time
+          description: Datetime the model was created
+        created_by:
+          type: string
+          description: Username the model was created by
+        updated:
+          type: string
+          format: date-time
+          description: Datetime the model was updated
+        updated_by:
+          type: string
+          description: Username the model was updated by
+      required:
+        - id
+        - created
+        - updated
+    User:
+      allOf:
+        - $ref: '#/components/schemas/BaseModel'
+        - type: object
+          properties:
+            username:
+              type: string
+              maxLength: 255
+              pattern: '^[A-Za-z0-9_-]+'
+            password:
+              type: string
+              maxLength: 255
+              format: password
+            aesKey:
+              type: string
+              format: byte
+            rsaPublicKey:
+              type: string
+              format: byte
+            rsaKeyPair:
+              type: string
+              format: byte
+            firstName:
+              type: string
+              maxLength: 255
+            lastName:
+              type: string
+              maxLength: 255
+            email:
+              type: string
+              maxLength: 255
+            emailVerified:
+              type: boolean
+              default: false
+            accountLocked:
+              type: boolean
+              default: false
+            groups:
+              type: array
+              items:
+                $ref: '#/components/schemas/Group'
+          required:
+            - username
+            - password
+            - aesKey
+            - email
+            - emailVerified
+            - accountLocked
+    Group:
+      allOf:
+        - $ref: '#/components/schemas/BaseModel'
+        - type: object
+          properties:
+            name:
+              type: string
+              maxLength: 255
+            address1:
+              type: string
+              maxLength: 255
+            address2:
+              type: string
+              maxLength: 255
+            city:
+              type: string
+              maxLength: 64
+            state:
+              type: string
+              maxLength: 2
+            zip:
+              type: string
+              maxLength: 12
+            parent:
+              $ref: '#/components/schemas/Group'
+          required:
+            - name
+    Client:
+      allOf:
+        - $ref: '#/components/schemas/BaseModel'
+        - type: object
+          properties:
+            name:
+              type: string
+              maxLength: 255
+    Location:
+      allOf:
+        - $ref: '#/components/schemas/BaseModel'
+        - type: object
+          properties:
+            name:
+              type: string
+              maxLength: 255
+    QueryResult:
+      title: ResultSuccess
+      x-stoplight:
+        id: 080b61834746c
+      type: object
+      properties:
+        id:
+          type: string
+        result:
+          type: string
+          enum:
+            - success
+            - error
+      required:
+        - result
+  securitySchemes:
+    access_token:
+      name: API Key
+      type: apiKey
+      in: cookie
+tags:
+  - name: authentication
+  - name: client
+  - name: group
+  - name: location
+  - name: user
+security:
+  - access_token: []

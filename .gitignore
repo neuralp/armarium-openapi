@@ -1,0 +1,4 @@
+node_modules/
+
+## Ignoring API for now until it's exactly what I need
+api/

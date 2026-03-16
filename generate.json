@@ -1,0 +1,10 @@
+{
+    "enumPropertyNaming": "PascalCase",
+    "enumUnknownDefaultCase": true,
+    "fileNaming": "kebab-case",
+    "npmName": "armarium-api",
+    "supportES6": true,
+    "useSingleRequestParameter": true,
+    "validationAttributes": true,
+    "withInterfaces": true
+}

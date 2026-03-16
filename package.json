@@ -1,0 +1,14 @@
+{
+    "name": "armarium-api",
+    "version": "1.0.0",
+    "description": "API for the Armarium Documentation Server",
+    "license": "BSD-2-Clause",
+    "author": "Nicholas Pepper",
+    "scripts": {
+        "generate": "openapi-generator-cli generate -i ./armarium-openapi.yaml -g typescript-fetch -c ./generate.json -o ./api",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "devDependencies": {
+        "@openapitools/openapi-generator-cli": "^2.30.2"
+    }
+}
