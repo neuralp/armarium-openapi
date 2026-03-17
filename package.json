@@ -5,7 +5,8 @@
     "license": "BSD-2-Clause",
     "author": "Nicholas Pepper",
     "scripts": {
-        "generate": "openapi-generator-cli generate -i ./armarium-openapi.yaml -g typescript-fetch -c ./generate.json -o ./api",
+        "build": "openapi-generator-cli generate -i ./armarium-openapi.yaml -g typescript-fetch -c ./typescript-fetch.json -o ./api",
+        "clean": "rm -rf ./api",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "devDependencies": {

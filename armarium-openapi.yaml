@@ -379,7 +379,7 @@ components:
             - email
             - emailVerified
             - accountLocked
-    Group:
+    Location:
       allOf:
         - $ref: '#/components/schemas/BaseModel'
         - type: object
@@ -414,7 +414,7 @@ components:
             name:
               type: string
               maxLength: 255
-    Location:
+    Group:
       allOf:
         - $ref: '#/components/schemas/BaseModel'
         - type: object
