@@ -21,6 +21,8 @@ paths:
       responses:
         '200':
           description: OK
+        '404':
+          description: Not Found
       description: Authorization endopoint for acquiring the JWT token
       requestBody:
         content:
@@ -39,6 +41,51 @@ paths:
       parameters: []
       tags:
         - authentication
+      security: []
+  /users:
+    get:
+      summary: Get all users
+      tags:
+        - location
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  result:
+                    type: string
+                    enum:
+                      - success
+                      - error
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+                required:
+                  - result
+        '401':
+          description: Unauthorized
+      operationId: get-users
+      description: Gets a list of all of the users on the server.
+      parameters:
+        - schema:
+            type: integer
+          in: query
+          name: page
+          description: The page of results to return based on the limit.
+        - schema:
+            type: integer
+            maximum: 1000
+            default: 500
+          in: query
+          name: limit
+          description: The number of entries to return in a single query.
+    parameters: []
   /user:
     post:
       summary: Create New User
@@ -52,6 +99,8 @@ paths:
                 $ref: '#/components/schemas/User'
         '400':
           description: Required information missing.
+        '401':
+          description: Unauthorized
         '409':
           description: Username already taken
       requestBody:
@@ -63,7 +112,7 @@ paths:
       description: Create a new user.
       tags:
         - user
-  '/users/{userId}':
+  '/user/{userId}':
     parameters:
       - schema:
           type: string
@@ -81,12 +130,24 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                type: object
+                properties:
+                  id:
+                    type: string
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                  data:
+                    $ref: '#/components/schemas/User'
+                required:
+                  - result
+        '401':
+          description: Unauthorized
         '404':
           description: User Not Found
-        '500':
-          description: Internal Server Error
-      operationId: get-users-userId
+      operationId: get-user-userId
       description: Retrieve the information of the user with the matching user ID.
     patch:
       summary: Update User Information
@@ -99,34 +160,20 @@ paths:
               schema:
                 type: object
                 properties:
-                  password:
+                  id:
                     type: string
-                    maxLength: 255
-                  firstName:
+                  result:
                     type: string
-                    maxLength: 255
-                  lastName:
-                    type: string
-                    maxLength: 255
-                  email:
-                    type: string
-                    maxLength: 255
-                  accountLocked:
-                    type: boolean
-              examples:
-                Updated User Rebecca Baker:
-                  value:
-                    id: 13
-                    firstName: Rebecca
-                    lastName: Baker
-                    email: rebecca@gmail.com
-                    dateOfBirth: '1985-10-02'
-                    emailVerified: false
-                    createDate: '2019-08-24'
+                    enum:
+                      - error
+                      - success
+                  data:
+                    $ref: '#/components/schemas/User'
+              examples: {}
+        '401':
+          description: Unauthorized
         '404':
           description: User Not Found
-        '500':
-          description: Internal Server Error
       description: Update the information of an existing user.
       requestBody:
         content:
@@ -136,7 +183,16 @@ paths:
               properties:
                 password:
                   type: string
-                  maxLength: 255
+                  format: password
+                aesKey:
+                  type: string
+                  format: byte
+                rsaPublicKey:
+                  type: string
+                  format: byte
+                rsaKeyPair:
+                  type: string
+                  format: byte
                 firstName:
                   type: string
                   maxLength: 255
@@ -145,21 +201,10 @@ paths:
                   maxLength: 255
                 email:
                   type: string
-                  description: 'If a new email is given, the user''s email verified property will be set to false.'
-                  maxLength: 255
+                  format: email
                 accountLocked:
                   type: boolean
-            examples:
-              Update First Name:
-                value:
-                  firstName: Rebecca
-              Update Email:
-                value:
-                  email: rebecca@gmail.com
-              Update Last Name & Date of Birth:
-                value:
-                  lastName: Baker
-                  dateOfBirth: '1985-10-02'
+            examples: {}
         description: Patch user properties to update.
       tags:
         - user
@@ -191,8 +236,6 @@ paths:
                   - result
         '401':
           description: Unauthorized
-        '500':
-          description: Internal Server Error
       operationId: get-clients
       description: Gets a list of all of the clients on the server.
       parameters:
@@ -208,9 +251,106 @@ paths:
           in: query
           name: limit
           description: The number of entries to return in a single query.
+    parameters: []
+  /client:
+    post:
+      summary: Create New User
+      operationId: post-client
+      responses:
+        '200':
+          description: User Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
+        '400':
+          description: Required information missing.
+        '401':
+          description: Unauthorized
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Client'
+        description: Post the necessary fields for the API to create a new user.
+      description: Create a new user.
+      tags:
+        - user
+    parameters: []
+  '/client/{clientId}':
+    parameters:
+      - schema:
+          type: string
+        name: clientId
+        in: path
+        required: true
+    get:
+      summary: Get User Info by User ID
+      tags:
+        - user
+      responses:
+        '200':
+          description: User Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                  data:
+                    $ref: '#/components/schemas/Client'
+                required:
+                  - result
+        '401':
+          description: Unauthorized
+        '404':
+          description: User Not Found
+      operationId: get-client-clientId
+      description: Retrieve the information of the user with the matching user ID.
+    patch:
+      summary: Update User Information
+      operationId: patch-client-clientId
+      responses:
+        '200':
+          description: User Updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  result:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/Client'
+              examples: {}
+        '401':
+          description: Unauthorized
+        '404':
+          description: User Not Found
+      description: Update the information of an existing user.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  maxLength: 255
+        description: Patch user properties to update.
+      tags:
+        - user
   /locations:
     get:
-      summary: Your GET endpoint
+      summary: Get all locations
       tags:
         - location
       responses:
@@ -236,8 +376,6 @@ paths:
                   - result
         '401':
           description: Unauthorized
-        '500':
-          description: Internal Server Error
       operationId: get-locations
       description: Gets a list of all of the locations on the server.
       parameters:
@@ -254,11 +392,128 @@ paths:
           name: limit
           description: The number of entries to return in a single query.
     parameters: []
-  /groups:
-    get:
-      summary: Your GET endpoint
+  /location:
+    post:
+      summary: Create New Location
+      operationId: post-location
+      responses:
+        '200':
+          description: Location Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Location'
+        '400':
+          description: Required information missing.
+        '401':
+          description: Unauthorized
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Location'
+        description: Post the necessary fields for the API to create a new location.
+      description: Create a new location.
       tags:
         - location
+    parameters: []
+  '/location/{locationId}':
+    parameters:
+      - schema:
+          type: string
+        name: locationId
+        in: path
+        required: true
+        description: ID of an existing location
+    get:
+      summary: Get Location by Location ID
+      tags:
+        - location
+      responses:
+        '200':
+          description: Location Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                  data:
+                    $ref: '#/components/schemas/Location'
+                required:
+                  - result
+        '401':
+          description: Unauthorized
+        '404':
+          description: Location Not Found
+      operationId: get-location-locationId
+      description: Retrieve the information of the location with the matching location ID.
+    patch:
+      summary: Update Location Information
+      operationId: patch-location-locationId
+      responses:
+        '200':
+          description: Location Updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                  data:
+                    $ref: '#/components/schemas/Location'
+              examples: {}
+        '401':
+          description: Unauthorized
+        '404':
+          description: Location Not Found
+      description: Update the information of an existing location.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  maxLength: 255
+                address1:
+                  type: string
+                  maxLength: 255
+                address2:
+                  type: string
+                  maxLength: 255
+                city:
+                  type: string
+                  maxLength: 64
+                state:
+                  type: string
+                  maxLength: 2
+                zip:
+                  type: string
+                  maxLength: 12
+                parent:
+                  $ref: '#/components/schemas/Location'
+            examples: {}
+      tags:
+        - location
+  /groups:
+    get:
+      summary: Get all groups
+      tags:
+        - group
       responses:
         '200':
           description: OK
@@ -282,8 +537,6 @@ paths:
                   - result
         '401':
           description: Unauthorized
-        '500':
-          description: Internal Server Error
       operationId: get-groups
       description: Gets a list of all of the security groups on the server.
       parameters:
@@ -300,6 +553,106 @@ paths:
           name: limit
           description: The number of entries to return in a single query.
     parameters: []
+  /group:
+    post:
+      summary: Create New Group
+      operationId: post-group
+      responses:
+        '200':
+          description: Group Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+        '400':
+          description: Required information missing.
+        '401':
+          description: Unauthorized
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Group'
+        description: Post the necessary fields for the API to create a new group.
+      description: Create a new group.
+      tags:
+        - group
+    parameters: []
+  '/group/{groupId}':
+    parameters:
+      - schema:
+          type: string
+        name: groupId
+        in: path
+        required: true
+        description: ID of an existing group
+    get:
+      summary: Get Group by Group ID
+      tags:
+        - group
+      responses:
+        '200':
+          description: Group Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                  data:
+                    $ref: '#/components/schemas/Group'
+                required:
+                  - result
+        '401':
+          description: Unauthorized
+        '404':
+          description: Group Not Found
+      operationId: get-group-groupId
+      description: Retrieve the information of the group with the matching group ID.
+    patch:
+      summary: Update Group Information
+      operationId: patch-group-groupId
+      responses:
+        '200':
+          description: Group Updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                  data:
+                    $ref: '#/components/schemas/Group'
+              examples: {}
+        '401':
+          description: Unauthorized
+        '404':
+          description: Group Not Found
+      description: Update the information of an existing group.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  maxLength: 255
+        description: Patch group properties to update.
+      tags:
+        - group
 components:
   schemas:
     BaseModel:
@@ -313,9 +666,9 @@ components:
         id:
           type:
             - integer
-            - 'null'
           format: int64
           description: Autogenerated ID from the database.
+          readOnly: true
         created:
           type: string
           format: date-time
