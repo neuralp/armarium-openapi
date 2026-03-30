@@ -712,12 +712,15 @@ components:
             firstName:
               type: string
               maxLength: 255
+              pattern: '^[A-Za-z0-9 -]+'
             lastName:
               type: string
               maxLength: 255
+              pattern: '^[A-Za-z0-9 -]+'
             email:
               type: string
               maxLength: 255
+              format: email
             emailVerified:
               type: boolean
               default: false
@@ -743,21 +746,30 @@ components:
             name:
               type: string
               maxLength: 255
+              pattern: '^[A-Za-z0-9 _.#-]+'
+            description:
+              type: string
+              maxLength: 255
             address1:
               type: string
               maxLength: 255
+              pattern: '^[A-Za-z0-9 _.#-]+'
             address2:
               type: string
               maxLength: 255
+              pattern: '^[A-Za-z0-9 _.#-]+'
             city:
               type: string
               maxLength: 64
+              pattern: '^[A-Za-z0-9-_.]+'
             state:
               type: string
               maxLength: 2
+              pattern: '^[A-Za-z ]+'
             zip:
               type: string
               maxLength: 12
+              pattern: '^[A-Za-z0-9-]+'
             parent:
               $ref: '#/components/schemas/Location'
           required:
@@ -770,6 +782,13 @@ components:
             name:
               type: string
               maxLength: 255
+              pattern: '^[A-Za-z0-9 _.#-]+'
+            locations:
+              type: array
+              items:
+                $ref: '#/components/schemas/Location'
+          required:
+            - name
     Group:
       allOf:
         - $ref: '#/components/schemas/BaseModel'
@@ -778,6 +797,12 @@ components:
             name:
               type: string
               maxLength: 255
+              pattern: '^[A-Za-z0-9 _.#-]+'
+            description:
+              type: string
+              maxLength: 255
+          required:
+            - name
   securitySchemes:
     access_token:
       name: API Key
