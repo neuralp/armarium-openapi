@@ -726,7 +726,7 @@ components:
               default: false
             accountLocked:
               type: boolean
-              default: false
+              default: true
             groups:
               type: array
               items:
@@ -735,7 +735,6 @@ components:
             - username
             - password
             - aesKey
-            - email
             - emailVerified
             - accountLocked
     Location:
