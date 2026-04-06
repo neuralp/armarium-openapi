@@ -1,0 +1,22 @@
+info:
+  name: Authenticate Token
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{BaseURL}}/token"
+  body:
+    type: form-urlencoded
+    data:
+      - name: username
+        value: admin
+      - name: password
+        value: 8aIJbQkzTqH3uca3TTkYFOClKr6EkAH1OtZxlDakIUM=
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

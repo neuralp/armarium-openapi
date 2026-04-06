@@ -190,7 +190,7 @@ paths:
                 rsaPublicKey:
                   type: string
                   format: byte
-                rsaKeyPair:
+                rsaPrivateKey:
                   type: string
                   format: byte
                 firstName:
@@ -706,7 +706,7 @@ components:
             rsaPublicKey:
               type: string
               format: byte
-            rsaKeyPair:
+            rsaPrivateKey:
               type: string
               format: byte
             firstName:

@@ -1,0 +1,4 @@
+name: Base
+variables:
+  - name: BaseURL
+    value: https://armarium:8000/api/v1
