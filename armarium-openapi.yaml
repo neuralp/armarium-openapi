@@ -297,7 +297,7 @@ paths:
         description: Post the necessary fields for the API to create a new client.
       description: Create a new user.
       tags:
-        - user
+        - client
     parameters: []
   '/client/{clientId}':
     parameters:
@@ -308,8 +308,6 @@ paths:
         required: true
     get:
       summary: Get User Info by User ID
-      tags:
-        - user
       responses:
         '200':
           description: User Found
@@ -335,6 +333,8 @@ paths:
           description: User Not Found
       operationId: get-client-clientId
       description: Retrieve the information of the user with the matching user ID.
+      tags:
+        - client
     patch:
       summary: Update User Information
       operationId: patch-client-clientId
