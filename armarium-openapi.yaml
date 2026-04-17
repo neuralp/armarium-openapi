@@ -60,8 +60,8 @@ paths:
                   result:
                     type: string
                     enum:
-                      - success
                       - error
+                      - success
                   data:
                     type: array
                     items:
@@ -96,7 +96,17 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                type: object
+                properties:
+                  id:
+                    type: string
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                  data:
+                    $ref: '#/components/schemas/User'
         '400':
           description: Required information missing.
         '401':
@@ -226,8 +236,8 @@ paths:
                   result:
                     type: string
                     enum:
-                      - success
                       - error
+                      - success
                   data:
                     type: array
                     items:
@@ -254,15 +264,27 @@ paths:
     parameters: []
   /client:
     post:
-      summary: Create New User
+      summary: Create New Client
       operationId: post-client
       responses:
         '200':
-          description: User Created
+          description: Client Created
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Client'
+                type: object
+                properties:
+                  id:
+                    type: string
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                  data:
+                    $ref: '#/components/schemas/Client'
+                required:
+                  - result
         '400':
           description: Required information missing.
         '401':
@@ -272,7 +294,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/Client'
-        description: Post the necessary fields for the API to create a new user.
+        description: Post the necessary fields for the API to create a new client.
       description: Create a new user.
       tags:
         - user
@@ -366,8 +388,8 @@ paths:
                   result:
                     type: string
                     enum:
-                      - success
                       - error
+                      - success
                   data:
                     type: array
                     items:
@@ -527,8 +549,8 @@ paths:
                   result:
                     type: string
                     enum:
-                      - success
                       - error
+                      - success
                   data:
                     type: array
                     items:
@@ -563,7 +585,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Group'
+                type: object
+                properties:
+                  id:
+                    type: string
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                  data:
+                    $ref: '#/components/schemas/Group'
+                required:
+                  - result
         '400':
           description: Required information missing.
         '401':
