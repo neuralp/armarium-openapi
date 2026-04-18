@@ -706,21 +706,17 @@ components:
         created:
           type: string
           format: date-time
-          description: Datetime the model was created
+          description: Datetime the model was created handled serverside.
         created_by:
           type: string
           description: Username the model was created by
         updated:
           type: string
           format: date-time
-          description: Datetime the model was updated
+          description: Datetime the model was updated handled server side.
         updated_by:
           type: string
           description: Username the model was updated by
-      required:
-        - id
-        - created
-        - updated
     User:
       allOf:
         - $ref: '#/components/schemas/BaseModel'
