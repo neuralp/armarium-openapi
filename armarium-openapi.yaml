@@ -414,6 +414,44 @@ paths:
           name: limit
           description: The number of entries to return in a single query.
     parameters: []
+  '/locations/parent/{parent_id}':
+    parameters:
+      - schema:
+          type: string
+        name: parent_id
+        in: path
+        required: true
+    get:
+      summary: Get Location by Parent Location ID
+      tags:
+        - location
+      responses:
+        '200':
+          description: Locations found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                  data:
+                    $ref: '#/components/schemas/Location'
+                  parents:
+                    $ref: '#/components/schemas/Location'
+                required:
+                  - result
+        '401':
+          description: Unauthorized
+        '404':
+          description: Location Not Found
+      operationId: get-location-parentId
+      description: Retrieve the locations that are sub-locations to the parent ID.
   /location:
     post:
       summary: Create New Location
@@ -801,6 +839,8 @@ components:
               pattern: '^[A-Za-z0-9-]+'
             parent:
               $ref: '#/components/schemas/Location'
+            client:
+              $ref: '#/components/schemas/Client'
           required:
             - name
     Client:
@@ -812,10 +852,8 @@ components:
               type: string
               maxLength: 255
               pattern: '^[A-Za-z0-9 _.#-]+'
-            locations:
-              type: array
-              items:
-                $ref: '#/components/schemas/Location'
+            '':
+              type: string
           required:
             - name
     Group:
