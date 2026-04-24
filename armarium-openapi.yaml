@@ -443,9 +443,13 @@ paths:
                   client:
                     type: string
                   data:
-                    $ref: '#/components/schemas/Location'
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Location'
                   parents:
-                    $ref: '#/components/schemas/Location'
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Location'
                 required:
                   - result
         '401':
@@ -481,9 +485,13 @@ paths:
                       - error
                       - success
                   data:
-                    $ref: '#/components/schemas/Location'
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Location'
                   parents:
-                    $ref: '#/components/schemas/Location'
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Location'
                 required:
                   - result
         '401':
