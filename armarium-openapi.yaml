@@ -900,7 +900,7 @@ components:
               type: string
               maxLength: 255
               pattern: '^[A-Za-z0-9 _.#-]+'
-            '':
+            description:
               type: string
           required:
             - name
