@@ -519,7 +519,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Location'
+              $ref: '#/components/schemas/LocationNew'
         description: Post the necessary fields for the API to create a new location.
       description: Create a new location.
       tags:
@@ -891,6 +891,47 @@ components:
               $ref: '#/components/schemas/Client'
           required:
             - name
+      description: Defines a location in the program.
+    LocationNew:
+      title: LocationNew
+      type: object
+      description: Used for POST of a new location
+      properties:
+        name:
+          type: string
+          maxLength: 255
+          pattern: '^[A-Za-z0-9 _.#-]+$'
+        description:
+          type: string
+          maxLength: 255
+        address1:
+          type: string
+          maxLength: 255
+          pattern: '^[A-Za-z0-9 _.#-]+$'
+        address2:
+          type: string
+          maxLength: 255
+          pattern: '^[A-Za-z0-9 _.#-]+$'
+        city:
+          type: string
+          maxLength: 64
+          pattern: '^[A-Za-z0-9-_.]+$'
+        state:
+          type: string
+          maxLength: 2
+          pattern: '^[A-Za-z ]+$'
+        zip:
+          type: string
+          maxLength: 12
+          pattern: '^[A-Za-z0-9-]+$'
+        parent:
+          type: integer
+          format: int64
+        client:
+          type: integer
+          format: int64
+      required:
+        - name
     Client:
       allOf:
         - $ref: '#/components/schemas/BaseModel'
