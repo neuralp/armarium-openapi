@@ -773,6 +773,677 @@ paths:
         description: Patch group properties to update.
       tags:
         - group
+  /networks:
+    get:
+      summary: Get all networks
+      tags:
+        - network
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Network'
+                required:
+                  - result
+        '401':
+          description: Unauthorized
+      operationId: get-networks
+      description: Gets a list of all of the networks on the server.
+      parameters:
+        - schema:
+            type: integer
+          in: query
+          name: page
+          description: The page of results to return based on the limit.
+        - schema:
+            type: integer
+            maximum: 1000
+            default: 500
+          in: query
+          name: limit
+          description: The number of entries to return in a single query.
+    parameters: []
+  /network:
+    post:
+      summary: Create New Network
+      operationId: post-network
+      responses:
+        '200':
+          description: Network Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                  data:
+                    $ref: '#/components/schemas/Network'
+                required:
+                  - result
+        '400':
+          description: Required information missing.
+        '401':
+          description: Unauthorized
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Network'
+        description: Post the necessary fields for the API to create a new network.
+      description: Create a new network.
+      tags:
+        - network
+    parameters: []
+  '/network/{networkId}':
+    parameters:
+      - schema:
+          type: string
+        name: networkId
+        in: path
+        required: true
+        description: ID of an existing network
+    get:
+      summary: Get Network by Network ID
+      tags:
+        - network
+      responses:
+        '200':
+          description: Network Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                  data:
+                    $ref: '#/components/schemas/Network'
+                required:
+                  - result
+        '401':
+          description: Unauthorized
+        '404':
+          description: Network Not Found
+      operationId: get-network-networkId
+      description: Retrieve the information of the network with the matching network ID.
+    patch:
+      summary: Update Network Information
+      operationId: patch-network-networkId
+      responses:
+        '200':
+          description: Network Updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                  data:
+                    $ref: '#/components/schemas/Network'
+              examples: {}
+        '401':
+          description: Unauthorized
+        '404':
+          description: Network Not Found
+      description: Update the information of an existing network.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  maxLength: 64
+                description:
+                  type: string
+                  maxLength: 255
+                base:
+                  type: string
+                  format: ipv4
+                mask:
+                  type: string
+                  format: ipv4
+                dns1:
+                  type: string
+                  format: ipv4
+                dns2:
+                  type: string
+                  format: ipv4
+        description: Patch network properties to update.
+      tags:
+        - network
+  '/networks/location/{locationId}':
+    parameters:
+      - schema:
+          type: string
+        name: locationId
+        in: path
+        required: true
+        description: ID of an existing location
+    get:
+      summary: Get Networks by Location ID
+      tags:
+        - network
+      responses:
+        '200':
+          description: Networks Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Network'
+                required:
+                  - result
+        '401':
+          description: Unauthorized
+        '404':
+          description: Location Not Found
+      operationId: get-networks-locationId
+      description: Retrieve all networks associated with the given location.
+  /rooms:
+    get:
+      summary: Get all rooms
+      tags:
+        - room
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Room'
+                required:
+                  - result
+        '401':
+          description: Unauthorized
+      operationId: get-rooms
+      description: Gets a list of all of the rooms on the server.
+      parameters:
+        - schema:
+            type: integer
+          in: query
+          name: page
+          description: The page of results to return based on the limit.
+        - schema:
+            type: integer
+            maximum: 1000
+            default: 500
+          in: query
+          name: limit
+          description: The number of entries to return in a single query.
+    parameters: []
+  /room:
+    post:
+      summary: Create New Room
+      operationId: post-room
+      responses:
+        '200':
+          description: Room Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                  data:
+                    $ref: '#/components/schemas/Room'
+                required:
+                  - result
+        '400':
+          description: Required information missing.
+        '401':
+          description: Unauthorized
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Room'
+        description: Post the necessary fields for the API to create a new room.
+      description: Create a new room.
+      tags:
+        - room
+    parameters: []
+  '/room/{roomId}':
+    parameters:
+      - schema:
+          type: string
+        name: roomId
+        in: path
+        required: true
+        description: ID of an existing room
+    get:
+      summary: Get Room by Room ID
+      tags:
+        - room
+      responses:
+        '200':
+          description: Room Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                  data:
+                    $ref: '#/components/schemas/Room'
+                required:
+                  - result
+        '401':
+          description: Unauthorized
+        '404':
+          description: Room Not Found
+      operationId: get-room-roomId
+      description: Retrieve the information of the room with the matching room ID.
+    patch:
+      summary: Update Room Information
+      operationId: patch-room-roomId
+      responses:
+        '200':
+          description: Room Updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                  data:
+                    $ref: '#/components/schemas/Room'
+              examples: {}
+        '401':
+          description: Unauthorized
+        '404':
+          description: Room Not Found
+      description: Update the information of an existing room.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  maxLength: 64
+                number:
+                  type: string
+                  maxLength: 10
+                description:
+                  type: string
+                  maxLength: 255
+                floor:
+                  type: integer
+                  minimum: -10
+                  maximum: 255
+                complete:
+                  type: boolean
+                active:
+                  type: boolean
+                location:
+                  type: integer
+                  format: int64
+        description: Patch room properties to update.
+      tags:
+        - room
+  '/rooms/location/{locationId}':
+    parameters:
+      - schema:
+          type: string
+        name: locationId
+        in: path
+        required: true
+        description: ID of an existing location
+    get:
+      summary: Get Rooms by Location ID
+      tags:
+        - room
+      responses:
+        '200':
+          description: Rooms Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Room'
+                required:
+                  - result
+        '401':
+          description: Unauthorized
+        '404':
+          description: Location Not Found
+      operationId: get-rooms-locationId
+      description: Retrieve all rooms associated with the given location.
+  /devices:
+    get:
+      summary: Get all devices
+      tags:
+        - device
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Device'
+                required:
+                  - result
+        '401':
+          description: Unauthorized
+      operationId: get-devices
+      description: Gets a list of all of the devices on the server.
+      parameters:
+        - schema:
+            type: integer
+          in: query
+          name: page
+          description: The page of results to return based on the limit.
+        - schema:
+            type: integer
+            maximum: 1000
+            default: 500
+          in: query
+          name: limit
+          description: The number of entries to return in a single query.
+    parameters: []
+  /device:
+    post:
+      summary: Create New Device
+      operationId: post-device
+      responses:
+        '200':
+          description: Device Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                  data:
+                    $ref: '#/components/schemas/Device'
+                required:
+                  - result
+        '400':
+          description: Required information missing.
+        '401':
+          description: Unauthorized
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Device'
+        description: Post the necessary fields for the API to create a new device.
+      description: Create a new device.
+      tags:
+        - device
+    parameters: []
+  '/device/{deviceId}':
+    parameters:
+      - schema:
+          type: string
+        name: deviceId
+        in: path
+        required: true
+        description: ID of an existing device
+    get:
+      summary: Get Device by Device ID
+      tags:
+        - device
+      responses:
+        '200':
+          description: Device Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                  data:
+                    $ref: '#/components/schemas/Device'
+                required:
+                  - result
+        '401':
+          description: Unauthorized
+        '404':
+          description: Device Not Found
+      operationId: get-device-deviceId
+      description: Retrieve the information of the device with the matching device ID.
+    patch:
+      summary: Update Device Information
+      operationId: patch-device-deviceId
+      responses:
+        '200':
+          description: Device Updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                  data:
+                    $ref: '#/components/schemas/Device'
+              examples: {}
+        '401':
+          description: Unauthorized
+        '404':
+          description: Device Not Found
+      description: Update the information of an existing device.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  maxLength: 64
+                description:
+                  type: string
+                  maxLength: 255
+                manufacturer:
+                  type: string
+                  maxLength: 64
+                model:
+                  type: string
+                  maxLength: 64
+                serial:
+                  type: string
+                  maxLength: 64
+                installed:
+                  type: boolean
+                installedAt:
+                  type: string
+                  maxLength: 64
+                configured:
+                  type: boolean
+                jack:
+                  type: string
+                  maxLength: 8
+                switch:
+                  type: string
+                  maxLength: 64
+                port:
+                  type: string
+                  maxLength: 8
+                poeType:
+                  type: string
+                  enum:
+                    - 802.3af Type 1 15W
+                    - 802.3at Type 2 30W
+                    - 802.3bt Type 3 60W
+                    - 802.3bt Type 4 90W
+                poeClass:
+                  type: string
+                  enum:
+                    - (0) 15.4W
+                    - (1) 4W
+                    - (2) 7W
+                    - (3) 15.4W
+                    - (4) 30W
+                    - (5) 45W
+                    - (6) 60W
+                    - (7) 75W
+                    - (8) 90W
+                schematicLabel:
+                  type: string
+                firmwareVersion:
+                  type: string
+                room:
+                  type: integer
+                  format: int64
+        description: Patch device properties to update.
+      tags:
+        - device
+  '/devices/room/{roomId}':
+    parameters:
+      - schema:
+          type: string
+        name: roomId
+        in: path
+        required: true
+        description: ID of an existing room
+    get:
+      summary: Get Devices by Room ID
+      tags:
+        - device
+      responses:
+        '200':
+          description: Devices Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Device'
+                required:
+                  - result
+        '401':
+          description: Unauthorized
+        '404':
+          description: Room Not Found
+      operationId: get-devices-roomId
+      description: Retrieve all devices installed in the given room.
 components:
   schemas:
     BaseModel:
@@ -1011,6 +1682,8 @@ components:
             dns2:
               type: string
               format: ipv4
+            location:
+              $ref: '#/components/schemas/Location'
     Device:
       allOf:
         - $ref: '#/components/schemas/BaseModel'
@@ -1166,8 +1839,11 @@ components:
 tags:
   - name: authentication
   - name: client
+  - name: device
   - name: group
   - name: location
+  - name: network
+  - name: room
   - name: user
 security:
   - access_token: []
