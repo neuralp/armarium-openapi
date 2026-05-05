@@ -11,8 +11,8 @@ info:
   contact:
     name: Nicholas Pepper
 servers:
-  - url: /api/v1
-    description: Same origin server
+- url: /api/v1
+  description: Same origin server
 paths:
   /token:
     post:
@@ -33,20 +33,20 @@ paths:
                 username:
                   type: string
                   maxLength: 255
-                  pattern: '^[A-Za-z_-]+'
+                  pattern: ^[A-Za-z_-]+
                 password:
                   type: string
                   maxLength: 255
                   format: password
       parameters: []
       tags:
-        - authentication
+      - authentication
       security: []
   /users:
     get:
       summary: Get all users
       tags:
-        - location
+      - location
       responses:
         '200':
           description: OK
@@ -60,31 +60,31 @@ paths:
                   result:
                     type: string
                     enum:
-                      - error
-                      - success
+                    - error
+                    - success
                   data:
                     type: array
                     items:
                       $ref: '#/components/schemas/User'
                 required:
-                  - result
+                - result
         '401':
           description: Unauthorized
       operationId: get-users
       description: Gets a list of all of the users on the server.
       parameters:
-        - schema:
-            type: integer
-          in: query
-          name: page
-          description: The page of results to return based on the limit.
-        - schema:
-            type: integer
-            maximum: 1000
-            default: 500
-          in: query
-          name: limit
-          description: The number of entries to return in a single query.
+      - name: page
+        in: query
+        description: The page of results to return based on the limit.
+        schema:
+          type: integer
+      - name: limit
+        in: query
+        description: The number of entries to return in a single query.
+        schema:
+          type: integer
+          default: 500
+          maximum: 1000.0
     parameters: []
   /user:
     post:
@@ -103,8 +103,8 @@ paths:
                   result:
                     type: string
                     enum:
-                      - error
-                      - success
+                    - error
+                    - success
                   data:
                     $ref: '#/components/schemas/User'
         '400':
@@ -121,19 +121,19 @@ paths:
         description: Post the necessary fields for the API to create a new user.
       description: Create a new user.
       tags:
-        - user
-  '/user/{userId}':
+      - user
+  /user/{userId}:
     parameters:
-      - schema:
-          type: string
-        name: userId
-        in: path
-        required: true
-        description: Username of an existing user
+    - name: userId
+      in: path
+      description: Username of an existing user
+      required: true
+      schema:
+        type: string
     get:
       summary: Get User Info by User ID
       tags:
-        - user
+      - user
       responses:
         '200':
           description: User Found
@@ -147,12 +147,12 @@ paths:
                   result:
                     type: string
                     enum:
-                      - error
-                      - success
+                    - error
+                    - success
                   data:
                     $ref: '#/components/schemas/User'
                 required:
-                  - result
+                - result
         '401':
           description: Unauthorized
         '404':
@@ -175,8 +175,8 @@ paths:
                   result:
                     type: string
                     enum:
-                      - error
-                      - success
+                    - error
+                    - success
                   data:
                     $ref: '#/components/schemas/User'
               examples: {}
@@ -217,12 +217,12 @@ paths:
             examples: {}
         description: Patch user properties to update.
       tags:
-        - user
+      - user
   /clients:
     get:
       summary: Your GET endpoint
       tags:
-        - client
+      - client
       responses:
         '200':
           description: OK
@@ -236,31 +236,31 @@ paths:
                   result:
                     type: string
                     enum:
-                      - error
-                      - success
+                    - error
+                    - success
                   data:
                     type: array
                     items:
                       $ref: '#/components/schemas/Client'
                 required:
-                  - result
+                - result
         '401':
           description: Unauthorized
       operationId: get-clients
       description: Gets a list of all of the clients on the server.
       parameters:
-        - schema:
-            type: integer
-          in: query
-          name: page
-          description: The page of results to return based on the limit.
-        - schema:
-            type: integer
-            maximum: 1000
-            default: 500
-          in: query
-          name: limit
-          description: The number of entries to return in a single query.
+      - name: page
+        in: query
+        description: The page of results to return based on the limit.
+        schema:
+          type: integer
+      - name: limit
+        in: query
+        description: The number of entries to return in a single query.
+        schema:
+          type: integer
+          default: 500
+          maximum: 1000.0
     parameters: []
   /client:
     post:
@@ -279,12 +279,12 @@ paths:
                   result:
                     type: string
                     enum:
-                      - error
-                      - success
+                    - error
+                    - success
                   data:
                     $ref: '#/components/schemas/Client'
                 required:
-                  - result
+                - result
         '400':
           description: Required information missing.
         '401':
@@ -297,15 +297,15 @@ paths:
         description: Post the necessary fields for the API to create a new client.
       description: Create a new user.
       tags:
-        - client
+      - client
     parameters: []
-  '/client/{clientId}':
+  /client/{clientId}:
     parameters:
-      - schema:
-          type: string
-        name: clientId
-        in: path
-        required: true
+    - name: clientId
+      in: path
+      required: true
+      schema:
+        type: string
     get:
       summary: Get User Info by User ID
       responses:
@@ -321,12 +321,12 @@ paths:
                   result:
                     type: string
                     enum:
-                      - error
-                      - success
+                    - error
+                    - success
                   data:
                     $ref: '#/components/schemas/Client'
                 required:
-                  - result
+                - result
         '401':
           description: Unauthorized
         '404':
@@ -334,7 +334,7 @@ paths:
       operationId: get-client-clientId
       description: Retrieve the information of the user with the matching user ID.
       tags:
-        - client
+      - client
     patch:
       summary: Update User Information
       operationId: patch-client-clientId
@@ -369,12 +369,12 @@ paths:
                   maxLength: 255
         description: Patch user properties to update.
       tags:
-        - user
+      - user
   /locations:
     get:
       summary: Get all locations
       tags:
-        - location
+      - location
       responses:
         '200':
           description: OK
@@ -388,43 +388,43 @@ paths:
                   result:
                     type: string
                     enum:
-                      - error
-                      - success
+                    - error
+                    - success
                   data:
                     type: array
                     items:
                       $ref: '#/components/schemas/Location'
                 required:
-                  - result
+                - result
         '401':
           description: Unauthorized
       operationId: get-locations
       description: Gets a list of all of the locations on the server.
       parameters:
-        - schema:
-            type: integer
-          in: query
-          name: page
-          description: The page of results to return based on the limit.
-        - schema:
-            type: integer
-            maximum: 1000
-            default: 500
-          in: query
-          name: limit
-          description: The number of entries to return in a single query.
+      - name: page
+        in: query
+        description: The page of results to return based on the limit.
+        schema:
+          type: integer
+      - name: limit
+        in: query
+        description: The number of entries to return in a single query.
+        schema:
+          type: integer
+          default: 500
+          maximum: 1000.0
     parameters: []
-  '/locations/client/{client_id}':
+  /locations/client/{client_id}:
     parameters:
-      - schema:
-          type: string
-        name: client_id
-        in: path
-        required: true
+    - name: client_id
+      in: path
+      required: true
+      schema:
+        type: string
     get:
       summary: Get Location by Client ID
       tags:
-        - location
+      - location
       responses:
         '200':
           description: Locations found
@@ -438,8 +438,8 @@ paths:
                   result:
                     type: string
                     enum:
-                      - error
-                      - success
+                    - error
+                    - success
                   client:
                     type: string
                   data:
@@ -451,24 +451,24 @@ paths:
                     items:
                       $ref: '#/components/schemas/Location'
                 required:
-                  - result
+                - result
         '401':
           description: Unauthorized
         '404':
           description: Location Not Found
       operationId: get-location-clientId
       description: Retrieve the locations for a particular client.
-  '/locations/parent/{parent_id}':
+  /locations/parent/{parent_id}:
     parameters:
-      - schema:
-          type: string
-        name: parent_id
-        in: path
-        required: true
+    - name: parent_id
+      in: path
+      required: true
+      schema:
+        type: string
     get:
       summary: Get Location by Parent Location ID
       tags:
-        - location
+      - location
       responses:
         '200':
           description: Locations found
@@ -482,8 +482,8 @@ paths:
                   result:
                     type: string
                     enum:
-                      - error
-                      - success
+                    - error
+                    - success
                   data:
                     type: array
                     items:
@@ -493,7 +493,7 @@ paths:
                     items:
                       $ref: '#/components/schemas/Location'
                 required:
-                  - result
+                - result
         '401':
           description: Unauthorized
         '404':
@@ -523,20 +523,20 @@ paths:
         description: Post the necessary fields for the API to create a new location.
       description: Create a new location.
       tags:
-        - location
+      - location
     parameters: []
-  '/location/{locationId}':
+  /location/{locationId}:
     parameters:
-      - schema:
-          type: string
-        name: locationId
-        in: path
-        required: true
-        description: ID of an existing location
+    - name: locationId
+      in: path
+      description: ID of an existing location
+      required: true
+      schema:
+        type: string
     get:
       summary: Get Location by Location ID
       tags:
-        - location
+      - location
       responses:
         '200':
           description: Location Found
@@ -550,12 +550,12 @@ paths:
                   result:
                     type: string
                     enum:
-                      - error
-                      - success
+                    - error
+                    - success
                   data:
                     $ref: '#/components/schemas/Location'
                 required:
-                  - result
+                - result
         '401':
           description: Unauthorized
         '404':
@@ -578,8 +578,8 @@ paths:
                   result:
                     type: string
                     enum:
-                      - error
-                      - success
+                    - error
+                    - success
                   data:
                     $ref: '#/components/schemas/Location'
               examples: {}
@@ -616,12 +616,12 @@ paths:
                   $ref: '#/components/schemas/Location'
             examples: {}
       tags:
-        - location
+      - location
   /groups:
     get:
       summary: Get all groups
       tags:
-        - group
+      - group
       responses:
         '200':
           description: OK
@@ -635,31 +635,31 @@ paths:
                   result:
                     type: string
                     enum:
-                      - error
-                      - success
+                    - error
+                    - success
                   data:
                     type: array
                     items:
                       $ref: '#/components/schemas/Group'
                 required:
-                  - result
+                - result
         '401':
           description: Unauthorized
       operationId: get-groups
       description: Gets a list of all of the security groups on the server.
       parameters:
-        - schema:
-            type: integer
-          in: query
-          name: page
-          description: The page of results to return based on the limit.
-        - schema:
-            type: integer
-            maximum: 1000
-            default: 500
-          in: query
-          name: limit
-          description: The number of entries to return in a single query.
+      - name: page
+        in: query
+        description: The page of results to return based on the limit.
+        schema:
+          type: integer
+      - name: limit
+        in: query
+        description: The number of entries to return in a single query.
+        schema:
+          type: integer
+          default: 500
+          maximum: 1000.0
     parameters: []
   /group:
     post:
@@ -678,12 +678,12 @@ paths:
                   result:
                     type: string
                     enum:
-                      - error
-                      - success
+                    - error
+                    - success
                   data:
                     $ref: '#/components/schemas/Group'
                 required:
-                  - result
+                - result
         '400':
           description: Required information missing.
         '401':
@@ -696,20 +696,20 @@ paths:
         description: Post the necessary fields for the API to create a new group.
       description: Create a new group.
       tags:
-        - group
+      - group
     parameters: []
-  '/group/{groupId}':
+  /group/{groupId}:
     parameters:
-      - schema:
-          type: string
-        name: groupId
-        in: path
-        required: true
-        description: ID of an existing group
+    - name: groupId
+      in: path
+      description: ID of an existing group
+      required: true
+      schema:
+        type: string
     get:
       summary: Get Group by Group ID
       tags:
-        - group
+      - group
       responses:
         '200':
           description: Group Found
@@ -723,12 +723,12 @@ paths:
                   result:
                     type: string
                     enum:
-                      - error
-                      - success
+                    - error
+                    - success
                   data:
                     $ref: '#/components/schemas/Group'
                 required:
-                  - result
+                - result
         '401':
           description: Unauthorized
         '404':
@@ -751,8 +751,8 @@ paths:
                   result:
                     type: string
                     enum:
-                      - error
-                      - success
+                    - error
+                    - success
                   data:
                     $ref: '#/components/schemas/Group'
               examples: {}
@@ -772,12 +772,12 @@ paths:
                   maxLength: 255
         description: Patch group properties to update.
       tags:
-        - group
+      - group
   /networks:
     get:
       summary: Get all networks
       tags:
-        - network
+      - network
       responses:
         '200':
           description: OK
@@ -791,31 +791,31 @@ paths:
                   result:
                     type: string
                     enum:
-                      - error
-                      - success
+                    - error
+                    - success
                   data:
                     type: array
                     items:
                       $ref: '#/components/schemas/Network'
                 required:
-                  - result
+                - result
         '401':
           description: Unauthorized
       operationId: get-networks
       description: Gets a list of all of the networks on the server.
       parameters:
-        - schema:
-            type: integer
-          in: query
-          name: page
-          description: The page of results to return based on the limit.
-        - schema:
-            type: integer
-            maximum: 1000
-            default: 500
-          in: query
-          name: limit
-          description: The number of entries to return in a single query.
+      - name: page
+        in: query
+        description: The page of results to return based on the limit.
+        schema:
+          type: integer
+      - name: limit
+        in: query
+        description: The number of entries to return in a single query.
+        schema:
+          type: integer
+          default: 500
+          maximum: 1000.0
     parameters: []
   /network:
     post:
@@ -834,12 +834,12 @@ paths:
                   result:
                     type: string
                     enum:
-                      - error
-                      - success
+                    - error
+                    - success
                   data:
                     $ref: '#/components/schemas/Network'
                 required:
-                  - result
+                - result
         '400':
           description: Required information missing.
         '401':
@@ -852,20 +852,20 @@ paths:
         description: Post the necessary fields for the API to create a new network.
       description: Create a new network.
       tags:
-        - network
+      - network
     parameters: []
-  '/network/{networkId}':
+  /network/{networkId}:
     parameters:
-      - schema:
-          type: string
-        name: networkId
-        in: path
-        required: true
-        description: ID of an existing network
+    - name: networkId
+      in: path
+      description: ID of an existing network
+      required: true
+      schema:
+        type: string
     get:
       summary: Get Network by Network ID
       tags:
-        - network
+      - network
       responses:
         '200':
           description: Network Found
@@ -879,12 +879,12 @@ paths:
                   result:
                     type: string
                     enum:
-                      - error
-                      - success
+                    - error
+                    - success
                   data:
                     $ref: '#/components/schemas/Network'
                 required:
-                  - result
+                - result
         '401':
           description: Unauthorized
         '404':
@@ -907,8 +907,8 @@ paths:
                   result:
                     type: string
                     enum:
-                      - error
-                      - success
+                    - error
+                    - success
                   data:
                     $ref: '#/components/schemas/Network'
               examples: {}
@@ -943,19 +943,19 @@ paths:
                   format: ipv4
         description: Patch network properties to update.
       tags:
-        - network
-  '/networks/location/{locationId}':
+      - network
+  /networks/location/{locationId}:
     parameters:
-      - schema:
-          type: string
-        name: locationId
-        in: path
-        required: true
-        description: ID of an existing location
+    - name: locationId
+      in: path
+      description: ID of an existing location
+      required: true
+      schema:
+        type: string
     get:
       summary: Get Networks by Location ID
       tags:
-        - network
+      - network
       responses:
         '200':
           description: Networks Found
@@ -969,14 +969,14 @@ paths:
                   result:
                     type: string
                     enum:
-                      - error
-                      - success
+                    - error
+                    - success
                   data:
                     type: array
                     items:
                       $ref: '#/components/schemas/Network'
                 required:
-                  - result
+                - result
         '401':
           description: Unauthorized
         '404':
@@ -987,7 +987,7 @@ paths:
     get:
       summary: Get all rooms
       tags:
-        - room
+      - room
       responses:
         '200':
           description: OK
@@ -1001,31 +1001,31 @@ paths:
                   result:
                     type: string
                     enum:
-                      - error
-                      - success
+                    - error
+                    - success
                   data:
                     type: array
                     items:
                       $ref: '#/components/schemas/Room'
                 required:
-                  - result
+                - result
         '401':
           description: Unauthorized
       operationId: get-rooms
       description: Gets a list of all of the rooms on the server.
       parameters:
-        - schema:
-            type: integer
-          in: query
-          name: page
-          description: The page of results to return based on the limit.
-        - schema:
-            type: integer
-            maximum: 1000
-            default: 500
-          in: query
-          name: limit
-          description: The number of entries to return in a single query.
+      - name: page
+        in: query
+        description: The page of results to return based on the limit.
+        schema:
+          type: integer
+      - name: limit
+        in: query
+        description: The number of entries to return in a single query.
+        schema:
+          type: integer
+          default: 500
+          maximum: 1000.0
     parameters: []
   /room:
     post:
@@ -1044,12 +1044,12 @@ paths:
                   result:
                     type: string
                     enum:
-                      - error
-                      - success
+                    - error
+                    - success
                   data:
                     $ref: '#/components/schemas/Room'
                 required:
-                  - result
+                - result
         '400':
           description: Required information missing.
         '401':
@@ -1062,20 +1062,20 @@ paths:
         description: Post the necessary fields for the API to create a new room.
       description: Create a new room.
       tags:
-        - room
+      - room
     parameters: []
-  '/room/{roomId}':
+  /room/{roomId}:
     parameters:
-      - schema:
-          type: string
-        name: roomId
-        in: path
-        required: true
-        description: ID of an existing room
+    - name: roomId
+      in: path
+      description: ID of an existing room
+      required: true
+      schema:
+        type: string
     get:
       summary: Get Room by Room ID
       tags:
-        - room
+      - room
       responses:
         '200':
           description: Room Found
@@ -1089,12 +1089,12 @@ paths:
                   result:
                     type: string
                     enum:
-                      - error
-                      - success
+                    - error
+                    - success
                   data:
                     $ref: '#/components/schemas/Room'
                 required:
-                  - result
+                - result
         '401':
           description: Unauthorized
         '404':
@@ -1117,8 +1117,8 @@ paths:
                   result:
                     type: string
                     enum:
-                      - error
-                      - success
+                    - error
+                    - success
                   data:
                     $ref: '#/components/schemas/Room'
               examples: {}
@@ -1144,8 +1144,8 @@ paths:
                   maxLength: 255
                 floor:
                   type: integer
-                  minimum: -10
-                  maximum: 255
+                  minimum: -10.0
+                  maximum: 255.0
                 complete:
                   type: boolean
                 active:
@@ -1155,19 +1155,19 @@ paths:
                   format: int64
         description: Patch room properties to update.
       tags:
-        - room
-  '/rooms/location/{locationId}':
+      - room
+  /rooms/location/{locationId}:
     parameters:
-      - schema:
-          type: string
-        name: locationId
-        in: path
-        required: true
-        description: ID of an existing location
+    - name: locationId
+      in: path
+      description: ID of an existing location
+      required: true
+      schema:
+        type: string
     get:
       summary: Get Rooms by Location ID
       tags:
-        - room
+      - room
       responses:
         '200':
           description: Rooms Found
@@ -1181,14 +1181,14 @@ paths:
                   result:
                     type: string
                     enum:
-                      - error
-                      - success
+                    - error
+                    - success
                   data:
                     type: array
                     items:
                       $ref: '#/components/schemas/Room'
                 required:
-                  - result
+                - result
         '401':
           description: Unauthorized
         '404':
@@ -1199,7 +1199,7 @@ paths:
     get:
       summary: Get all devices
       tags:
-        - device
+      - device
       responses:
         '200':
           description: OK
@@ -1213,31 +1213,31 @@ paths:
                   result:
                     type: string
                     enum:
-                      - error
-                      - success
+                    - error
+                    - success
                   data:
                     type: array
                     items:
                       $ref: '#/components/schemas/Device'
                 required:
-                  - result
+                - result
         '401':
           description: Unauthorized
       operationId: get-devices
       description: Gets a list of all of the devices on the server.
       parameters:
-        - schema:
-            type: integer
-          in: query
-          name: page
-          description: The page of results to return based on the limit.
-        - schema:
-            type: integer
-            maximum: 1000
-            default: 500
-          in: query
-          name: limit
-          description: The number of entries to return in a single query.
+      - name: page
+        in: query
+        description: The page of results to return based on the limit.
+        schema:
+          type: integer
+      - name: limit
+        in: query
+        description: The number of entries to return in a single query.
+        schema:
+          type: integer
+          default: 500
+          maximum: 1000.0
     parameters: []
   /device:
     post:
@@ -1256,12 +1256,12 @@ paths:
                   result:
                     type: string
                     enum:
-                      - error
-                      - success
+                    - error
+                    - success
                   data:
                     $ref: '#/components/schemas/Device'
                 required:
-                  - result
+                - result
         '400':
           description: Required information missing.
         '401':
@@ -1274,20 +1274,20 @@ paths:
         description: Post the necessary fields for the API to create a new device.
       description: Create a new device.
       tags:
-        - device
+      - device
     parameters: []
-  '/device/{deviceId}':
+  /device/{deviceId}:
     parameters:
-      - schema:
-          type: string
-        name: deviceId
-        in: path
-        required: true
-        description: ID of an existing device
+    - name: deviceId
+      in: path
+      description: ID of an existing device
+      required: true
+      schema:
+        type: string
     get:
       summary: Get Device by Device ID
       tags:
-        - device
+      - device
       responses:
         '200':
           description: Device Found
@@ -1301,12 +1301,12 @@ paths:
                   result:
                     type: string
                     enum:
-                      - error
-                      - success
+                    - error
+                    - success
                   data:
                     $ref: '#/components/schemas/Device'
                 required:
-                  - result
+                - result
         '401':
           description: Unauthorized
         '404':
@@ -1329,8 +1329,8 @@ paths:
                   result:
                     type: string
                     enum:
-                      - error
-                      - success
+                    - error
+                    - success
                   data:
                     $ref: '#/components/schemas/Device'
               examples: {}
@@ -1379,22 +1379,22 @@ paths:
                 poeType:
                   type: string
                   enum:
-                    - 802.3af Type 1 15W
-                    - 802.3at Type 2 30W
-                    - 802.3bt Type 3 60W
-                    - 802.3bt Type 4 90W
+                  - 802.3af Type 1 15W
+                  - 802.3at Type 2 30W
+                  - 802.3bt Type 3 60W
+                  - 802.3bt Type 4 90W
                 poeClass:
                   type: string
                   enum:
-                    - (0) 15.4W
-                    - (1) 4W
-                    - (2) 7W
-                    - (3) 15.4W
-                    - (4) 30W
-                    - (5) 45W
-                    - (6) 60W
-                    - (7) 75W
-                    - (8) 90W
+                  - (0) 15.4W
+                  - (1) 4W
+                  - (2) 7W
+                  - (3) 15.4W
+                  - (4) 30W
+                  - (5) 45W
+                  - (6) 60W
+                  - (7) 75W
+                  - (8) 90W
                 schematicLabel:
                   type: string
                 firmwareVersion:
@@ -1404,19 +1404,19 @@ paths:
                   format: int64
         description: Patch device properties to update.
       tags:
-        - device
-  '/devices/room/{roomId}':
+      - device
+  /devices/room/{roomId}:
     parameters:
-      - schema:
-          type: string
-        name: roomId
-        in: path
-        required: true
-        description: ID of an existing room
+    - name: roomId
+      in: path
+      description: ID of an existing room
+      required: true
+      schema:
+        type: string
     get:
       summary: Get Devices by Room ID
       tags:
-        - device
+      - device
       responses:
         '200':
           description: Devices Found
@@ -1430,14 +1430,14 @@ paths:
                   result:
                     type: string
                     enum:
-                      - error
-                      - success
+                    - error
+                    - success
                   data:
                     type: array
                     items:
                       $ref: '#/components/schemas/Device'
                 required:
-                  - result
+                - result
         '401':
           description: Unauthorized
         '404':
@@ -1456,7 +1456,7 @@ components:
       properties:
         id:
           type:
-            - integer
+          - integer
           format: int64
           description: Autogenerated ID from the database.
           readOnly: true
@@ -1476,119 +1476,119 @@ components:
           description: Username the model was updated by
     User:
       allOf:
-        - $ref: '#/components/schemas/BaseModel'
-        - type: object
-          properties:
-            username:
-              type: string
-              maxLength: 64
-              pattern: '^[A-Za-z0-9_-]+'
-            password:
-              type: string
-              maxLength: 255
-              format: password
-            aesKey:
-              type: string
-              format: byte
-            rsaPublicKey:
-              type: string
-              format: byte
-            rsaPrivateKey:
-              type: string
-              format: byte
-            firstName:
-              type: string
-              maxLength: 255
-              pattern: '^[A-Za-z0-9 -]+'
-            lastName:
-              type: string
-              maxLength: 255
-              pattern: '^[A-Za-z0-9 -]+'
-            email:
-              type: string
-              maxLength: 255
-              format: email
-            emailVerified:
-              type: boolean
-              default: false
-            accountLocked:
-              type: boolean
-              default: true
-            groups:
-              type: array
-              items:
-                $ref: '#/components/schemas/Group'
-          required:
-            - username
-            - password
-            - aesKey
-            - emailVerified
-            - accountLocked
+      - $ref: '#/components/schemas/BaseModel'
+      - type: object
+        properties:
+          username:
+            type: string
+            maxLength: 64
+            pattern: ^[A-Za-z0-9_-]+
+          password:
+            type: string
+            format: password
+            maxLength: 255
+          aesKey:
+            type: string
+            format: byte
+          rsaPublicKey:
+            type: string
+            format: byte
+          rsaPrivateKey:
+            type: string
+            format: byte
+          firstName:
+            type: string
+            maxLength: 255
+            pattern: ^[A-Za-z0-9 -]+
+          lastName:
+            type: string
+            maxLength: 255
+            pattern: ^[A-Za-z0-9 -]+
+          email:
+            type: string
+            format: email
+            maxLength: 255
+          emailVerified:
+            type: boolean
+            default: false
+          accountLocked:
+            type: boolean
+            default: true
+          groups:
+            type: array
+            items:
+              $ref: '#/components/schemas/Group'
+        required:
+        - username
+        - password
+        - aesKey
+        - emailVerified
+        - accountLocked
     Group:
       allOf:
-        - $ref: '#/components/schemas/BaseModel'
-        - type: object
-          properties:
-            name:
-              type: string
-              maxLength: 64
-              pattern: '^[A-Za-z0-9 _.#-]+'
-            description:
-              type: string
-              maxLength: 255
-          required:
-            - name
+      - $ref: '#/components/schemas/BaseModel'
+      - type: object
+        properties:
+          name:
+            type: string
+            maxLength: 64
+            pattern: ^[A-Za-z0-9 _.#-]+
+          description:
+            type: string
+            maxLength: 255
+        required:
+        - name
     Client:
       allOf:
-        - $ref: '#/components/schemas/BaseModel'
-        - type: object
-          properties:
-            name:
-              type: string
-              maxLength: 64
-              pattern: '^[A-Za-z0-9 _.#-]+'
-            description:
-              type: string
-          required:
-            - name
+      - $ref: '#/components/schemas/BaseModel'
+      - type: object
+        properties:
+          name:
+            type: string
+            maxLength: 64
+            pattern: ^[A-Za-z0-9 _.#-]+
+          description:
+            type: string
+        required:
+        - name
     Location:
       allOf:
-        - $ref: '#/components/schemas/BaseModel'
-        - type: object
-          properties:
-            name:
-              type: string
-              maxLength: 64
-              pattern: '^[A-Za-z0-9 _.#-]+'
-            description:
-              type: string
-              maxLength: 255
-            address1:
-              type: string
-              maxLength: 255
-              pattern: '^[A-Za-z0-9 _.#-]+'
-            address2:
-              type: string
-              maxLength: 255
-              pattern: '^[A-Za-z0-9 _.#-]+'
-            city:
-              type: string
-              maxLength: 64
-              pattern: '^[A-Za-z0-9-_.]+'
-            state:
-              type: string
-              maxLength: 2
-              pattern: '^[A-Za-z ]+'
-            zip:
-              type: string
-              maxLength: 12
-              pattern: '^[A-Za-z0-9-]+'
-            parent:
-              $ref: '#/components/schemas/Location'
-            client:
-              $ref: '#/components/schemas/Client'
-          required:
-            - name
+      - $ref: '#/components/schemas/BaseModel'
+      - type: object
+        properties:
+          name:
+            type: string
+            maxLength: 64
+            pattern: ^[A-Za-z0-9 _.#-]+
+          description:
+            type: string
+            maxLength: 255
+          address1:
+            type: string
+            maxLength: 255
+            pattern: ^[A-Za-z0-9 _.#-]+
+          address2:
+            type: string
+            maxLength: 255
+            pattern: ^[A-Za-z0-9 _.#-]+
+          city:
+            type: string
+            maxLength: 64
+            pattern: ^[A-Za-z0-9-_.]+
+          state:
+            type: string
+            maxLength: 2
+            pattern: ^[A-Za-z ]+
+          zip:
+            type: string
+            maxLength: 12
+            pattern: ^[A-Za-z0-9-]+
+          parent:
+            $ref: '#/components/schemas/Location'
+          client:
+            $ref: '#/components/schemas/Client'
+        required:
+        - name
     LocationNew:
       title: LocationNew
       type: object
@@ -1597,30 +1597,30 @@ components:
         name:
           type: string
           maxLength: 64
-          pattern: '^[A-Za-z0-9 _.#-]+$'
+          pattern: ^[A-Za-z0-9 _.#-]+$
         description:
           type: string
           maxLength: 255
         address1:
           type: string
           maxLength: 255
-          pattern: '^[A-Za-z0-9 _.#-]+$'
+          pattern: ^[A-Za-z0-9 _.#-]+$
         address2:
           type: string
           maxLength: 255
-          pattern: '^[A-Za-z0-9 _.#-]+$'
+          pattern: ^[A-Za-z0-9 _.#-]+$
         city:
           type: string
           maxLength: 64
-          pattern: '^[A-Za-z0-9-_.]+$'
+          pattern: ^[A-Za-z0-9-_.]+$
         state:
           type: string
           maxLength: 2
-          pattern: '^[A-Za-z ]+$'
+          pattern: ^[A-Za-z ]+$
         zip:
           type: string
           maxLength: 12
-          pattern: '^[A-Za-z0-9-]+$'
+          pattern: ^[A-Za-z0-9-]+$
         parent:
           type: integer
           format: int64
@@ -1628,222 +1628,222 @@ components:
           type: integer
           format: int64
       required:
-        - name
+      - name
     Room:
       allOf:
-        - $ref: '#/components/schemas/BaseModel'
-        - type: object
-          properties:
-            id:
-              type: integer
-              format: int64
-              description: id autogenerated by the database
-            name:
-              type: string
-              maxLength: 64
-            number:
-              type: string
-              maxLength: 10
-            description:
-              type: string
-              maxLength: 255
-            floor:
-              type: integer
-              minimum: -10
-              maximum: 255
-            complete:
-              type: boolean
-              default: false
-            active:
-              type: boolean
-              default: true
-            location:
-              $ref: '#/components/schemas/Location'
+      - $ref: '#/components/schemas/BaseModel'
+      - type: object
+        properties:
+          id:
+            description: id autogenerated by the database
+            type: integer
+            format: int64
+          name:
+            type: string
+            maxLength: 64
+          number:
+            type: string
+            maxLength: 10
+          description:
+            type: string
+            maxLength: 255
+          floor:
+            type: integer
+            minimum: -10.0
+            maximum: 255.0
+          complete:
+            type: boolean
+            default: false
+          active:
+            type: boolean
+            default: true
+          location:
+            $ref: '#/components/schemas/Location'
     Network:
       allOf:
-        - $ref: '#/components/schemas/BaseModel'
-        - type: object
-          properties:
-            name:
-              type: string
-              maxLength: 64
-            description:
-              type: string
-              maxLength: 255
-            base:
-              type: string
-              format: ipv4
-            mask:
-              type: string
-              format: ipv4
-            dns1:
-              type: string
-              format: ipv4
-            dns2:
-              type: string
-              format: ipv4
-            location:
-              $ref: '#/components/schemas/Location'
+      - $ref: '#/components/schemas/BaseModel'
+      - type: object
+        properties:
+          name:
+            type: string
+            maxLength: 64
+          description:
+            type: string
+            maxLength: 255
+          base:
+            type: string
+            format: ipv4
+          mask:
+            type: string
+            format: ipv4
+          dns1:
+            type: string
+            format: ipv4
+          dns2:
+            type: string
+            format: ipv4
+          location:
+            $ref: '#/components/schemas/Location'
     Device:
       allOf:
-        - $ref: '#/components/schemas/BaseModel'
-        - type: object
-          properties:
-            id:
-              type: integer
-              format: int64
-              description: automatically assigned by database
-            name:
-              type: string
-              maxLength: 64
-            description:
-              type: string
-              maxLength: 255
-            manufacturer:
-              type: string
-              maxLength: 64
-            model:
-              type: string
-              maxLength: 64
-            serial:
-              type: string
-              maxLength: 64
-            installed:
-              type: boolean
-              default: false
-            installedAt:
-              type: string
-              maxLength: 64
-            room:
-              $ref: '#/components/schemas/Room'
-            configured:
-              type: boolean
-              default: false
-            ipAddress1:
-              type: string
-              format: ipv4
-            ipAddress2:
-              type: string
-              format: ipv4
-            ipAddress3:
-              type: string
-              format: ipv4
-            ipAddress4:
-              type: string
-              format: ipv4
-            network1:
-              $ref: '#/components/schemas/Network'
-            network2:
-              $ref: '#/components/schemas/Network'
-            network3:
-              $ref: '#/components/schemas/Network'
-            network4:
-              $ref: '#/components/schemas/Network'
-            hostname1:
-              type: string
-              maxLength: 63
-              pattern: '^[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?$'
-            hostname2:
-              type: string
-              maxLength: 63
-              pattern: '^[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?$'
-            hostname3:
-              type: string
-              maxLength: 63
-              pattern: '^[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?$'
-            hostname4:
-              type: string
-              maxLength: 63
-              pattern: '^[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?$'
-            mac1:
-              type: string
-              pattern: '^([0-9A-Fa-f]{2}[:\-]){5}[0-9A-Fa-f]{2}$|^([0-9A-Fa-f]{4}\.){2}[0-9A-Fa-f]{4}$|^[0-9A-Fa-f]{12}$'
-            mac2:
-              type: string
-              pattern: '^([0-9A-Fa-f]{2}[:\-]){5}[0-9A-Fa-f]{2}$|^([0-9A-Fa-f]{4}\.){2}[0-9A-Fa-f]{4}$|^[0-9A-Fa-f]{12}$'
-            mac3:
-              type: string
-              pattern: '^([0-9A-Fa-f]{2}[:\-]){5}[0-9A-Fa-f]{2}$|^([0-9A-Fa-f]{4}\.){2}[0-9A-Fa-f]{4}$|^[0-9A-Fa-f]{12}$'
-            mac4:
-              type: string
-              pattern: '^([0-9A-Fa-f]{2}[:\-]){5}[0-9A-Fa-f]{2}$|^([0-9A-Fa-f]{4}\.){2}[0-9A-Fa-f]{4}$|^[0-9A-Fa-f]{12}$'
-            username1:
-              type: string
-              maxLength: 63
-            username2:
-              type: string
-              maxLength: 63
-            password1:
-              type: string
-            password2:
-              type: string
-            jack:
-              type: string
-              maxLength: 8
-            switch:
-              type: string
-              maxLength: 64
-            port:
-              type: string
-              maxLength: 8
-            poeType:
-              type: string
-              enum:
-                - 802.3af Type 1 15W
-                - 802.3at Type 2 30W
-                - 802.3bt Type 3 60W
-                - 802.3bt Type 4 90W
-              default: 802.3at Type 2 30W
-            poeClass:
-              type: string
-              enum:
-                - (0) 15.4W
-                - (1) 4W
-                - (2) 7W
-                - (3) 15.4W
-                - (4) 30W
-                - (5) 45W
-                - (6) 60W
-                - (7) 75W
-                - (8) 90W
-            schematicLabel:
-              type: string
-              description: The label used for the device on the schemnatics.
-            firmwareVersion:
-              type: string
-              description: The running firmware version.
-            runningProgramDate:
-              type: string
-              format: date-time
-              description: Current compile date/time
-            ipID:
-              type: string
-              format: byte
-              maxLength: 4
-              description: Crestron IPID of the device
-            serverPort1:
-              type: integer
-              maximum: 65535
-              description: The port of any listening servers
-            serverPort2:
-              type: integer
-              maximum: 65535
-              description: The port of any listening servers.
-          required:
-            - name
+      - $ref: '#/components/schemas/BaseModel'
+      - type: object
+        properties:
+          id:
+            description: automatically assigned by database
+            type: integer
+            format: int64
+          name:
+            type: string
+            maxLength: 64
+          description:
+            type: string
+            maxLength: 255
+          manufacturer:
+            type: string
+            maxLength: 64
+          model:
+            type: string
+            maxLength: 64
+          serial:
+            type: string
+            maxLength: 64
+          installed:
+            type: boolean
+            default: false
+          installedAt:
+            type: string
+            maxLength: 64
+          room:
+            $ref: '#/components/schemas/Room'
+          configured:
+            type: boolean
+            default: false
+          ipAddress1:
+            type: string
+            format: ipv4
+          ipAddress2:
+            type: string
+            format: ipv4
+          ipAddress3:
+            type: string
+            format: ipv4
+          ipAddress4:
+            type: string
+            format: ipv4
+          network1:
+            $ref: '#/components/schemas/Network'
+          network2:
+            $ref: '#/components/schemas/Network'
+          network3:
+            $ref: '#/components/schemas/Network'
+          network4:
+            $ref: '#/components/schemas/Network'
+          hostname1:
+            type: string
+            maxLength: 63
+            pattern: ^[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?$
+          hostname2:
+            type: string
+            maxLength: 63
+            pattern: ^[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?$
+          hostname3:
+            type: string
+            maxLength: 63
+            pattern: ^[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?$
+          hostname4:
+            type: string
+            maxLength: 63
+            pattern: ^[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?$
+          mac1:
+            type: string
+            pattern: ^([0-9A-Fa-f]{2}[:\-]){5}[0-9A-Fa-f]{2}$|^([0-9A-Fa-f]{4}\.){2}[0-9A-Fa-f]{4}$|^[0-9A-Fa-f]{12}$
+          mac2:
+            type: string
+            pattern: ^([0-9A-Fa-f]{2}[:\-]){5}[0-9A-Fa-f]{2}$|^([0-9A-Fa-f]{4}\.){2}[0-9A-Fa-f]{4}$|^[0-9A-Fa-f]{12}$
+          mac3:
+            type: string
+            pattern: ^([0-9A-Fa-f]{2}[:\-]){5}[0-9A-Fa-f]{2}$|^([0-9A-Fa-f]{4}\.){2}[0-9A-Fa-f]{4}$|^[0-9A-Fa-f]{12}$
+          mac4:
+            type: string
+            pattern: ^([0-9A-Fa-f]{2}[:\-]){5}[0-9A-Fa-f]{2}$|^([0-9A-Fa-f]{4}\.){2}[0-9A-Fa-f]{4}$|^[0-9A-Fa-f]{12}$
+          username1:
+            type: string
+            maxLength: 63
+          username2:
+            type: string
+            maxLength: 63
+          password1:
+            type: string
+          password2:
+            type: string
+          jack:
+            type: string
+            maxLength: 8
+          switch:
+            type: string
+            maxLength: 64
+          port:
+            type: string
+            maxLength: 8
+          poeType:
+            type: string
+            enum:
+            - 802.3af Type 1 15W
+            - 802.3at Type 2 30W
+            - 802.3bt Type 3 60W
+            - 802.3bt Type 4 90W
+            default: 802.3at Type 2 30W
+          poeClass:
+            type: string
+            enum:
+            - (0) 15.4W
+            - (1) 4W
+            - (2) 7W
+            - (3) 15.4W
+            - (4) 30W
+            - (5) 45W
+            - (6) 60W
+            - (7) 75W
+            - (8) 90W
+          schematicLabel:
+            description: The label used for the device on the schemnatics.
+            type: string
+          firmwareVersion:
+            description: The running firmware version.
+            type: string
+          runningProgramDate:
+            description: Current compile date/time
+            type: string
+            format: date-time
+          ipID:
+            description: Crestron IPID of the device
+            type: string
+            format: byte
+            maxLength: 4
+          serverPort1:
+            description: The port of any listening servers
+            type: integer
+            maximum: 65535.0
+          serverPort2:
+            description: The port of any listening servers.
+            type: integer
+            maximum: 65535.0
+        required:
+        - name
   securitySchemes:
     access_token:
       name: API Key
       type: apiKey
       in: cookie
 tags:
-  - name: authentication
-  - name: client
-  - name: device
-  - name: group
-  - name: location
-  - name: network
-  - name: room
-  - name: user
+- name: authentication
+- name: client
+- name: device
+- name: group
+- name: location
+- name: network
+- name: room
+- name: user
 security:
-  - access_token: []
+- access_token: []
