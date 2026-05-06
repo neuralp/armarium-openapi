@@ -1682,8 +1682,27 @@ components:
           dns2:
             type: string
             format: ipv4
+          vlanId:
+            type: integer
+            minimum: 1.0
+            maximum: 1024.0
+          addressMethod:
+            type: string
+            enum:
+            - dhcp
+            - static
+            - dhcp-with-static
+            - reserved-leases
+          dhcpStart:
+            type: string
+            format: ipv4
+          dhcpEnd:
+            type: string
+            format: ipv4
           location:
             $ref: '#/components/schemas/Location'
+        required:
+        - name
     Device:
       allOf:
       - $ref: '#/components/schemas/BaseModel'
