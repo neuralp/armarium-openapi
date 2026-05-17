@@ -33,7 +33,7 @@ paths:
                 username:
                   type: string
                   maxLength: 255
-                  pattern: '^[A-Za-z_-]+'
+                  pattern: ^[A-Za-z_-]+
                 password:
                   type: string
                   maxLength: 255
@@ -128,7 +128,7 @@ paths:
       description: Create a new user.
       tags:
         - user
-  '/user/{userId}':
+  /user/{userId}:
     parameters:
       - name: userId
         in: path
@@ -305,7 +305,7 @@ paths:
       tags:
         - client
     parameters: []
-  '/client/{clientId}':
+  /client/{clientId}:
     parameters:
       - name: clientId
         in: path
@@ -420,7 +420,7 @@ paths:
             default: 500
             maximum: 1000
     parameters: []
-  '/locations/client/{client_id}':
+  /locations/client/{client_id}:
     parameters:
       - name: client_id
         in: path
@@ -464,7 +464,7 @@ paths:
           description: Location Not Found
       operationId: get-location-clientId
       description: Retrieve the locations for a particular client.
-  '/locations/parent/{parent_id}':
+  /locations/parent/{parent_id}:
     parameters:
       - name: parent_id
         in: path
@@ -531,7 +531,7 @@ paths:
       tags:
         - location
     parameters: []
-  '/location/{locationId}':
+  /location/{locationId}:
     parameters:
       - name: locationId
         in: path
@@ -704,7 +704,7 @@ paths:
       tags:
         - group
     parameters: []
-  '/group/{groupId}':
+  /group/{groupId}:
     parameters:
       - name: groupId
         in: path
@@ -860,7 +860,7 @@ paths:
       tags:
         - network
     parameters: []
-  '/network/{networkId}':
+  /network/{networkId}:
     parameters:
       - name: networkId
         in: path
@@ -950,7 +950,7 @@ paths:
         description: Patch network properties to update.
       tags:
         - network
-  '/networks/location/{locationId}':
+  /networks/location/{locationId}:
     parameters:
       - name: locationId
         in: path
@@ -1070,7 +1070,7 @@ paths:
       tags:
         - room
     parameters: []
-  '/room/{roomId}':
+  /room/{roomId}:
     parameters:
       - name: roomId
         in: path
@@ -1162,7 +1162,7 @@ paths:
         description: Patch room properties to update.
       tags:
         - room
-  '/rooms/location/{locationId}':
+  /rooms/location/{locationId}:
     parameters:
       - name: locationId
         in: path
@@ -1282,7 +1282,7 @@ paths:
       tags:
         - device
     parameters: []
-  '/device/{deviceId}':
+  /device/{deviceId}:
     parameters:
       - name: deviceId
         in: path
@@ -1411,7 +1411,7 @@ paths:
         description: Patch device properties to update.
       tags:
         - device
-  '/devices/room/{roomId}':
+  /devices/room/{roomId}:
     parameters:
       - name: roomId
         in: path
@@ -1488,7 +1488,7 @@ components:
             username:
               type: string
               maxLength: 64
-              pattern: '^[A-Za-z0-9_-]+'
+              pattern: ^[A-Za-z0-9_-]+
             password:
               type: string
               format: password
@@ -1505,11 +1505,11 @@ components:
             firstName:
               type: string
               maxLength: 255
-              pattern: '^[A-Za-z0-9 -]+'
+              pattern: ^[A-Za-z0-9 -]+
             lastName:
               type: string
               maxLength: 255
-              pattern: '^[A-Za-z0-9 -]+'
+              pattern: ^[A-Za-z0-9 -]+
             email:
               type: string
               format: email
@@ -1538,7 +1538,7 @@ components:
             name:
               type: string
               maxLength: 64
-              pattern: '^[A-Za-z0-9 _.#-]+'
+              pattern: ^[A-Za-z0-9 _.#-]+
             description:
               type: string
               maxLength: 255
@@ -1552,7 +1552,7 @@ components:
             name:
               type: string
               maxLength: 64
-              pattern: '^[A-Za-z0-9 _.#-]+'
+              pattern: ^[A-Za-z0-9 _.#-]+
             description:
               type: string
           required:
@@ -1565,30 +1565,30 @@ components:
             name:
               type: string
               maxLength: 64
-              pattern: '^[A-Za-z0-9 _.#-]+'
+              pattern: ^[A-Za-z0-9 _.#-]+
             description:
               type: string
               maxLength: 255
             address1:
               type: string
               maxLength: 255
-              pattern: '^[A-Za-z0-9 _.#-]+'
+              pattern: ^[A-Za-z0-9 _.#-]+
             address2:
               type: string
               maxLength: 255
-              pattern: '^[A-Za-z0-9 _.#-]+'
+              pattern: ^[A-Za-z0-9 _.#-]+
             city:
               type: string
               maxLength: 64
-              pattern: '^[A-Za-z0-9-_.]+'
+              pattern: ^[A-Za-z0-9-_.]+
             state:
               type: string
               maxLength: 2
-              pattern: '^[A-Za-z ]+'
+              pattern: ^[A-Za-z ]+
             zip:
               type: string
               maxLength: 12
-              pattern: '^[A-Za-z0-9-]+'
+              pattern: ^[A-Za-z0-9-]+
             parent:
               $ref: '#/components/schemas/Location'
             client:
@@ -1603,30 +1603,30 @@ components:
         name:
           type: string
           maxLength: 64
-          pattern: '^[A-Za-z0-9 _.#-]+$'
+          pattern: ^[A-Za-z0-9 _.#-]+$
         description:
           type: string
           maxLength: 255
         address1:
           type: string
           maxLength: 255
-          pattern: '^[A-Za-z0-9 _.#-]+$'
+          pattern: ^[A-Za-z0-9 _.#-]+$
         address2:
           type: string
           maxLength: 255
-          pattern: '^[A-Za-z0-9 _.#-]+$'
+          pattern: ^[A-Za-z0-9 _.#-]+$
         city:
           type: string
           maxLength: 64
-          pattern: '^[A-Za-z0-9-_.]+$'
+          pattern: ^[A-Za-z0-9-_.]+$
         state:
           type: string
           maxLength: 2
-          pattern: '^[A-Za-z ]+$'
+          pattern: ^[A-Za-z ]+$
         zip:
           type: string
           maxLength: 12
-          pattern: '^[A-Za-z0-9-]+$'
+          pattern: ^[A-Za-z0-9-]+$
         parent:
           type: integer
           format: int64
@@ -1767,31 +1767,31 @@ components:
             hostname1:
               type: string
               maxLength: 63
-              pattern: '^[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?$'
+              pattern: ^[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?$
             hostname2:
               type: string
               maxLength: 63
-              pattern: '^[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?$'
+              pattern: ^[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?$
             hostname3:
               type: string
               maxLength: 63
-              pattern: '^[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?$'
+              pattern: ^[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?$
             hostname4:
               type: string
               maxLength: 63
-              pattern: '^[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?$'
+              pattern: ^[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?$
             mac1:
               type: string
-              pattern: '^([0-9A-Fa-f]{2}[:\-]){5}[0-9A-Fa-f]{2}$|^([0-9A-Fa-f]{4}\.){2}[0-9A-Fa-f]{4}$|^[0-9A-Fa-f]{12}$'
+              pattern: ^([0-9A-Fa-f]{2}[:\-]){5}[0-9A-Fa-f]{2}$|^([0-9A-Fa-f]{4}\.){2}[0-9A-Fa-f]{4}$|^[0-9A-Fa-f]{12}$
             mac2:
               type: string
-              pattern: '^([0-9A-Fa-f]{2}[:\-]){5}[0-9A-Fa-f]{2}$|^([0-9A-Fa-f]{4}\.){2}[0-9A-Fa-f]{4}$|^[0-9A-Fa-f]{12}$'
+              pattern: ^([0-9A-Fa-f]{2}[:\-]){5}[0-9A-Fa-f]{2}$|^([0-9A-Fa-f]{4}\.){2}[0-9A-Fa-f]{4}$|^[0-9A-Fa-f]{12}$
             mac3:
               type: string
-              pattern: '^([0-9A-Fa-f]{2}[:\-]){5}[0-9A-Fa-f]{2}$|^([0-9A-Fa-f]{4}\.){2}[0-9A-Fa-f]{4}$|^[0-9A-Fa-f]{12}$'
+              pattern: ^([0-9A-Fa-f]{2}[:\-]){5}[0-9A-Fa-f]{2}$|^([0-9A-Fa-f]{4}\.){2}[0-9A-Fa-f]{4}$|^[0-9A-Fa-f]{12}$
             mac4:
               type: string
-              pattern: '^([0-9A-Fa-f]{2}[:\-]){5}[0-9A-Fa-f]{2}$|^([0-9A-Fa-f]{4}\.){2}[0-9A-Fa-f]{4}$|^[0-9A-Fa-f]{12}$'
+              pattern: ^([0-9A-Fa-f]{2}[:\-]){5}[0-9A-Fa-f]{2}$|^([0-9A-Fa-f]{4}\.){2}[0-9A-Fa-f]{4}$|^[0-9A-Fa-f]{12}$
             username1:
               type: string
               maxLength: 63
