@@ -1273,14 +1273,9 @@ paths:
       tags:
         - device
     parameters: []
-  /device/{deviceId}:
+  /device/{device_id}:
     parameters:
-      - name: deviceId
-        in: path
-        description: ID of an existing device
-        required: true
-        schema:
-          type: string
+      - $ref: '#/components/parameters/device_id'
     get:
       summary: Get Device by Device ID
       tags:
@@ -1507,6 +1502,7 @@ components:
               pattern: ^[A-Za-z0-9 _.#-]+
             description:
               type: string
+              maxLength: 255
           required:
             - name
     Location:
@@ -1858,6 +1854,13 @@ components:
         format: int64
     network_id:
       name: network_id
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+    device_id:
+      name: device_id
       in: path
       required: true
       schema:
