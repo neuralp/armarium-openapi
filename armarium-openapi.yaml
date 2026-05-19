@@ -128,9 +128,9 @@ paths:
       description: Create a new user.
       tags:
         - user
-  /user/{userId}:
+  /user/{user_id}:
     parameters:
-      - name: userId
+      - name: user_id
         in: path
         description: Username of an existing user
         required: true
@@ -165,6 +165,8 @@ paths:
           description: User Not Found
       operationId: get-user-userId
       description: Retrieve the information of the user with the matching user ID.
+      parameters:
+        - $ref: '#/components/parameters/user_id'
     patch:
       summary: Update User Information
       operationId: patch-users-userId
@@ -224,6 +226,8 @@ paths:
         description: Patch user properties to update.
       tags:
         - user
+      parameters:
+        - $ref: '#/components/parameters/user_id'
   /clients:
     get:
       summary: Your GET endpoint
@@ -305,9 +309,9 @@ paths:
       tags:
         - client
     parameters: []
-  /client/{clientId}:
+  /client/{client_id}:
     parameters:
-      - name: clientId
+      - name: client_id
         in: path
         required: true
         schema:
@@ -376,6 +380,50 @@ paths:
         description: Patch user properties to update.
       tags:
         - user
+  /client/{client_id}/locations:
+    parameters:
+      - name: client_id
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      summary: Get Location by Client ID
+      tags:
+        - location
+      responses:
+        '200':
+          description: Locations found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                  client:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Location'
+                  parents:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Location'
+                required:
+                  - result
+        '401':
+          description: Unauthorized
+        '404':
+          description: Location Not Found
+      operationId: get-location-clientId
+      description: Retrieve the locations for a particular client.
   /locations:
     get:
       summary: Get all locations
@@ -420,50 +468,6 @@ paths:
             default: 500
             maximum: 1000
     parameters: []
-  /locations/client/{client_id}:
-    parameters:
-      - name: client_id
-        in: path
-        required: true
-        schema:
-          type: string
-    get:
-      summary: Get Location by Client ID
-      tags:
-        - location
-      responses:
-        '200':
-          description: Locations found
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: string
-                  result:
-                    type: string
-                    enum:
-                      - error
-                      - success
-                  client:
-                    type: string
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Location'
-                  parents:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Location'
-                required:
-                  - result
-        '401':
-          description: Unauthorized
-        '404':
-          description: Location Not Found
-      operationId: get-location-clientId
-      description: Retrieve the locations for a particular client.
   /locations/parent/{parent_id}:
     parameters:
       - name: parent_id
@@ -531,9 +535,9 @@ paths:
       tags:
         - location
     parameters: []
-  /location/{locationId}:
+  /location/{location_id}:
     parameters:
-      - name: locationId
+      - name: location_id
         in: path
         description: ID of an existing location
         required: true
@@ -623,6 +627,84 @@ paths:
             examples: {}
       tags:
         - location
+  /location/{location_id}/networks:
+    parameters:
+      - name: location_id
+        in: path
+        description: ID of an existing location
+        required: true
+        schema:
+          type: string
+    get:
+      summary: Get Networks by Location ID
+      tags:
+        - network
+      responses:
+        '200':
+          description: Networks Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Network'
+                required:
+                  - result
+        '401':
+          description: Unauthorized
+        '404':
+          description: Location Not Found
+      operationId: get-networks-locationId
+      description: Retrieve all networks associated with the given location.
+  /location/{location_id}/rooms:
+    parameters:
+      - name: location_id
+        in: path
+        description: ID of an existing location
+        required: true
+        schema:
+          type: string
+    get:
+      summary: Get Rooms by Location ID
+      tags:
+        - room
+      responses:
+        '200':
+          description: Rooms Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Room'
+                required:
+                  - result
+        '401':
+          description: Unauthorized
+        '404':
+          description: Location Not Found
+      operationId: get-rooms-locationId
+      description: Retrieve all rooms associated with the given location.
   /groups:
     get:
       summary: Get all groups
@@ -704,9 +786,9 @@ paths:
       tags:
         - group
     parameters: []
-  /group/{groupId}:
+  /group/{group_id}:
     parameters:
-      - name: groupId
+      - name: group_id
         in: path
         description: ID of an existing group
         required: true
@@ -860,9 +942,9 @@ paths:
       tags:
         - network
     parameters: []
-  /network/{networkId}:
+  /network/{network_id}:
     parameters:
-      - name: networkId
+      - name: network_id
         in: path
         description: ID of an existing network
         required: true
@@ -950,45 +1032,6 @@ paths:
         description: Patch network properties to update.
       tags:
         - network
-  /networks/location/{locationId}:
-    parameters:
-      - name: locationId
-        in: path
-        description: ID of an existing location
-        required: true
-        schema:
-          type: string
-    get:
-      summary: Get Networks by Location ID
-      tags:
-        - network
-      responses:
-        '200':
-          description: Networks Found
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: string
-                  result:
-                    type: string
-                    enum:
-                      - error
-                      - success
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Network'
-                required:
-                  - result
-        '401':
-          description: Unauthorized
-        '404':
-          description: Location Not Found
-      operationId: get-networks-locationId
-      description: Retrieve all networks associated with the given location.
   /rooms:
     get:
       summary: Get all rooms
@@ -1070,9 +1113,9 @@ paths:
       tags:
         - room
     parameters: []
-  /room/{roomId}:
+  /room/{room_id}:
     parameters:
-      - name: roomId
+      - name: room_id
         in: path
         description: ID of an existing room
         required: true
@@ -1162,21 +1205,21 @@ paths:
         description: Patch room properties to update.
       tags:
         - room
-  /rooms/location/{locationId}:
+  /room/{room_id}/devices:
     parameters:
-      - name: locationId
+      - name: room_id
         in: path
-        description: ID of an existing location
+        description: ID of an existing room
         required: true
         schema:
           type: string
     get:
-      summary: Get Rooms by Location ID
+      summary: Get Devices by Room ID
       tags:
-        - room
+        - device
       responses:
         '200':
-          description: Rooms Found
+          description: Devices Found
           content:
             application/json:
               schema:
@@ -1192,15 +1235,15 @@ paths:
                   data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Room'
+                      $ref: '#/components/schemas/Device'
                 required:
                   - result
         '401':
           description: Unauthorized
         '404':
-          description: Location Not Found
-      operationId: get-rooms-locationId
-      description: Retrieve all rooms associated with the given location.
+          description: Room Not Found
+      operationId: get-devices-roomId
+      description: Retrieve all devices installed in the given room.
   /devices:
     get:
       summary: Get all devices
@@ -1411,45 +1454,6 @@ paths:
         description: Patch device properties to update.
       tags:
         - device
-  /devices/room/{roomId}:
-    parameters:
-      - name: roomId
-        in: path
-        description: ID of an existing room
-        required: true
-        schema:
-          type: string
-    get:
-      summary: Get Devices by Room ID
-      tags:
-        - device
-      responses:
-        '200':
-          description: Devices Found
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: string
-                  result:
-                    type: string
-                    enum:
-                      - error
-                      - success
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Device'
-                required:
-                  - result
-        '401':
-          description: Unauthorized
-        '404':
-          description: Room Not Found
-      operationId: get-devices-roomId
-      description: Retrieve all devices installed in the given room.
 components:
   schemas:
     BaseModel:
@@ -1595,46 +1599,6 @@ components:
               $ref: '#/components/schemas/Client'
           required:
             - name
-    LocationNew:
-      title: LocationNew
-      type: object
-      description: Used for POST of a new location
-      properties:
-        name:
-          type: string
-          maxLength: 64
-          pattern: ^[A-Za-z0-9 _.#-]+$
-        description:
-          type: string
-          maxLength: 255
-        address1:
-          type: string
-          maxLength: 255
-          pattern: ^[A-Za-z0-9 _.#-]+$
-        address2:
-          type: string
-          maxLength: 255
-          pattern: ^[A-Za-z0-9 _.#-]+$
-        city:
-          type: string
-          maxLength: 64
-          pattern: ^[A-Za-z0-9-_.]+$
-        state:
-          type: string
-          maxLength: 2
-          pattern: ^[A-Za-z ]+$
-        zip:
-          type: string
-          maxLength: 12
-          pattern: ^[A-Za-z0-9-]+$
-        parent:
-          type: integer
-          format: int64
-        client:
-          type: integer
-          format: int64
-      required:
-        - name
     Room:
       allOf:
         - $ref: '#/components/schemas/BaseModel'
@@ -1856,11 +1820,56 @@ components:
               maximum: 65535
           required:
             - name
+    LocationNew:
+      title: LocationNew
+      type: object
+      description: Used for POST of a new location
+      properties:
+        name:
+          type: string
+          maxLength: 64
+          pattern: ^[A-Za-z0-9 _.#-]+$
+        description:
+          type: string
+          maxLength: 255
+        address1:
+          type: string
+          maxLength: 255
+          pattern: ^[A-Za-z0-9 _.#-]+$
+        address2:
+          type: string
+          maxLength: 255
+          pattern: ^[A-Za-z0-9 _.#-]+$
+        city:
+          type: string
+          maxLength: 64
+          pattern: ^[A-Za-z0-9-_.]+$
+        state:
+          type: string
+          maxLength: 2
+          pattern: ^[A-Za-z ]+$
+        zip:
+          type: string
+          maxLength: 12
+          pattern: ^[A-Za-z0-9-]+$
+        parent:
+          type: integer
+          format: int64
+        client:
+          type: integer
+          format: int64
+      required:
+        - name
   securitySchemes:
     access_token:
       name: API Key
       type: apiKey
       in: cookie
+  parameters:
+    user_id:
+      name: user_id
+      in: path
+      required: true
 tags:
   - name: authentication
   - name: client
