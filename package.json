@@ -7,9 +7,10 @@
     "scripts": {
         "build": "openapi-generator-cli generate -i ./armarium-openapi.yaml -g typescript-fetch -c ./typescript-fetch.json -o ./api",
         "clean": "rm -rf ./api",
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "vacuum lint armarium-openapi.yaml"
     },
     "devDependencies": {
-        "@openapitools/openapi-generator-cli": "^2.30.2"
+        "@openapitools/openapi-generator-cli": "^2.30.2",
+        "@quobix/vacuum": "^0.26.5"
     }
 }
