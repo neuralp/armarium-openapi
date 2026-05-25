@@ -41,6 +41,46 @@ paths:
       tags:
         - authentication
       security: []
+  /refresh:
+    post:
+      summary: Refresh session tokens
+      operationId: post-refresh
+      responses:
+        '200':
+          description: Tokens refreshed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description: Missing, expired, or invalid refresh token
+      description: >-
+        Rotate the session using the refresh_token cookie. On success a fresh
+        access_token and refresh_token cookie pair are set and the current user
+        is returned. Returns 401 when the refresh token is missing, expired, or
+        invalid.
+      tags:
+        - authentication
+      security:
+        - refresh_token: []
+  /logoff:
+    post:
+      summary: Log off the current session
+      operationId: post-logoff
+      responses:
+        '204':
+          description: Session terminated and cookies cleared
+        '401':
+          description: Unauthorized
+      description: >-
+        Terminate the current session. The access_token and refresh_token
+        cookies are revoked and cleared. Returns 204 on success and 401 when no
+        valid session is present.
+      tags:
+        - authentication
+      security:
+        - access_token: []
+        - refresh_token: []
   /users:
     get:
       summary: Get all users
@@ -1630,6 +1670,10 @@ components:
   securitySchemes:
     access_token:
       name: API Key
+      type: apiKey
+      in: cookie
+    refresh_token:
+      name: refresh_token
       type: apiKey
       in: cookie
   parameters:
