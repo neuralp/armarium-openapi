@@ -149,7 +149,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: '#/components/schemas/UserPost'
         description: Post the necessary fields for the API to create a new user.
       description: Create a new user.
       tags:
@@ -297,7 +297,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Client'
+              $ref: '#/components/schemas/ClientPost'
         description: Post the necessary fields for the API to create a new client.
       description: Create a new user.
       tags:
@@ -504,7 +504,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/LocationNew'
+              $ref: '#/components/schemas/LocationPost'
         description: Post the necessary fields for the API to create a new location.
       description: Create a new location.
       tags:
@@ -715,7 +715,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Group'
+              $ref: '#/components/schemas/GroupPost'
         description: Post the necessary fields for the API to create a new group.
       description: Create a new group.
       tags:
@@ -859,7 +859,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Network'
+              $ref: '#/components/schemas/NetworkPost'
         description: Post the necessary fields for the API to create a new network.
       description: Create a new network.
       tags:
@@ -1003,7 +1003,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Room'
+              $ref: '#/components/schemas/RoomPost'
         description: Post the necessary fields for the API to create a new room.
       description: Create a new room.
       tags:
@@ -1182,7 +1182,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Device'
+              $ref: '#/components/schemas/DevicePost'
         description: Post the necessary fields for the API to create a new device.
       description: Create a new device.
       tags:
@@ -1333,6 +1333,54 @@ components:
             - aesKey
             - emailVerified
             - accountLocked
+    UserPost:
+      type: object
+      properties:
+        username:
+          type: string
+          maxLength: 64
+          pattern: ^[A-Za-z0-9_-]+
+        password:
+          type: string
+          format: password
+          maxLength: 255
+        aesKey:
+          type: string
+          format: byte
+        rsaPublicKey:
+          type: string
+          format: byte
+        rsaPrivateKey:
+          type: string
+          format: byte
+        firstName:
+          type: string
+          maxLength: 255
+          pattern: ^[A-Za-z0-9 -]+
+        lastName:
+          type: string
+          maxLength: 255
+          pattern: ^[A-Za-z0-9 -]+
+        email:
+          type: string
+          format: email
+          maxLength: 255
+        emailVerified:
+          type: boolean
+          default: false
+        accountLocked:
+          type: boolean
+          default: true
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/Group'
+      required:
+        - username
+        - password
+        - aesKey
+        - emailVerified
+        - accountLocked
     Group:
       allOf:
         - $ref: '#/components/schemas/BaseModel'
@@ -1347,6 +1395,18 @@ components:
               maxLength: 255
           required:
             - name
+    GroupPost:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 64
+          pattern: ^[A-Za-z0-9 _.#-]+
+        description:
+          type: string
+          maxLength: 255
+      required:
+        - name
     Client:
       allOf:
         - $ref: '#/components/schemas/BaseModel'
@@ -1361,6 +1421,18 @@ components:
               maxLength: 255
           required:
             - name
+    ClientPost:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 64
+          pattern: ^[A-Za-z0-9 _.#-]+
+        description:
+          type: string
+          maxLength: 255
+      required:
+        - name
     Location:
       allOf:
         - $ref: '#/components/schemas/BaseModel'
@@ -1399,6 +1471,45 @@ components:
               $ref: '#/components/schemas/Client'
           required:
             - name
+    LocationPost:
+      type: object
+      description: Used for POST of a new location
+      properties:
+        name:
+          type: string
+          maxLength: 64
+          pattern: ^[A-Za-z0-9 _.#-]+$
+        description:
+          type: string
+          maxLength: 255
+        address1:
+          type: string
+          maxLength: 255
+          pattern: ^[A-Za-z0-9 _.#-]+$
+        address2:
+          type: string
+          maxLength: 255
+          pattern: ^[A-Za-z0-9 _.#-]+$
+        city:
+          type: string
+          maxLength: 64
+          pattern: ^[A-Za-z0-9-_.]+$
+        state:
+          type: string
+          maxLength: 2
+          pattern: ^[A-Za-z ]+$
+        zip:
+          type: string
+          maxLength: 12
+          pattern: ^[A-Za-z0-9-]+$
+        parent:
+          type: integer
+          format: int64
+        client:
+          type: integer
+          format: int64
+      required:
+        - name
     Room:
       allOf:
         - $ref: '#/components/schemas/BaseModel'
@@ -1429,6 +1540,34 @@ components:
               default: true
             location:
               $ref: '#/components/schemas/Location'
+    RoomPost:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 64
+        number:
+          type: string
+          maxLength: 10
+        description:
+          type: string
+          maxLength: 255
+        floor:
+          type: integer
+          minimum: -10
+          maximum: 255
+        complete:
+          type: boolean
+          default: false
+        active:
+          type: boolean
+          default: true
+        location:
+          type: integer
+          format: int64
+      required:
+        - location
+        - name
     Network:
       allOf:
         - $ref: '#/components/schemas/BaseModel'
@@ -1473,6 +1612,50 @@ components:
               $ref: '#/components/schemas/Location'
           required:
             - name
+    NetworkPost:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 64
+        description:
+          type: string
+          maxLength: 255
+        base:
+          type: string
+          format: ipv4
+        mask:
+          type: string
+          format: ipv4
+        dns1:
+          type: string
+          format: ipv4
+        dns2:
+          type: string
+          format: ipv4
+        vlanId:
+          type: integer
+          minimum: 1
+          maximum: 1024
+        addressMethod:
+          type: string
+          enum:
+            - dhcp
+            - static
+            - dhcp-with-static
+            - reserved-leases
+        dhcpStart:
+          type: string
+          format: ipv4
+        dhcpEnd:
+          type: string
+          format: ipv4
+        location:
+          type: integer
+          format: int64
+      required:
+        - name
+        - location
     Device:
       allOf:
         - $ref: '#/components/schemas/BaseModel'
@@ -1616,46 +1799,148 @@ components:
               maximum: 65535
           required:
             - name
-    LocationNew:
-      title: LocationNew
+    DevicePost:
       type: object
-      description: Used for POST of a new location
       properties:
         name:
           type: string
           maxLength: 64
-          pattern: ^[A-Za-z0-9 _.#-]+$
         description:
           type: string
           maxLength: 255
-        address1:
-          type: string
-          maxLength: 255
-          pattern: ^[A-Za-z0-9 _.#-]+$
-        address2:
-          type: string
-          maxLength: 255
-          pattern: ^[A-Za-z0-9 _.#-]+$
-        city:
+        manufacturer:
           type: string
           maxLength: 64
-          pattern: ^[A-Za-z0-9-_.]+$
-        state:
+        model:
           type: string
-          maxLength: 2
-          pattern: ^[A-Za-z ]+$
-        zip:
+          maxLength: 64
+        serial:
           type: string
-          maxLength: 12
-          pattern: ^[A-Za-z0-9-]+$
-        parent:
+          maxLength: 64
+        installed:
+          type: boolean
+          default: false
+        installedAt:
+          type: string
+          maxLength: 64
+        room:
           type: integer
           format: int64
-        client:
+        configured:
+          type: boolean
+          default: false
+        ipAddress1:
+          type: string
+          format: ipv4
+        ipAddress2:
+          type: string
+          format: ipv4
+        ipAddress3:
+          type: string
+          format: ipv4
+        ipAddress4:
+          type: string
+          format: ipv4
+        network1:
+          $ref: '#/components/schemas/Network'
+        network2:
+          $ref: '#/components/schemas/Network'
+        network3:
+          $ref: '#/components/schemas/Network'
+        network4:
+          $ref: '#/components/schemas/Network'
+        hostname1:
+          type: string
+          maxLength: 63
+          pattern: ^[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?$
+        hostname2:
+          type: string
+          maxLength: 63
+          pattern: ^[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?$
+        hostname3:
+          type: string
+          maxLength: 63
+          pattern: ^[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?$
+        hostname4:
+          type: string
+          maxLength: 63
+          pattern: ^[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?$
+        mac1:
+          type: string
+          pattern: ^([0-9A-Fa-f]{2}[:\-]){5}[0-9A-Fa-f]{2}$|^([0-9A-Fa-f]{4}\.){2}[0-9A-Fa-f]{4}$|^[0-9A-Fa-f]{12}$
+        mac2:
+          type: string
+          pattern: ^([0-9A-Fa-f]{2}[:\-]){5}[0-9A-Fa-f]{2}$|^([0-9A-Fa-f]{4}\.){2}[0-9A-Fa-f]{4}$|^[0-9A-Fa-f]{12}$
+        mac3:
+          type: string
+          pattern: ^([0-9A-Fa-f]{2}[:\-]){5}[0-9A-Fa-f]{2}$|^([0-9A-Fa-f]{4}\.){2}[0-9A-Fa-f]{4}$|^[0-9A-Fa-f]{12}$
+        mac4:
+          type: string
+          pattern: ^([0-9A-Fa-f]{2}[:\-]){5}[0-9A-Fa-f]{2}$|^([0-9A-Fa-f]{4}\.){2}[0-9A-Fa-f]{4}$|^[0-9A-Fa-f]{12}$
+        username1:
+          type: string
+          maxLength: 63
+        username2:
+          type: string
+          maxLength: 63
+        password1:
+          type: string
+        password2:
+          type: string
+        jack:
+          type: string
+          maxLength: 8
+        switch:
+          type: string
+          maxLength: 64
+        port:
+          type: string
+          maxLength: 8
+        poeType:
+          type: string
+          enum:
+            - 802.3af Type 1 15W
+            - 802.3at Type 2 30W
+            - 802.3bt Type 3 60W
+            - 802.3bt Type 4 90W
+        poeClass:
+          type: string
+          enum:
+            - (0) 15.4W
+            - (1) 4W
+            - (2) 7W
+            - (3) 15.4W
+            - (4) 30W
+            - (5) 45W
+            - (6) 60W
+            - (7) 75W
+            - (8) 90W
+        schematicLabel:
+          description: The label used for the device on the schemnatics.
+          type: string
+        firmwareVersion:
+          description: The running firmware version.
+          type: string
+        runningProgramDate:
+          description: Current compile date/time
+          type: string
+          format: date-time
+        ipID:
+          description: Crestron IPID of the device
+          type: string
+          format: byte
+          maxLength: 4
+        serverPort1:
+          description: The port of any listening servers
           type: integer
-          format: int64
+          maximum: 65535
+        serverPort2:
+          description: The port of any listening servers.
+          type: integer
+          maximum: 65535
       required:
         - name
+        - room
   securitySchemes:
     access_token:
       name: API Key
