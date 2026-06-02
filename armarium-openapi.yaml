@@ -1,29 +1,24 @@
 openapi: 3.1.0
-x-stoplight:
-  id: ghx7kwq17g852
 info:
   title: armarium
-  version: '1.0'
-  license:
-    identifier: BSD-2-Clause
-    name: BSD
   description: Interface to the Armarium Documentation Server API
   contact:
     name: Nicholas Pepper
+  license:
+    name: BSD
+    identifier: BSD-2-Clause
+  version: '1.0'
 servers:
   - url: /api/v1
     description: Same origin server
 paths:
   /token:
     post:
+      tags:
+        - authentication
       summary: ''
-      operationId: post-token
-      responses:
-        '200':
-          description: OK
-        '404':
-          description: Not Found
       description: Authorization endopoint for acquiring the JWT token
+      operationId: post-token
       requestBody:
         content:
           multipart/form-data:
@@ -36,45 +31,68 @@ paths:
                   pattern: ^[A-Za-z_-]+
                 password:
                   type: string
-                  maxLength: 255
                   format: password
-      tags:
-        - authentication
+                  maxLength: 255
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Not Found
       security: []
   /refresh:
     post:
+      tags:
+        - authentication
       summary: Refresh session tokens
+      description: Rotate the session using the refresh_token cookie. On success a fresh access_token and refresh_token cookie pair are set and the current user is returned. Returns 401 when the refresh token is missing, expired, or invalid.
       operationId: post-refresh
       responses:
         '200':
           description: Tokens refreshed
         '401':
           description: Missing, expired, or invalid refresh token
-      description: Rotate the session using the refresh_token cookie. On success a fresh access_token and refresh_token cookie pair are set and the current user is returned. Returns 401 when the refresh token is missing, expired, or invalid.
-      tags:
-        - authentication
       security:
         - refresh_token: []
   /logoff:
     post:
+      tags:
+        - authentication
       summary: Log off the current session
+      description: Terminate the current session. The access_token and refresh_token cookies are revoked and cleared. Returns 204 on success and 401 when no valid session is present.
       operationId: post-logoff
       responses:
         '204':
           description: Session terminated and cookies cleared
         '401':
           description: Unauthorized
-      description: Terminate the current session. The access_token and refresh_token cookies are revoked and cleared. Returns 204 on success and 401 when no valid session is present.
-      tags:
-        - authentication
       security:
         - access_token: []
         - refresh_token: []
   /users:
     get:
-      summary: Get all users
       tags:
         - location
+      summary: Get all users
+      description: Gets a list of all of the users on the server.
+      operationId: get-users
+      parameters:
+        - name: page
+          in: query
+          description: The page of results to return based on the limit.
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          description: The number of entries to return in a single query.
+          schema:
+            type: integer
+            default: 500
+            maximum: 1000
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
       responses:
         '200':
           description: OK
@@ -98,30 +116,19 @@ paths:
                   - result
         '401':
           description: Unauthorized
-      operationId: get-users
-      description: Gets a list of all of the users on the server.
-      parameters:
-        - name: page
-          in: query
-          description: The page of results to return based on the limit.
-          schema:
-            type: integer
-        - name: limit
-          in: query
-          description: The number of entries to return in a single query.
-          schema:
-            type: integer
-            default: 500
-            maximum: 1000
+  /user:
+    post:
+      tags:
+        - user
+      summary: Create New User
+      description: Create a new user.
+      operationId: post-user
       requestBody:
+        description: Post the necessary fields for the API to create a new user.
         content:
           application/json:
             schema:
-              type: object
-  /user:
-    post:
-      summary: Create New User
-      operationId: post-user
+              $ref: '#/components/schemas/UserPost'
       responses:
         '200':
           description: User Created
@@ -145,22 +152,15 @@ paths:
           description: Unauthorized
         '409':
           description: Username already taken
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserPost'
-        description: Post the necessary fields for the API to create a new user.
-      description: Create a new user.
-      tags:
-        - user
   /user/{user_id}:
-    parameters:
-      - $ref: '#/components/parameters/user_id'
     get:
-      summary: Get User Info by User ID
       tags:
         - user
+      summary: Get User Info by User ID
+      description: Retrieve the information of the user with the matching user ID.
+      operationId: get-user-userId
+      parameters:
+        - $ref: '#/components/parameters/user_id'
       responses:
         '200':
           description: User Found
@@ -184,13 +184,20 @@ paths:
           description: Unauthorized
         '404':
           description: User Not Found
-      operationId: get-user-userId
-      description: Retrieve the information of the user with the matching user ID.
+    patch:
+      tags:
+        - user
+      summary: Update User Information
+      description: Update the information of an existing user.
+      operationId: patch-users-userId
       parameters:
         - $ref: '#/components/parameters/user_id'
-    patch:
-      summary: Update User Information
-      operationId: patch-users-userId
+      requestBody:
+        description: Patch user properties to update.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
       responses:
         '200':
           description: User Updated
@@ -212,22 +219,38 @@ paths:
           description: Unauthorized
         '404':
           description: User Not Found
-      description: Update the information of an existing user.
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/User'
-        description: Patch user properties to update.
+    parameters:
+      - $ref: '#/components/parameters/user_id'
+    delete:
+      summary: Delete user by User ID
+      operationId: delete-user-by-user-id
+      responses:
+        '204':
+          description: No Content
+        '404':
+          description: Not Found
       tags:
         - user
-      parameters:
-        - $ref: '#/components/parameters/user_id'
   /clients:
     get:
-      summary: Your GET endpoint
       tags:
         - client
+      summary: Your GET endpoint
+      description: Gets a list of all of the clients on the server.
+      operationId: get-clients
+      parameters:
+        - name: page
+          in: query
+          description: The page of results to return based on the limit.
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          description: The number of entries to return in a single query.
+          schema:
+            type: integer
+            default: 500
+            maximum: 1000
       responses:
         '200':
           description: OK
@@ -251,25 +274,19 @@ paths:
                   - result
         '401':
           description: Unauthorized
-      operationId: get-clients
-      description: Gets a list of all of the clients on the server.
-      parameters:
-        - name: page
-          in: query
-          description: The page of results to return based on the limit.
-          schema:
-            type: integer
-        - name: limit
-          in: query
-          description: The number of entries to return in a single query.
-          schema:
-            type: integer
-            default: 500
-            maximum: 1000
   /client:
     post:
+      tags:
+        - client
       summary: Create New Client
+      description: Create a new user.
       operationId: post-client
+      requestBody:
+        description: Post the necessary fields for the API to create a new client.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClientPost'
       responses:
         '200':
           description: Client Created
@@ -293,20 +310,13 @@ paths:
           description: Required information missing.
         '401':
           description: Unauthorized
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ClientPost'
-        description: Post the necessary fields for the API to create a new client.
-      description: Create a new user.
+  /client/{client_id}:
+    get:
       tags:
         - client
-  /client/{client_id}:
-    parameters:
-      - $ref: '#/components/parameters/client_id'
-    get:
       summary: Get User Info by User ID
+      description: Retrieve the information of the user with the matching user ID.
+      operationId: get-client-clientId
       responses:
         '200':
           description: User Found
@@ -330,13 +340,18 @@ paths:
           description: Unauthorized
         '404':
           description: User Not Found
-      operationId: get-client-clientId
-      description: Retrieve the information of the user with the matching user ID.
-      tags:
-        - client
     patch:
+      tags:
+        - user
       summary: Update User Information
+      description: Update the information of an existing user.
       operationId: patch-client-clientId
+      requestBody:
+        description: Patch user properties to update.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Client'
       responses:
         '200':
           description: User Updated
@@ -355,22 +370,25 @@ paths:
           description: Unauthorized
         '404':
           description: User Not Found
-      description: Update the information of an existing user.
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Client'
-        description: Patch user properties to update.
-      tags:
-        - user
-  /client/{client_id}/locations:
     parameters:
       - $ref: '#/components/parameters/client_id'
+    delete:
+      summary: Delete clinet by Client ID
+      operationId: delete-client-by-client-id
+      responses:
+        '204':
+          description: No Content
+        '404':
+          description: Not Found
+      tags:
+        - client
+  /client/{client_id}/locations:
     get:
-      summary: Get Location by Client ID
       tags:
         - location
+      summary: Get Location by Client ID
+      description: Retrieve the locations for a particular client.
+      operationId: get-location-clientId
       responses:
         '200':
           description: Locations found
@@ -402,13 +420,28 @@ paths:
           description: Unauthorized
         '404':
           description: Location Not Found
-      operationId: get-location-clientId
-      description: Retrieve the locations for a particular client.
+    parameters:
+      - $ref: '#/components/parameters/client_id'
   /locations:
     get:
-      summary: Get all locations
       tags:
         - location
+      summary: Get all locations
+      description: Gets a list of all of the locations on the server.
+      operationId: get-locations
+      parameters:
+        - name: page
+          in: query
+          description: The page of results to return based on the limit.
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          description: The number of entries to return in a single query.
+          schema:
+            type: integer
+            default: 500
+            maximum: 1000
       responses:
         '200':
           description: OK
@@ -432,28 +465,179 @@ paths:
                   - result
         '401':
           description: Unauthorized
-      operationId: get-locations
-      description: Gets a list of all of the locations on the server.
-      parameters:
-        - name: page
-          in: query
-          description: The page of results to return based on the limit.
-          schema:
-            type: integer
-        - name: limit
-          in: query
-          description: The number of entries to return in a single query.
-          schema:
-            type: integer
-            default: 500
-            maximum: 1000
-  /locations/parent/{parent_id}:
-    parameters:
-      - $ref: '#/components/parameters/parent_id'
-    get:
-      summary: Get Location by Parent Location ID
+  /location:
+    post:
       tags:
         - location
+      summary: Create New Location
+      description: Create a new location.
+      operationId: post-location
+      requestBody:
+        description: Post the necessary fields for the API to create a new location.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LocationPost'
+      responses:
+        '200':
+          description: Location Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Location'
+        '400':
+          description: Required information missing.
+        '401':
+          description: Unauthorized
+  /location/{location_id}:
+    get:
+      tags:
+        - location
+      summary: Get Location by Location ID
+      description: Retrieve the information of the location with the matching location ID.
+      operationId: get-location-locationId
+      responses:
+        '200':
+          description: Location Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                  data:
+                    $ref: '#/components/schemas/Location'
+                required:
+                  - result
+        '401':
+          description: Unauthorized
+        '404':
+          description: Location Not Found
+    patch:
+      tags:
+        - location
+      summary: Update Location Information
+      description: Update the information of an existing location.
+      operationId: patch-location-locationId
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Location'
+      responses:
+        '200':
+          description: Location Updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                  data:
+                    $ref: '#/components/schemas/Location'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Location Not Found
+    parameters:
+      - $ref: '#/components/parameters/location_id'
+    delete:
+      summary: Delete location by Location ID
+      operationId: delete-location-by-location-id
+      responses:
+        '204':
+          description: No Content
+        '404':
+          description: Not Found
+      tags:
+        - location
+  /location/{location_id}/networks:
+    get:
+      tags:
+        - network
+      summary: Get Networks by Location ID
+      description: Retrieve all networks associated with the given location.
+      operationId: get-networks-locationId
+      responses:
+        '200':
+          description: Networks Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Network'
+                required:
+                  - result
+        '401':
+          description: Unauthorized
+        '404':
+          description: Location Not Found
+    parameters:
+      - $ref: '#/components/parameters/location_id'
+  /location/{location_id}/rooms:
+    get:
+      tags:
+        - room
+      summary: Get Rooms by Location ID
+      description: Retrieve all rooms associated with the given location.
+      operationId: get-rooms-locationId
+      responses:
+        '200':
+          description: Rooms Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Room'
+                required:
+                  - result
+        '401':
+          description: Unauthorized
+        '404':
+          description: Location Not Found
+    parameters:
+      - $ref: '#/components/parameters/location_id'
+  /parent/{parent_id}/locations:
+    get:
+      tags:
+        - location
+      summary: Get Location by Parent Location ID
+      description: Retrieve the locations that are sub-locations to the parent ID.
+      operationId: get-location-parentId
       responses:
         '200':
           description: Locations found
@@ -483,169 +667,28 @@ paths:
           description: Unauthorized
         '404':
           description: Location Not Found
-      operationId: get-location-parentId
-      description: Retrieve the locations that are sub-locations to the parent ID.
-  /location:
-    post:
-      summary: Create New Location
-      operationId: post-location
-      responses:
-        '200':
-          description: Location Created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Location'
-        '400':
-          description: Required information missing.
-        '401':
-          description: Unauthorized
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/LocationPost'
-        description: Post the necessary fields for the API to create a new location.
-      description: Create a new location.
-      tags:
-        - location
-  /location/{location_id}:
     parameters:
-      - $ref: '#/components/parameters/location_id'
-    get:
-      summary: Get Location by Location ID
-      tags:
-        - location
-      responses:
-        '200':
-          description: Location Found
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: string
-                  result:
-                    type: string
-                    enum:
-                      - error
-                      - success
-                  data:
-                    $ref: '#/components/schemas/Location'
-                required:
-                  - result
-        '401':
-          description: Unauthorized
-        '404':
-          description: Location Not Found
-      operationId: get-location-locationId
-      description: Retrieve the information of the location with the matching location ID.
-    patch:
-      summary: Update Location Information
-      operationId: patch-location-locationId
-      responses:
-        '200':
-          description: Location Updated
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: string
-                  result:
-                    type: string
-                    enum:
-                      - error
-                      - success
-                  data:
-                    $ref: '#/components/schemas/Location'
-        '401':
-          description: Unauthorized
-        '404':
-          description: Location Not Found
-      description: Update the information of an existing location.
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Location'
-      tags:
-        - location
-  /location/{location_id}/networks:
-    parameters:
-      - $ref: '#/components/parameters/location_id'
-    get:
-      summary: Get Networks by Location ID
-      tags:
-        - network
-      responses:
-        '200':
-          description: Networks Found
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: string
-                  result:
-                    type: string
-                    enum:
-                      - error
-                      - success
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Network'
-                required:
-                  - result
-        '401':
-          description: Unauthorized
-        '404':
-          description: Location Not Found
-      operationId: get-networks-locationId
-      description: Retrieve all networks associated with the given location.
-  /location/{location_id}/rooms:
-    parameters:
-      - $ref: '#/components/parameters/location_id'
-    get:
-      summary: Get Rooms by Location ID
-      tags:
-        - room
-      responses:
-        '200':
-          description: Rooms Found
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: string
-                  result:
-                    type: string
-                    enum:
-                      - error
-                      - success
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Room'
-                required:
-                  - result
-        '401':
-          description: Unauthorized
-        '404':
-          description: Location Not Found
-      operationId: get-rooms-locationId
-      description: Retrieve all rooms associated with the given location.
+      - $ref: '#/components/parameters/parent_id'
   /groups:
     get:
-      summary: Get all groups
       tags:
         - group
+      summary: Get all groups
+      description: Gets a list of all of the security groups on the server.
+      operationId: get-groups
+      parameters:
+        - name: page
+          in: query
+          description: The page of results to return based on the limit.
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          description: The number of entries to return in a single query.
+          schema:
+            type: integer
+            default: 500
+            maximum: 1000
       responses:
         '200':
           description: OK
@@ -669,25 +712,19 @@ paths:
                   - result
         '401':
           description: Unauthorized
-      operationId: get-groups
-      description: Gets a list of all of the security groups on the server.
-      parameters:
-        - name: page
-          in: query
-          description: The page of results to return based on the limit.
-          schema:
-            type: integer
-        - name: limit
-          in: query
-          description: The number of entries to return in a single query.
-          schema:
-            type: integer
-            default: 500
-            maximum: 1000
   /group:
     post:
+      tags:
+        - group
       summary: Create New Group
+      description: Create a new group.
       operationId: post-group
+      requestBody:
+        description: Post the necessary fields for the API to create a new group.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupPost'
       responses:
         '200':
           description: Group Created
@@ -711,22 +748,13 @@ paths:
           description: Required information missing.
         '401':
           description: Unauthorized
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/GroupPost'
-        description: Post the necessary fields for the API to create a new group.
-      description: Create a new group.
-      tags:
-        - group
   /group/{group_id}:
-    parameters:
-      - $ref: '#/components/parameters/group_id'
     get:
-      summary: Get Group by Group ID
       tags:
         - group
+      summary: Get Group by Group ID
+      description: Retrieve the information of the group with the matching group ID.
+      operationId: get-group-groupId
       responses:
         '200':
           description: Group Found
@@ -750,11 +778,18 @@ paths:
           description: Unauthorized
         '404':
           description: Group Not Found
-      operationId: get-group-groupId
-      description: Retrieve the information of the group with the matching group ID.
     patch:
+      tags:
+        - group
       summary: Update Group Information
+      description: Update the information of an existing group.
       operationId: patch-group-groupId
+      requestBody:
+        description: Patch group properties to update.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Group'
       responses:
         '200':
           description: Group Updated
@@ -776,20 +811,38 @@ paths:
           description: Unauthorized
         '404':
           description: Group Not Found
-      description: Update the information of an existing group.
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Group'
-        description: Patch group properties to update.
+    parameters:
+      - $ref: '#/components/parameters/group_id'
+    delete:
+      summary: Delete group by Group ID
+      operationId: delete-group-by-group-id
+      responses:
+        '204':
+          description: No Content
+        '404':
+          description: Not Found
       tags:
         - group
   /networks:
     get:
-      summary: Get all networks
       tags:
         - network
+      summary: Get all networks
+      description: Gets a list of all of the networks on the server.
+      operationId: get-networks
+      parameters:
+        - name: page
+          in: query
+          description: The page of results to return based on the limit.
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          description: The number of entries to return in a single query.
+          schema:
+            type: integer
+            default: 500
+            maximum: 1000
       responses:
         '200':
           description: OK
@@ -813,25 +866,19 @@ paths:
                   - result
         '401':
           description: Unauthorized
-      operationId: get-networks
-      description: Gets a list of all of the networks on the server.
-      parameters:
-        - name: page
-          in: query
-          description: The page of results to return based on the limit.
-          schema:
-            type: integer
-        - name: limit
-          in: query
-          description: The number of entries to return in a single query.
-          schema:
-            type: integer
-            default: 500
-            maximum: 1000
   /network:
     post:
+      tags:
+        - network
       summary: Create New Network
+      description: Create a new network.
       operationId: post-network
+      requestBody:
+        description: Post the necessary fields for the API to create a new network.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NetworkPost'
       responses:
         '200':
           description: Network Created
@@ -855,22 +902,13 @@ paths:
           description: Required information missing.
         '401':
           description: Unauthorized
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/NetworkPost'
-        description: Post the necessary fields for the API to create a new network.
-      description: Create a new network.
-      tags:
-        - network
   /network/{network_id}:
-    parameters:
-      - $ref: '#/components/parameters/network_id'
     get:
-      summary: Get Network by Network ID
       tags:
         - network
+      summary: Get Network by Network ID
+      description: Retrieve the information of the network with the matching network ID.
+      operationId: get-network-networkId
       responses:
         '200':
           description: Network Found
@@ -894,11 +932,18 @@ paths:
           description: Unauthorized
         '404':
           description: Network Not Found
-      operationId: get-network-networkId
-      description: Retrieve the information of the network with the matching network ID.
     patch:
+      tags:
+        - network
       summary: Update Network Information
+      description: Update the information of an existing network.
       operationId: patch-network-networkId
+      requestBody:
+        description: Patch network properties to update.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Network'
       responses:
         '200':
           description: Network Updated
@@ -920,20 +965,37 @@ paths:
           description: Unauthorized
         '404':
           description: Network Not Found
-      description: Update the information of an existing network.
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Network'
-        description: Patch network properties to update.
+    parameters:
+      - $ref: '#/components/parameters/network_id'
+    delete:
+      operationId: delete-network-network-id
+      responses:
+        '204':
+          description: No Content
+        '404':
+          description: Not Found
       tags:
         - network
   /rooms:
     get:
-      summary: Get all rooms
       tags:
         - room
+      summary: Get all rooms
+      description: Gets a list of all of the rooms on the server.
+      operationId: get-rooms
+      parameters:
+        - name: page
+          in: query
+          description: The page of results to return based on the limit.
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          description: The number of entries to return in a single query.
+          schema:
+            type: integer
+            default: 500
+            maximum: 1000
       responses:
         '200':
           description: OK
@@ -957,25 +1019,19 @@ paths:
                   - result
         '401':
           description: Unauthorized
-      operationId: get-rooms
-      description: Gets a list of all of the rooms on the server.
-      parameters:
-        - name: page
-          in: query
-          description: The page of results to return based on the limit.
-          schema:
-            type: integer
-        - name: limit
-          in: query
-          description: The number of entries to return in a single query.
-          schema:
-            type: integer
-            default: 500
-            maximum: 1000
   /room:
     post:
+      tags:
+        - room
       summary: Create New Room
+      description: Create a new room.
       operationId: post-room
+      requestBody:
+        description: Post the necessary fields for the API to create a new room.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoomPost'
       responses:
         '200':
           description: Room Created
@@ -999,22 +1055,13 @@ paths:
           description: Required information missing.
         '401':
           description: Unauthorized
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/RoomPost'
-        description: Post the necessary fields for the API to create a new room.
-      description: Create a new room.
-      tags:
-        - room
   /room/{room_id}:
-    parameters:
-      - $ref: '#/components/parameters/room_id'
     get:
-      summary: Get Room by Room ID
       tags:
         - room
+      summary: Get Room by Room ID
+      description: Retrieve the information of the room with the matching room ID.
+      operationId: get-room-roomId
       responses:
         '200':
           description: Room Found
@@ -1038,11 +1085,19 @@ paths:
           description: Unauthorized
         '404':
           description: Room Not Found
-      operationId: get-room-roomId
-      description: Retrieve the information of the room with the matching room ID.
     patch:
+      tags:
+        - room
       summary: Update Room Information
+      description: Update the information of an existing room.
       operationId: patch-room-roomId
+      requestBody:
+        description: Patch room properties to update.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Room'
+        required: true
       responses:
         '200':
           description: Room Updated
@@ -1064,23 +1119,25 @@ paths:
           description: Unauthorized
         '404':
           description: Room Not Found
-      description: Update the information of an existing room.
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Room'
-        description: Patch room properties to update.
-        required: true
+    parameters:
+      - $ref: '#/components/parameters/room_id'
+    delete:
+      summary: Delete room by Room ID
+      operationId: delete-room-room-id
+      responses:
+        '204':
+          description: No Content
+        '404':
+          description: Not Found
       tags:
         - room
   /room/{room_id}/devices:
-    parameters:
-      - $ref: '#/components/parameters/room_id'
     get:
-      summary: Get Devices by Room ID
       tags:
         - device
+      summary: Get Devices by Room ID
+      description: Retrieve all devices installed in the given room.
+      operationId: get-devices-roomId
       responses:
         '200':
           description: Devices Found
@@ -1106,13 +1163,28 @@ paths:
           description: Unauthorized
         '404':
           description: Room Not Found
-      operationId: get-devices-roomId
-      description: Retrieve all devices installed in the given room.
+    parameters:
+      - $ref: '#/components/parameters/room_id'
   /devices:
     get:
-      summary: Get all devices
       tags:
         - device
+      summary: Get all devices
+      description: Gets a list of all of the devices on the server.
+      operationId: get-devices
+      parameters:
+        - name: page
+          in: query
+          description: The page of results to return based on the limit.
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          description: The number of entries to return in a single query.
+          schema:
+            type: integer
+            default: 500
+            maximum: 1000
       responses:
         '200':
           description: OK
@@ -1136,25 +1208,19 @@ paths:
                   - result
         '401':
           description: Unauthorized
-      operationId: get-devices
-      description: Gets a list of all of the devices on the server.
-      parameters:
-        - name: page
-          in: query
-          description: The page of results to return based on the limit.
-          schema:
-            type: integer
-        - name: limit
-          in: query
-          description: The number of entries to return in a single query.
-          schema:
-            type: integer
-            default: 500
-            maximum: 1000
   /device:
     post:
+      tags:
+        - device
       summary: Create New Device
+      description: Create a new device.
       operationId: post-device
+      requestBody:
+        description: Post the necessary fields for the API to create a new device.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DevicePost'
       responses:
         '200':
           description: Device Created
@@ -1178,22 +1244,13 @@ paths:
           description: Required information missing.
         '401':
           description: Unauthorized
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/DevicePost'
-        description: Post the necessary fields for the API to create a new device.
-      description: Create a new device.
-      tags:
-        - device
   /device/{device_id}:
-    parameters:
-      - $ref: '#/components/parameters/device_id'
     get:
-      summary: Get Device by Device ID
       tags:
         - device
+      summary: Get Device by Device ID
+      description: Retrieve the information of the device with the matching device ID.
+      operationId: get-device-deviceId
       responses:
         '200':
           description: Device Found
@@ -1217,11 +1274,19 @@ paths:
           description: Unauthorized
         '404':
           description: Device Not Found
-      operationId: get-device-deviceId
-      description: Retrieve the information of the device with the matching device ID.
     patch:
+      tags:
+        - device
       summary: Update Device Information
+      description: Update the information of an existing device.
       operationId: patch-device-deviceId
+      requestBody:
+        description: Patch device properties to update.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Device'
+        required: true
       responses:
         '200':
           description: Device Updated
@@ -1243,46 +1308,122 @@ paths:
           description: Unauthorized
         '404':
           description: Device Not Found
-      description: Update the information of an existing device.
+    parameters:
+      - $ref: '#/components/parameters/device_id'
+    delete:
+      operationId: delete-device-device-id
+      summary: Delete device by Device ID
+      responses:
+        '204':
+          description: No Content
+        '404':
+          description: Not Found
+      tags:
+        - device
+  /application-configurations:
+    get:
+      summary: List Application Configurations
+      operationId: listApplicationConfigurations
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ApplicationConfiguration'
+      tags:
+        - configuration
+    post:
+      summary: Create ApplicationConfiguration
+      operationId: createApplicationConfiguration
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Device'
-        description: Patch device properties to update.
+              $ref: '#/components/schemas/ApplicationConfiguration'
         required: true
+      responses:
+        '201':
+          description: Created
       tags:
-        - device
+        - configuration
+  /application-configurations/{configuration_namespace}/{configuration_key}:
+    get:
+      summary: Get ApplicationConfiguration
+      operationId: getApplicationConfiguration
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationConfiguration'
+        '404':
+          description: Not Found
+      tags:
+        - configuration
+    delete:
+      summary: Delete ApplicationConfiguration
+      operationId: deleteApplicationConfiguration
+      responses:
+        '204':
+          description: No Content
+        '404':
+          description: Not Found
+      tags:
+        - configuration
+    patch:
+      summary: Partially Update ApplicationConfiguration
+      operationId: patchApplicationConfiguration
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApplicationConfiguration'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationConfiguration'
+        '404':
+          description: Not Found
+      tags:
+        - configuration
+    parameters:
+      - $ref: '#/components/parameters/configuration_namespace'
+      - $ref: '#/components/parameters/configuration_key'
 components:
   schemas:
     BaseModel:
       title: BaseModel
-      x-stoplight:
-        id: 7s3ud4syrv0ys
-      type: object
       description: Base model to be combined with all other models
-      x-internal: true
+      type: object
       properties:
         id:
+          description: Autogenerated ID from the database.
           type:
             - integer
           format: int64
-          description: Autogenerated ID from the database.
           readOnly: true
         created:
-          type: string
-          format: date-time
           description: Datetime the model was created handled serverside.
-        created_by:
-          type: string
-          description: Username the model was created by
-        updated:
           type: string
           format: date-time
-          description: Datetime the model was updated handled server side.
-        updated_by:
+        created_by:
+          description: Username the model was created by
           type: string
+        updated:
+          description: Datetime the model was updated handled server side.
+          type: string
+          format: date-time
+        updated_by:
           description: Username the model was updated by
+          type: string
     User:
       allOf:
         - $ref: '#/components/schemas/BaseModel'
@@ -1472,8 +1613,8 @@ components:
           required:
             - name
     LocationPost:
-      type: object
       description: Used for POST of a new location
+      type: object
       properties:
         name:
           type: string
@@ -1842,13 +1983,17 @@ components:
           type: string
           format: ipv4
         network1:
-          $ref: '#/components/schemas/Network'
+          type: integer
+          format: int64
         network2:
-          $ref: '#/components/schemas/Network'
+          type: integer
+          format: int64
         network3:
-          $ref: '#/components/schemas/Network'
+          type: integer
+          format: int64
         network4:
-          $ref: '#/components/schemas/Network'
+          type: integer
+          format: int64
         hostname1:
           type: string
           maxLength: 63
@@ -1941,15 +2086,26 @@ components:
       required:
         - name
         - room
-  securitySchemes:
-    access_token:
-      name: API Key
-      type: apiKey
-      in: cookie
-    refresh_token:
-      name: refresh_token
-      type: apiKey
-      in: cookie
+    ApplicationConfiguration:
+      title: Application Configuration
+      description: Stores the configuration data of the application in a key value store separated by namespaces.
+      allOf:
+        - $ref: '#/components/schemas/BaseModel'
+        - type: object
+          properties:
+            namespace:
+              type: string
+              maxLength: 64
+            key:
+              type: string
+              maxLength: 255
+            value:
+              type: object
+              nullable: true
+              additionalProperties: true
+          required:
+            - namespace
+            - key
   parameters:
     user_id:
       name: user_id
@@ -2007,6 +2163,29 @@ components:
       schema:
         type: integer
         format: int64
+    configuration_namespace:
+      name: configuration_namespace
+      in: path
+      schema:
+        type: string
+        maxLength: 64
+    configuration_key:
+      name: configuration_key
+      in: path
+      schema:
+        type: string
+        maxLength: 255
+  securitySchemes:
+    access_token:
+      type: apiKey
+      name: API Key
+      in: cookie
+    refresh_token:
+      type: apiKey
+      name: refresh_token
+      in: cookie
+security:
+  - access_token: []
 tags:
   - name: authentication
   - name: client
@@ -2016,5 +2195,4 @@ tags:
   - name: network
   - name: room
   - name: user
-security:
-  - access_token: []
+  - name: configuration
