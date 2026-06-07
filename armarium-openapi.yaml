@@ -35,10 +35,10 @@ paths:
                   type: string
                   format: password
                   maxLength: 255
-                  example: "********"
+                  example: '********'
             example:
               username: jsmith
-              password: "********"
+              password: '********'
       responses:
         '200':
           $ref: '#/components/responses/OK'
@@ -129,12 +129,18 @@ paths:
               $ref: '#/components/schemas/UserPost'
             example:
               username: jsmith
-              password: "********"
-              aesKey: "YWVzS2V5QmFzZTY0"
+              password: '********'
+              aesKey: YWVzS2V5QmFzZTY0
               emailVerified: false
               accountLocked: true
       responses:
-        '200':
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          description: Username already taken
+        '201':
           description: User created successfully
           content:
             application/json:
@@ -157,19 +163,20 @@ paths:
                     example:
                       id: 1
                       username: jsmith
-                      password: "********"
-                      aesKey: "YWVzS2V5QmFzZTY0"
+                      password: '********'
+                      aesKey: YWVzS2V5QmFzZTY0
                       emailVerified: false
                       accountLocked: false
               example:
                 id: req-12345
                 result: success
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '409':
-          description: Username already taken
+                data:
+                  id: 1
+                  username: jsmith
+                  password: '********'
+                  aesKey: YWVzS2V5QmFzZTY0
+                  emailVerified: false
+                  accountLocked: false
   /user/{user_id}:
     parameters:
       - $ref: '#/components/parameters/user_id'
@@ -203,8 +210,8 @@ paths:
                     example:
                       id: 1
                       username: jsmith
-                      password: "********"
-                      aesKey: "YWVzS2V5QmFzZTY0"
+                      password: '********'
+                      aesKey: YWVzS2V5QmFzZTY0
                       emailVerified: false
                       accountLocked: false
                 required:
@@ -227,16 +234,8 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
-            example:
-              username: jsmith
-              password: "********"
-              aesKey: "YWVzS2V5QmFzZTY0"
-              emailVerified: true
-              accountLocked: false
-              firstName: John
-              lastName: Smith
-              email: jsmith@example.com
+              $ref: '#/components/schemas/UserPatch'
+        required: true
       responses:
         '200':
           description: User updated successfully
@@ -261,8 +260,8 @@ paths:
                     example:
                       id: 1
                       username: jsmith
-                      password: "********"
-                      aesKey: "YWVzS2V5QmFzZTY0"
+                      password: '********'
+                      aesKey: YWVzS2V5QmFzZTY0
                       emailVerified: false
                       accountLocked: false
               example:
@@ -339,7 +338,11 @@ paths:
               name: Acme Corp
               description: Acme Corporation
       responses:
-        '200':
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '201':
           description: Client created successfully
           content:
             application/json:
@@ -367,10 +370,9 @@ paths:
               example:
                 id: req-12345
                 result: success
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
+                data:
+                  id: 1
+                  name: Acme Corp
   /client/{client_id}:
     parameters:
       - $ref: '#/components/parameters/client_id'
@@ -424,10 +426,8 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Client'
-            example:
-              name: Acme Corp Updated
-              description: Updated description
+              $ref: '#/components/schemas/ClientPatch'
+        required: true
       responses:
         '200':
           description: Client updated successfully
@@ -573,22 +573,44 @@ paths:
               address1: 123 Main St
               city: Springfield
               state: IL
-              zip: "62701"
+              zip: '62701'
               client: 1
       responses:
-        '200':
-          description: Location created successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Location'
-              example:
-                id: 1
-                name: Main Office
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
+        '201':
+          description: Location created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: req-12345
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                    example: success
+                  data:
+                    allOf:
+                      - $ref: '#/components/schemas/Location'
+                      - type: object
+                    example:
+                      id: 1
+                      name: Main Office
+                required:
+                  - result
+              example:
+                id: req-12345
+                result: success
+                data:
+                  id: 1
+                  name: Main Office
   /location/{location_id}:
     parameters:
       - $ref: '#/components/parameters/location_id'
@@ -642,10 +664,8 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Location'
-            example:
-              name: Main Office Updated
-              address1: 456 New St
+              $ref: '#/components/schemas/LocationPatch'
+        required: true
       responses:
         '200':
           description: Location updated successfully
@@ -872,7 +892,11 @@ paths:
               name: Administrators
               description: System administrators
       responses:
-        '200':
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '201':
           description: Group created successfully
           content:
             application/json:
@@ -900,10 +924,9 @@ paths:
               example:
                 id: req-12345
                 result: success
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
+                data:
+                  id: 1
+                  name: Administrators
   /group/{group_id}:
     parameters:
       - $ref: '#/components/parameters/group_id'
@@ -957,10 +980,8 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Group'
-            example:
-              name: Administrators
-              description: Updated description
+              $ref: '#/components/schemas/GroupPatch'
+        required: true
       responses:
         '200':
           description: Group updated successfully
@@ -1061,7 +1082,11 @@ paths:
               mask: 255.255.255.0
               location: 1
       responses:
-        '200':
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '201':
           description: Network created successfully
           content:
             application/json:
@@ -1089,10 +1114,9 @@ paths:
               example:
                 id: req-12345
                 result: success
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
+                data:
+                  id: 1
+                  name: LAN
   /network/{network_id}:
     parameters:
       - $ref: '#/components/parameters/network_id'
@@ -1146,10 +1170,8 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Network'
-            example:
-              name: LAN Updated
-              description: Updated network
+              $ref: '#/components/schemas/NetworkPatch'
+        required: true
       responses:
         '200':
           description: Network updated successfully
@@ -1246,12 +1268,16 @@ paths:
               $ref: '#/components/schemas/RoomPost'
             example:
               name: Server Room A
-              number: "101"
+              number: '101'
               floor: 1
               location: 1
       responses:
-        '200':
-          description: Room created successfully
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '201':
+          description: Created
           content:
             application/json:
               schema:
@@ -1259,7 +1285,7 @@ paths:
                 properties:
                   id:
                     type: string
-                    example: req-12345
+                    example: ref-12345
                   result:
                     type: string
                     enum:
@@ -1267,21 +1293,7 @@ paths:
                       - success
                     example: success
                   data:
-                    allOf:
-                      - $ref: '#/components/schemas/Room'
-                      - type: object
-                    example:
-                      id: 1
-                      name: Server Room A
-                required:
-                  - result
-              example:
-                id: req-12345
-                result: success
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
+                    $ref: '#/components/schemas/Room'
   /room/{room_id}:
     parameters:
       - $ref: '#/components/parameters/room_id'
@@ -1335,10 +1347,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Room'
-            example:
-              name: Server Room A Updated
-              floor: 2
+              $ref: '#/components/schemas/RoomPatch'
         required: true
       responses:
         '200':
@@ -1481,8 +1490,12 @@ paths:
               model: VPL-FHZ80
               room: 1
       responses:
-        '200':
-          description: Device created successfully
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '201':
+          description: Created device
           content:
             application/json:
               schema:
@@ -1490,7 +1503,7 @@ paths:
                 properties:
                   id:
                     type: string
-                    example: req-12345
+                    example: ref-12345
                   result:
                     type: string
                     enum:
@@ -1498,21 +1511,9 @@ paths:
                       - success
                     example: success
                   data:
-                    allOf:
-                      - $ref: '#/components/schemas/Device'
-                      - type: object
-                    example:
-                      id: 1
-                      name: Projector 1
+                    $ref: '#/components/schemas/Device'
                 required:
                   - result
-              example:
-                id: req-12345
-                result: success
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
   /device/{device_id}:
     parameters:
       - $ref: '#/components/parameters/device_id'
@@ -1566,10 +1567,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Device'
-            example:
-              name: Projector 1 Updated
-              firmwareVersion: "2.1.0"
+              $ref: '#/components/schemas/DevicePatch'
         required: true
       responses:
         '200':
@@ -1624,19 +1622,28 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ApplicationConfiguration'
-                example:
-                  - namespace: app
-                    key: theme
-                    value:
-                      color: blue
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: req-12345
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                    example: success
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ApplicationConfiguration'
+                    example: []
+                required:
+                  - result
               example:
-                - namespace: app
-                  key: theme
-                  value:
-                    color: blue
+                id: req-12345
+                result: success
+                data: []
     post:
       tags:
         - configuration
@@ -1656,7 +1663,44 @@ paths:
         required: true
       responses:
         '201':
-          $ref: '#/components/responses/Created'
+          description: Configuration created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: req-12345
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                    example: success
+                  data:
+                    allOf:
+                      - $ref: '#/components/schemas/ApplicationConfiguration'
+                      - type: object
+                    example:
+                      namespace: app
+                      key: theme
+                      value:
+                        color: blue
+                required:
+                  - result
+              example:
+                id: req-12345
+                result: success
+                data:
+                  namespace: app
+                  key: theme
+                  value:
+                    color: blue
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
   /application-configurations/{configuration_namespace}/{configuration_key}:
     parameters:
       - $ref: '#/components/parameters/configuration_namespace'
@@ -1668,18 +1712,40 @@ paths:
       operationId: getApplicationConfiguration
       responses:
         '200':
-          description: Application configuration found
+          description: Configuration retrieved successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApplicationConfiguration'
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: ref-12345
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                    example: success
+                  data:
+                    allOf:
+                      - $ref: '#/components/schemas/ApplicationConfiguration'
+                      - type: object
+                    example:
+                      namespace: app
+                      key: theme
+                      value:
+                        color: blue
+                required:
+                  - result
               example:
-                namespace: app
-                key: theme
-                value:
-                  color: blue
-        '404':
-          $ref: '#/components/responses/NotFound'
+                id: req-12345
+                result: success
+                data:
+                  namespace: app
+                  key: theme
+                  value:
+                    color: blue
     delete:
       tags:
         - configuration
@@ -1725,8 +1791,6 @@ components:
   responses:
     OK:
       description: OK
-    Created:
-      description: Created
     NoContent:
       description: No Content
     BadRequest:
@@ -1765,7 +1829,7 @@ components:
           description: Datetime the model was created handled serverside.
           type: string
           format: date-time
-          example: "2024-01-01T00:00:00Z"
+          example: 2024-01-01T00:00:00Z
         createdBy:
           description: Username the model was created by
           type: string
@@ -1774,7 +1838,7 @@ components:
           description: Datetime the model was updated handled server side.
           type: string
           format: date-time
-          example: "2024-01-01T00:00:00Z"
+          example: 2024-01-01T00:00:00Z
         updatedBy:
           description: Username the model was updated by
           type: string
@@ -1784,8 +1848,8 @@ components:
       example:
         id: 1
         username: jsmith
-        password: "********"
-        aesKey: "YWVzS2V5QmFzZTY0"
+        password: '********'
+        aesKey: YWVzS2V5QmFzZTY0
         emailVerified: false
         accountLocked: false
       allOf:
@@ -1794,41 +1858,41 @@ components:
           properties:
             username:
               type: string
+              example: jsmith
               maxLength: 64
               pattern: ^[A-Za-z0-9_-]+
-              example: jsmith
             password:
               type: string
               format: password
+              example: '********'
               maxLength: 255
-              example: "********"
             aesKey:
               type: string
               format: byte
-              example: "YWVzS2V5QmFzZTY0"
+              example: YWVzS2V5QmFzZTY0
             rsaPublicKey:
               type: string
               format: byte
-              example: "cnNhUHVibGljS2V5"
+              example: cnNhUHVibGljS2V5
             rsaPrivateKey:
               type: string
               format: byte
-              example: "cnNhUHJpdmF0ZUtleQ=="
+              example: cnNhUHJpdmF0ZUtleQ==
             firstName:
               type: string
+              example: John
               maxLength: 255
               pattern: ^[A-Za-z0-9 -]+
-              example: John
             lastName:
               type: string
+              example: Smith
               maxLength: 255
               pattern: ^[A-Za-z0-9 -]+
-              example: Smith
             email:
               type: string
               format: email
-              maxLength: 255
               example: jsmith@example.com
+              maxLength: 255
             emailVerified:
               type: boolean
               default: false
@@ -1839,9 +1903,9 @@ components:
               example: false
             groups:
               type: array
+              example: []
               items:
                 $ref: '#/components/schemas/Group'
-              example: []
           required:
             - username
             - password
@@ -1861,19 +1925,19 @@ components:
           type: string
           format: password
           maxLength: 255
-          example: "********"
+          example: '********'
         aesKey:
           type: string
           format: byte
-          example: "YWVzS2V5QmFzZTY0"
+          example: YWVzS2V5QmFzZTY0
         rsaPublicKey:
           type: string
           format: byte
-          example: "cnNhUHVibGljS2V5"
+          example: cnNhUHVibGljS2V5
         rsaPrivateKey:
           type: string
           format: byte
-          example: "cnNhUHJpdmF0ZUtleQ=="
+          example: cnNhUHJpdmF0ZUtleQ==
         firstName:
           type: string
           maxLength: 255
@@ -1908,6 +1972,55 @@ components:
         - aesKey
         - emailVerified
         - accountLocked
+    UserPatch:
+      description: Request body for updating a user.
+      type: object
+      properties:
+        password:
+          type: string
+          format: password
+          example: '********'
+          maxLength: 255
+        aesKey:
+          type: string
+          format: byte
+          example: YWVzS2V5QmFzZTY0
+        rsaPublicKey:
+          type: string
+          format: byte
+          example: cnNhUHVibGljS2V5
+        rsaPrivateKey:
+          type: string
+          format: byte
+          example: cnNhUHJpdmF0ZUtleQ==
+        firstName:
+          type: string
+          example: John
+          maxLength: 255
+          pattern: ^[A-Za-z0-9 -]+
+        lastName:
+          type: string
+          example: Smith
+          maxLength: 255
+          pattern: ^[A-Za-z0-9 -]+
+        email:
+          type: string
+          format: email
+          example: jsmith@example.com
+          maxLength: 255
+        emailVerified:
+          type: boolean
+          default: false
+          example: false
+        accountLocked:
+          type: boolean
+          default: true
+          example: false
+        groups:
+          type: array
+          example: []
+          items:
+            type: integer
     Group:
       description: A security group for organizing user permissions.
       example:
@@ -1920,13 +2033,13 @@ components:
           properties:
             name:
               type: string
+              example: Administrators
               maxLength: 64
               pattern: ^[A-Za-z0-9 _.#-]+
-              example: Administrators
             description:
               type: string
-              maxLength: 255
               example: System administrators group
+              maxLength: 255
           required:
             - name
     GroupPost:
@@ -1944,6 +2057,19 @@ components:
           example: System administrators group
       required:
         - name
+    GroupPatch:
+      description: Request body for updating a group.
+      type: object
+      properties:
+        name:
+          type: string
+          example: Administrators
+          maxLength: 64
+          pattern: ^[A-Za-z0-9 _.#-]+
+        description:
+          type: string
+          example: System administrators group
+          maxLength: 255
     Client:
       description: An organizational client account.
       example:
@@ -1956,13 +2082,13 @@ components:
           properties:
             name:
               type: string
+              example: Acme Corp
               maxLength: 64
               pattern: ^[A-Za-z0-9 _.#-]+
-              example: Acme Corp
             description:
               type: string
-              maxLength: 255
               example: Acme Corporation client account
+              maxLength: 255
           required:
             - name
     ClientPost:
@@ -1980,6 +2106,19 @@ components:
           example: Acme Corporation client account
       required:
         - name
+    ClientPatch:
+      description: Request body for updating a client.
+      type: object
+      properties:
+        name:
+          type: string
+          example: Acme Corp
+          maxLength: 64
+          pattern: ^[A-Za-z0-9 _.#-]+
+        description:
+          type: string
+          example: Acme Corporation client account
+          maxLength: 255
     Location:
       description: A physical location such as a building or site.
       example:
@@ -1993,38 +2132,38 @@ components:
           properties:
             name:
               type: string
+              example: Main Office
               maxLength: 64
               pattern: ^[A-Za-z0-9 _.#-]+
-              example: Main Office
             description:
               type: string
-              maxLength: 255
               example: Primary office location
+              maxLength: 255
             address1:
               type: string
+              example: 123 Main St
               maxLength: 255
               pattern: ^[A-Za-z0-9 _.#-]+
-              example: 123 Main St
             address2:
               type: string
+              example: Suite 100
               maxLength: 255
               pattern: ^[A-Za-z0-9 _.#-]+
-              example: Suite 100
             city:
               type: string
+              example: Springfield
               maxLength: 64
               pattern: ^[A-Za-z0-9-_.]+
-              example: Springfield
             state:
               type: string
+              example: IL
               maxLength: 2
               pattern: ^[A-Za-z ]+
-              example: IL
             zip:
               type: string
+              example: '62701'
               maxLength: 12
               pattern: ^[A-Za-z0-9-]+
-              example: "62701"
             parent:
               description: The parent location, if this is a sub-location.
               type: object
@@ -2077,7 +2216,7 @@ components:
           type: string
           maxLength: 12
           pattern: ^[A-Za-z0-9-]+$
-          example: "62701"
+          example: '62701'
         parent:
           type: integer
           format: int64
@@ -2088,6 +2227,52 @@ components:
           example: 1
       required:
         - name
+    LocationPatch:
+      description: Request body for updating a location.
+      type: object
+      properties:
+        name:
+          type: string
+          example: Main Office
+          maxLength: 64
+          pattern: ^[A-Za-z0-9 _.#-]+$
+        description:
+          type: string
+          example: Primary office location
+          maxLength: 255
+        address1:
+          type: string
+          example: 123 Main St
+          maxLength: 255
+          pattern: ^[A-Za-z0-9 _.#-]+$
+        address2:
+          type: string
+          example: Suite 100
+          maxLength: 255
+          pattern: ^[A-Za-z0-9 _.#-]+$
+        city:
+          type: string
+          example: Springfield
+          maxLength: 64
+          pattern: ^[A-Za-z0-9-_.]+$
+        state:
+          type: string
+          example: IL
+          maxLength: 2
+          pattern: ^[A-Za-z ]+$
+        zip:
+          type: string
+          example: '62701'
+          maxLength: 12
+          pattern: ^[A-Za-z0-9-]+$
+        parent:
+          type: integer
+          format: int64
+          example: 1
+        client:
+          type: integer
+          format: int64
+          example: 1
     Room:
       description: A room within a location.
       example:
@@ -2100,21 +2285,21 @@ components:
           properties:
             name:
               type: string
-              maxLength: 64
               example: Server Room A
+              maxLength: 64
             number:
               type: string
+              example: '101'
               maxLength: 10
-              example: "101"
             description:
               type: string
-              maxLength: 255
               example: Primary server room
+              maxLength: 255
             floor:
               type: integer
+              example: 1
               minimum: -10
               maximum: 255
-              example: 1
             complete:
               type: boolean
               default: false
@@ -2136,7 +2321,7 @@ components:
         number:
           type: string
           maxLength: 10
-          example: "101"
+          example: '101'
         description:
           type: string
           maxLength: 255
@@ -2161,6 +2346,39 @@ components:
       required:
         - location
         - name
+    RoomPatch:
+      description: Request body for updating a room.
+      type: object
+      properties:
+        name:
+          type: string
+          example: Server Room A
+          maxLength: 64
+        number:
+          type: string
+          example: '101'
+          maxLength: 10
+        description:
+          type: string
+          example: Primary server room
+          maxLength: 255
+        floor:
+          type: integer
+          example: 1
+          minimum: -10
+          maximum: 255
+        complete:
+          type: boolean
+          default: false
+          example: false
+        active:
+          type: boolean
+          default: true
+          example: true
+        location:
+          type: integer
+          format: int64
+          example: 1
     Network:
       description: A network segment associated with a location.
       example:
@@ -2174,12 +2392,12 @@ components:
           properties:
             name:
               type: string
-              maxLength: 64
               example: LAN
+              maxLength: 64
             description:
               type: string
-              maxLength: 255
               example: Local area network
+              maxLength: 255
             base:
               type: string
               format: ipv4
@@ -2198,9 +2416,9 @@ components:
               example: 8.8.4.4
             vlanId:
               type: integer
+              example: 100
               minimum: 1
               maximum: 1024
-              example: 100
             addressMethod:
               type: string
               enum:
@@ -2277,6 +2495,59 @@ components:
       required:
         - name
         - location
+    NetworkPatch:
+      description: Request body for updating a network.
+      type: object
+      properties:
+        name:
+          type: string
+          example: LAN
+          maxLength: 64
+        description:
+          type: string
+          example: Local area network
+          maxLength: 255
+        base:
+          type: string
+          format: ipv4
+          example: 192.168.1.0
+        mask:
+          type: string
+          format: ipv4
+          example: 255.255.255.0
+        dns1:
+          type: string
+          format: ipv4
+          example: 8.8.8.8
+        dns2:
+          type: string
+          format: ipv4
+          example: 8.8.4.4
+        vlanId:
+          type: integer
+          example: 100
+          minimum: 1
+          maximum: 1024
+        addressMethod:
+          type: string
+          enum:
+            - dhcp
+            - static
+            - dhcp-with-static
+            - reserved-leases
+          example: dhcp
+        dhcpStart:
+          type: string
+          format: ipv4
+          example: 192.168.1.100
+        dhcpEnd:
+          type: string
+          format: ipv4
+          example: 192.168.1.200
+        location:
+          type: integer
+          format: int64
+          example: 1
     Device:
       description: A physical device installed in a room.
       example:
@@ -2290,32 +2561,32 @@ components:
           properties:
             name:
               type: string
-              maxLength: 64
               example: Projector 1
+              maxLength: 64
             description:
               type: string
-              maxLength: 255
               example: Main conference room projector
+              maxLength: 255
             manufacturer:
               type: string
-              maxLength: 64
               example: Sony
+              maxLength: 64
             model:
               type: string
-              maxLength: 64
               example: VPL-FHZ80
+              maxLength: 64
             serial:
               type: string
-              maxLength: 64
               example: SN12345678
+              maxLength: 64
             installed:
               type: boolean
               default: false
               example: true
             installedAt:
               type: string
+              example: 2024-01-15
               maxLength: 64
-              example: "2024-01-15"
             room:
               $ref: '#/components/schemas/Room'
             configured:
@@ -2348,66 +2619,66 @@ components:
               $ref: '#/components/schemas/Network'
             hostname1:
               type: string
+              example: projector-1
               maxLength: 63
               pattern: ^[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?$
-              example: projector-1
             hostname2:
               type: string
+              example: projector-1-ctrl
               maxLength: 63
               pattern: ^[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?$
-              example: projector-1-ctrl
             hostname3:
               type: string
+              example: projector-1-mgmt
               maxLength: 63
               pattern: ^[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?$
-              example: projector-1-mgmt
             hostname4:
               type: string
+              example: projector-1-aux
               maxLength: 63
               pattern: ^[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?$
-              example: projector-1-aux
             mac1:
               type: string
+              example: AA:BB:CC:DD:EE:01
               pattern: ^([0-9A-Fa-f]{2}[:\-]){5}[0-9A-Fa-f]{2}$|^([0-9A-Fa-f]{4}\.){2}[0-9A-Fa-f]{4}$|^[0-9A-Fa-f]{12}$
-              example: "AA:BB:CC:DD:EE:01"
             mac2:
               type: string
+              example: AA:BB:CC:DD:EE:02
               pattern: ^([0-9A-Fa-f]{2}[:\-]){5}[0-9A-Fa-f]{2}$|^([0-9A-Fa-f]{4}\.){2}[0-9A-Fa-f]{4}$|^[0-9A-Fa-f]{12}$
-              example: "AA:BB:CC:DD:EE:02"
             mac3:
               type: string
+              example: AA:BB:CC:DD:EE:03
               pattern: ^([0-9A-Fa-f]{2}[:\-]){5}[0-9A-Fa-f]{2}$|^([0-9A-Fa-f]{4}\.){2}[0-9A-Fa-f]{4}$|^[0-9A-Fa-f]{12}$
-              example: "AA:BB:CC:DD:EE:03"
             mac4:
               type: string
+              example: AA:BB:CC:DD:EE:04
               pattern: ^([0-9A-Fa-f]{2}[:\-]){5}[0-9A-Fa-f]{2}$|^([0-9A-Fa-f]{4}\.){2}[0-9A-Fa-f]{4}$|^[0-9A-Fa-f]{12}$
-              example: "AA:BB:CC:DD:EE:04"
             username1:
               type: string
-              maxLength: 63
               example: admin
+              maxLength: 63
             username2:
               type: string
-              maxLength: 63
               example: monitor
+              maxLength: 63
             password1:
               type: string
-              example: "********"
+              example: '********'
             password2:
               type: string
-              example: "********"
+              example: '********'
             jack:
               type: string
-              maxLength: 8
               example: J01
+              maxLength: 8
             switch:
               type: string
-              maxLength: 64
               example: SW-01
+              maxLength: 64
             port:
               type: string
-              maxLength: 8
               example: Gi0/1
+              maxLength: 8
             poeType:
               type: string
               enum:
@@ -2429,7 +2700,7 @@ components:
                 - (6) 60W
                 - (7) 75W
                 - (8) 90W
-              example: "(4) 30W"
+              example: (4) 30W
             schematicLabel:
               description: The label used for the device on the schematics.
               type: string
@@ -2442,23 +2713,23 @@ components:
               description: Current compile date/time
               type: string
               format: date-time
-              example: "2024-01-01T00:00:00Z"
+              example: 2024-01-01T00:00:00Z
             ipId:
               description: Crestron IPID of the device
               type: string
               format: byte
+              example: '03'
               maxLength: 4
-              example: "03"
             serverPort1:
               description: The port of any listening servers
               type: integer
-              maximum: 65535
               example: 8080
+              maximum: 65535
             serverPort2:
               description: The port of any listening servers.
               type: integer
-              maximum: 65535
               example: 8443
+              maximum: 65535
           required:
             - name
     DevicePost:
@@ -2492,7 +2763,7 @@ components:
         installedAt:
           type: string
           maxLength: 64
-          example: "2024-01-15"
+          example: 2024-01-15
         room:
           type: integer
           format: int64
@@ -2556,19 +2827,19 @@ components:
         mac1:
           type: string
           pattern: ^([0-9A-Fa-f]{2}[:\-]){5}[0-9A-Fa-f]{2}$|^([0-9A-Fa-f]{4}\.){2}[0-9A-Fa-f]{4}$|^[0-9A-Fa-f]{12}$
-          example: "AA:BB:CC:DD:EE:01"
+          example: AA:BB:CC:DD:EE:01
         mac2:
           type: string
           pattern: ^([0-9A-Fa-f]{2}[:\-]){5}[0-9A-Fa-f]{2}$|^([0-9A-Fa-f]{4}\.){2}[0-9A-Fa-f]{4}$|^[0-9A-Fa-f]{12}$
-          example: "AA:BB:CC:DD:EE:02"
+          example: AA:BB:CC:DD:EE:02
         mac3:
           type: string
           pattern: ^([0-9A-Fa-f]{2}[:\-]){5}[0-9A-Fa-f]{2}$|^([0-9A-Fa-f]{4}\.){2}[0-9A-Fa-f]{4}$|^[0-9A-Fa-f]{12}$
-          example: "AA:BB:CC:DD:EE:03"
+          example: AA:BB:CC:DD:EE:03
         mac4:
           type: string
           pattern: ^([0-9A-Fa-f]{2}[:\-]){5}[0-9A-Fa-f]{2}$|^([0-9A-Fa-f]{4}\.){2}[0-9A-Fa-f]{4}$|^[0-9A-Fa-f]{12}$
-          example: "AA:BB:CC:DD:EE:04"
+          example: AA:BB:CC:DD:EE:04
         username1:
           type: string
           maxLength: 63
@@ -2579,10 +2850,10 @@ components:
           example: monitor
         password1:
           type: string
-          example: "********"
+          example: '********'
         password2:
           type: string
-          example: "********"
+          example: '********'
         jack:
           type: string
           maxLength: 8
@@ -2615,7 +2886,7 @@ components:
             - (6) 60W
             - (7) 75W
             - (8) 90W
-          example: "(4) 30W"
+          example: (4) 30W
         schematicLabel:
           type: string
           example: PROJ-1
@@ -2625,12 +2896,12 @@ components:
         runningProgramDate:
           type: string
           format: date-time
-          example: "2024-01-01T00:00:00Z"
+          example: 2024-01-01T00:00:00Z
         ipId:
           type: string
           format: byte
           maxLength: 4
-          example: "03"
+          example: '03'
         serverPort1:
           type: integer
           maximum: 65535
@@ -2642,6 +2913,184 @@ components:
       required:
         - name
         - room
+    DevicePatch:
+      description: Request body for updating a device.
+      type: object
+      properties:
+        name:
+          type: string
+          example: Projector 1
+          maxLength: 64
+        description:
+          type: string
+          example: Main conference room projector
+          maxLength: 255
+        manufacturer:
+          type: string
+          example: Sony
+          maxLength: 64
+        model:
+          type: string
+          example: VPL-FHZ80
+          maxLength: 64
+        serial:
+          type: string
+          example: SN12345678
+          maxLength: 64
+        installed:
+          type: boolean
+          default: false
+          example: true
+        installedAt:
+          type: string
+          example: 2024-01-15
+          maxLength: 64
+        room:
+          type: integer
+          format: int64
+          example: 1
+        configured:
+          type: boolean
+          default: false
+          example: false
+        ipAddress1:
+          type: string
+          format: ipv4
+          example: 192.168.1.10
+        ipAddress2:
+          type: string
+          format: ipv4
+          example: 192.168.2.10
+        ipAddress3:
+          type: string
+          format: ipv4
+          example: 192.168.3.10
+        ipAddress4:
+          type: string
+          format: ipv4
+          example: 192.168.4.10
+        network1:
+          type: integer
+          format: int64
+          example: 1
+        network2:
+          type: integer
+          format: int64
+          example: 2
+        network3:
+          type: integer
+          format: int64
+          example: 3
+        network4:
+          type: integer
+          format: int64
+          example: 4
+        hostname1:
+          type: string
+          example: projector-1
+          maxLength: 63
+          pattern: ^[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?$
+        hostname2:
+          type: string
+          example: projector-1-ctrl
+          maxLength: 63
+          pattern: ^[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?$
+        hostname3:
+          type: string
+          example: projector-1-mgmt
+          maxLength: 63
+          pattern: ^[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?$
+        hostname4:
+          type: string
+          example: projector-1-aux
+          maxLength: 63
+          pattern: ^[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?$
+        mac1:
+          type: string
+          example: AA:BB:CC:DD:EE:01
+          pattern: ^([0-9A-Fa-f]{2}[:\-]){5}[0-9A-Fa-f]{2}$|^([0-9A-Fa-f]{4}\.){2}[0-9A-Fa-f]{4}$|^[0-9A-Fa-f]{12}$
+        mac2:
+          type: string
+          example: AA:BB:CC:DD:EE:02
+          pattern: ^([0-9A-Fa-f]{2}[:\-]){5}[0-9A-Fa-f]{2}$|^([0-9A-Fa-f]{4}\.){2}[0-9A-Fa-f]{4}$|^[0-9A-Fa-f]{12}$
+        mac3:
+          type: string
+          example: AA:BB:CC:DD:EE:03
+          pattern: ^([0-9A-Fa-f]{2}[:\-]){5}[0-9A-Fa-f]{2}$|^([0-9A-Fa-f]{4}\.){2}[0-9A-Fa-f]{4}$|^[0-9A-Fa-f]{12}$
+        mac4:
+          type: string
+          example: AA:BB:CC:DD:EE:04
+          pattern: ^([0-9A-Fa-f]{2}[:\-]){5}[0-9A-Fa-f]{2}$|^([0-9A-Fa-f]{4}\.){2}[0-9A-Fa-f]{4}$|^[0-9A-Fa-f]{12}$
+        username1:
+          type: string
+          example: admin
+          maxLength: 63
+        username2:
+          type: string
+          example: monitor
+          maxLength: 63
+        password1:
+          type: string
+          example: '********'
+        password2:
+          type: string
+          example: '********'
+        jack:
+          type: string
+          example: J01
+          maxLength: 8
+        switch:
+          type: string
+          example: SW-01
+          maxLength: 64
+        port:
+          type: string
+          example: Gi0/1
+          maxLength: 8
+        poeType:
+          type: string
+          enum:
+            - 802.3af Type 1 15W
+            - 802.3at Type 2 30W
+            - 802.3bt Type 3 60W
+            - 802.3bt Type 4 90W
+          example: 802.3at Type 2 30W
+        poeClass:
+          type: string
+          enum:
+            - (0) 15.4W
+            - (1) 4W
+            - (2) 7W
+            - (3) 15.4W
+            - (4) 30W
+            - (5) 45W
+            - (6) 60W
+            - (7) 75W
+            - (8) 90W
+          example: (4) 30W
+        schematicLabel:
+          type: string
+          example: PROJ-1
+        firmwareVersion:
+          type: string
+          example: 2.1.0
+        runningProgramDate:
+          type: string
+          format: date-time
+          example: 2024-01-01T00:00:00Z
+        ipId:
+          type: string
+          format: byte
+          example: '03'
+          maxLength: 4
+        serverPort1:
+          type: integer
+          example: 8080
+          maximum: 65535
+        serverPort2:
+          type: integer
+          example: 8443
+          maximum: 65535
     ApplicationConfiguration:
       title: Application Configuration
       description: Stores the configuration data of the application in a key value store separated by namespaces.
@@ -2651,22 +3100,22 @@ components:
           properties:
             namespace:
               type: string
-              maxLength: 64
               example: app
+              maxLength: 64
+              pattern: ^[A-Za-z0-9_.-]+
             key:
               type: string
-              maxLength: 255
               example: theme
+              maxLength: 64
+              pattern: ^[A-Za-z0-9_.-]+
             value:
-              type:
-                - object
-                - 'null'
-              additionalProperties: true
               example:
                 color: blue
+              additionalProperties: true
           required:
             - namespace
             - key
+            - value
   parameters:
     page:
       name: page
@@ -2765,6 +3214,7 @@ components:
         type: string
         maxLength: 64
         example: app
+        pattern: ^[A-Za-z0-9_.-]+
     configuration_key:
       name: configuration_key
       in: path
@@ -2772,13 +3222,14 @@ components:
       description: The key of the application configuration.
       schema:
         type: string
-        maxLength: 255
+        maxLength: 64
         example: theme
+        pattern: ^[A-Za-z0-9_.-]+
   securitySchemes:
     access_token:
       type: apiKey
       description: JWT access token passed as a cookie.
-      name: API Key
+      name: access_token
       in: cookie
     refresh_token:
       type: apiKey
