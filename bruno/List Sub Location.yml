@@ -5,7 +5,7 @@ info:
 
 http:
   method: GET
-  url: "{{BaseURL}}/locations/parent/2"
+  url: "{{BaseURL}}/parent/2/locations"
   auth: inherit
 
 settings:
