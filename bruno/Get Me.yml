@@ -1,11 +1,11 @@
 info:
-  name: List Locations
+  name: Get Me
   type: http
-  seq: 5
+  seq: 3
 
 http:
   method: GET
-  url: "{{BaseURL}}/locations"
+  url: "{{BaseURL}}/me"
   auth: inherit
 
 settings:

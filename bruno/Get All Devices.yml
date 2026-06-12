@@ -1,7 +1,7 @@
 info:
   name: Get All Devices
   type: http
-  seq: 8
+  seq: 9
 
 http:
   method: GET
