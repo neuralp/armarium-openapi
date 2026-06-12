@@ -1906,6 +1906,9 @@ components:
               example: []
               items:
                 $ref: '#/components/schemas/Group'
+            clientConfigurationData:
+              type: object
+              additionalProperties: true
           required:
             - username
             - password
@@ -1966,6 +1969,9 @@ components:
           items:
             $ref: '#/components/schemas/Group'
           example: []
+        clientConfigurationData:
+          type: object
+          additionalProperties: true
       required:
         - username
         - password
@@ -2021,6 +2027,9 @@ components:
           example: []
           items:
             type: integer
+        clientConfigurationData:
+          type: object
+          additionalProperties: true
     Group:
       description: A security group for organizing user permissions.
       example:
