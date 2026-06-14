@@ -830,6 +830,36 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/LocationNotFound'
+  /location/{location_id}/upload:
+    post:
+      operationId: post-location-by-location-id-upload
+      parameters:
+        - name: type
+          in: query
+          required: true
+          schema:
+            type: string
+            nullable: false
+            enum:
+              - network_summary
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              title: file
+              description: The uploaded file.
+              type: string
+              format: binary
+        required: true
+      responses:
+        '202':
+          $ref: '#/components/responses/Accepted'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    parameters:
+      - $ref: '#/components/parameters/location_id'
   /parent/{parent_id}/locations:
     parameters:
       - $ref: '#/components/parameters/parent_id'
@@ -1341,6 +1371,8 @@ paths:
                     example: success
                   data:
                     $ref: '#/components/schemas/Room'
+                required:
+                  - result
   /room/{room_id}:
     parameters:
       - $ref: '#/components/parameters/room_id'
@@ -1695,26 +1727,19 @@ paths:
                 id: req-12345
                 result: success
                 data: []
+  /application-configuration:
     post:
       tags:
         - configuration
-      summary: Create ApplicationConfiguration
-      operationId: createApplicationConfiguration
+      operationId: post-application-configuration
       requestBody:
-        description: Post the necessary fields for the API to create a new application configuration.
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/ApplicationConfiguration'
-            example:
-              namespace: app
-              key: theme
-              value:
-                color: blue
-        required: true
       responses:
         '201':
-          description: Configuration created
+          description: Created
           content:
             application/json:
               schema:
@@ -1722,38 +1747,20 @@ paths:
                 properties:
                   id:
                     type: string
-                    example: req-12345
                   result:
                     type: string
                     enum:
                       - error
                       - success
-                    example: success
                   data:
-                    allOf:
-                      - $ref: '#/components/schemas/ApplicationConfiguration'
-                      - type: object
-                    example:
-                      namespace: app
-                      key: theme
-                      value:
-                        color: blue
                     $ref: '#/components/schemas/ApplicationConfiguration'
                 required:
                   - result
-              example:
-                id: req-12345
-                result: success
-                data:
-                  namespace: app
-                  key: theme
-                  value:
-                    color: blue
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
-  /application-configurations/{configuration_namespace}/{configuration_key}:
+  /application-configuration/{configuration_namespace}/{configuration_key}:
     parameters:
       - $ref: '#/components/parameters/configuration_namespace'
       - $ref: '#/components/parameters/configuration_key'
@@ -1873,6 +1880,8 @@ components:
       description: Room not found
     DeviceNotFound:
       description: Device not found
+    Accepted:
+      description: Content accepted.
   schemas:
     BaseModel:
       title: BaseModel
