@@ -833,31 +833,55 @@ paths:
   /location/{location_id}/upload:
     post:
       operationId: post-location-by-location-id-upload
-      parameters:
-        - name: type
-          in: query
-          required: true
-          schema:
-            type: string
-            nullable: false
-            enum:
-              - network_summary
       requestBody:
         content:
           multipart/form-data:
             schema:
-              title: file
-              description: The uploaded file.
-              type: string
-              format: binary
-        required: true
+              title: fileUpload
+              type: object
+              properties:
+                type:
+                  type: string
+                  enum:
+                    - network_summary
+                file:
+                  type: string
+                  format: binary
+                headerRow:
+                  type: integer
+                  format: int32
+                columnMapping:
+                  type: object
+              required:
+                - file
+                - type
       responses:
-        '202':
-          $ref: '#/components/responses/Accepted'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
+        '200':
+          description: File uploaded successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Device'
+                required:
+                  - result
+                  - id
+                  - data
     parameters:
       - $ref: '#/components/parameters/location_id'
   /parent/{parent_id}/locations:
@@ -1854,6 +1878,18 @@ paths:
                   - result
         '404':
           $ref: '#/components/responses/NotFound'
+  /upload/{upload_id}/approve:
+    post:
+      operationId: post-upload-by-upload-id-approve
+      responses:
+        '202':
+          $ref: '#/components/responses/Accepted'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    parameters:
+      - $ref: '#/components/parameters/upload_id'
 components:
   responses:
     OK:
@@ -2641,6 +2677,8 @@ components:
               type: string
               example: Projector 1
               maxLength: 64
+            room:
+              $ref: '#/components/schemas/Room'
             description:
               type: string
               example: Main conference room projector
@@ -2665,8 +2703,6 @@ components:
               type: string
               example: 2024-01-15
               maxLength: 64
-            room:
-              $ref: '#/components/schemas/Room'
             configured:
               type: boolean
               default: false
@@ -3303,6 +3339,12 @@ components:
         maxLength: 64
         example: theme
         pattern: ^[A-Za-z0-9_.-]+
+    upload_id:
+      name: upload_id
+      in: path
+      required: true
+      schema:
+        type: string
   securitySchemes:
     access_token:
       type: apiKey
