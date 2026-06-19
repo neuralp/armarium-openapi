@@ -882,6 +882,8 @@ paths:
                   - result
                   - id
                   - data
+      tags:
+        - files
     parameters:
       - $ref: '#/components/parameters/location_id'
   /parent/{parent_id}/locations:
@@ -1888,6 +1890,8 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
+      tags:
+        - files
     parameters:
       - $ref: '#/components/parameters/upload_id'
 components:
@@ -3368,3 +3372,4 @@ tags:
   - name: room
   - name: user
   - name: configuration
+  - name: files
