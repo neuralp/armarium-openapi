@@ -2788,7 +2788,7 @@ components:
             jack:
               type: string
               example: J01
-              maxLength: 8
+              maxLength: 32
             switch:
               type: string
               example: SW-01
@@ -2796,7 +2796,7 @@ components:
             port:
               type: string
               example: Gi0/1
-              maxLength: 8
+              maxLength: 32
             poeType:
               type: string
               enum:
@@ -2823,10 +2823,12 @@ components:
               description: The label used for the device on the schematics.
               type: string
               example: PROJ-1
+              maxLength: 32
             firmwareVersion:
               description: The running firmware version.
               type: string
               example: 2.1.0
+              maxLength: 32
             runningProgramDate:
               description: Current compile date/time
               type: string
