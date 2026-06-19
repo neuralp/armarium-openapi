@@ -163,7 +163,6 @@ paths:
                   data:
                     allOf:
                       - $ref: '#/components/schemas/User'
-                      - type: object
                     example:
                       id: 1
                       username: jsmith
@@ -211,7 +210,6 @@ paths:
                   data:
                     allOf:
                       - $ref: '#/components/schemas/User'
-                      - type: object
                     example:
                       id: 1
                       username: jsmith
@@ -262,7 +260,6 @@ paths:
                   data:
                     allOf:
                       - $ref: '#/components/schemas/User'
-                      - type: object
                     example:
                       id: 1
                       username: jsmith
@@ -397,7 +394,6 @@ paths:
                   data:
                     allOf:
                       - $ref: '#/components/schemas/Client'
-                      - type: object
                     example:
                       id: 1
                       name: Acme Corp
@@ -439,7 +435,6 @@ paths:
                   data:
                     allOf:
                       - $ref: '#/components/schemas/Client'
-                      - type: object
                     example:
                       id: 1
                       name: Acme Corp
@@ -483,7 +478,6 @@ paths:
                   data:
                     allOf:
                       - $ref: '#/components/schemas/Client'
-                      - type: object
                     example:
                       id: 1
                       name: Acme Corp
@@ -637,7 +631,6 @@ paths:
                   data:
                     allOf:
                       - $ref: '#/components/schemas/Location'
-                      - type: object
                     example:
                       id: 1
                       name: Main Office
@@ -679,7 +672,6 @@ paths:
                   data:
                     allOf:
                       - $ref: '#/components/schemas/Location'
-                      - type: object
                     example:
                       id: 1
                       name: Main Office
@@ -726,7 +718,6 @@ paths:
                   data:
                     allOf:
                       - $ref: '#/components/schemas/Location'
-                      - type: object
                     example:
                       id: 1
                       name: Main Office
@@ -1012,7 +1003,6 @@ paths:
                   data:
                     allOf:
                       - $ref: '#/components/schemas/Group'
-                      - type: object
                     example:
                       id: 1
                       name: Administrators
@@ -1054,7 +1044,6 @@ paths:
                   data:
                     allOf:
                       - $ref: '#/components/schemas/Group'
-                      - type: object
                     example:
                       id: 1
                       name: Administrators
@@ -1101,7 +1090,6 @@ paths:
                   data:
                     allOf:
                       - $ref: '#/components/schemas/Group'
-                      - type: object
                     example:
                       id: 1
                       name: Administrators
@@ -1205,7 +1193,6 @@ paths:
                   data:
                     allOf:
                       - $ref: '#/components/schemas/Network'
-                      - type: object
                     example:
                       id: 1
                       name: LAN
@@ -1247,7 +1234,6 @@ paths:
                   data:
                     allOf:
                       - $ref: '#/components/schemas/Network'
-                      - type: object
                     example:
                       id: 1
                       name: LAN
@@ -1294,7 +1280,6 @@ paths:
                   data:
                     allOf:
                       - $ref: '#/components/schemas/Network'
-                      - type: object
                     example:
                       id: 1
                       name: LAN
@@ -1428,7 +1413,6 @@ paths:
                   data:
                     allOf:
                       - $ref: '#/components/schemas/Room'
-                      - type: object
                     example:
                       id: 1
                       name: Server Room A
@@ -1475,7 +1459,6 @@ paths:
                   data:
                     allOf:
                       - $ref: '#/components/schemas/Room'
-                      - type: object
                     example:
                       id: 1
                       name: Server Room A
@@ -1650,7 +1633,6 @@ paths:
                   data:
                     allOf:
                       - $ref: '#/components/schemas/Device'
-                      - type: object
                     example:
                       id: 1
                       name: Projector 1
@@ -1697,7 +1679,6 @@ paths:
                   data:
                     allOf:
                       - $ref: '#/components/schemas/Device'
-                      - type: object
                     example:
                       id: 1
                       name: Projector 1
@@ -1815,7 +1796,6 @@ paths:
                   data:
                     allOf:
                       - $ref: '#/components/schemas/ApplicationConfiguration'
-                      - type: object
                     example:
                       namespace: app
                       key: theme
