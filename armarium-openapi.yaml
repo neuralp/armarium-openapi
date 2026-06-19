@@ -842,7 +842,12 @@ paths:
                   type: integer
                   format: int32
                 columnMapping:
-                  type: object
+                  type: string
+                  description: >-
+                    JSON-encoded object mapping each device field key to its
+                    spreadsheet column header, e.g. {"name":"Device Name"}.
+                    Kept as a string rather than a nested object so the
+                    multipart form field generates cleanly across clients.
               required:
                 - file
                 - type
