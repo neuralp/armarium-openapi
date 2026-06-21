@@ -161,15 +161,6 @@ paths:
                       - success
                     example: success
                   data:
-                    allOf:
-                      - $ref: '#/components/schemas/User'
-                    example:
-                      id: 1
-                      username: jsmith
-                      password: '********'
-                      aesKey: YWVzS2V5QmFzZTY0
-                      emailVerified: false
-                      accountLocked: false
                     $ref: '#/components/schemas/User'
               example:
                 id: req-12345
@@ -208,15 +199,6 @@ paths:
                       - success
                     example: success
                   data:
-                    allOf:
-                      - $ref: '#/components/schemas/User'
-                    example:
-                      id: 1
-                      username: jsmith
-                      password: '********'
-                      aesKey: YWVzS2V5QmFzZTY0
-                      emailVerified: false
-                      accountLocked: false
                     $ref: '#/components/schemas/User'
                 required:
                   - result
@@ -239,6 +221,10 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/UserPatch'
+            example:
+              firstName: John
+              lastName: Smith
+              email: jsmith@example.com
         required: true
       responses:
         '200':
@@ -258,15 +244,6 @@ paths:
                       - success
                     example: success
                   data:
-                    allOf:
-                      - $ref: '#/components/schemas/User'
-                    example:
-                      id: 1
-                      username: jsmith
-                      password: '********'
-                      aesKey: YWVzS2V5QmFzZTY0
-                      emailVerified: false
-                      accountLocked: false
                     $ref: '#/components/schemas/User'
               example:
                 id: req-12345
@@ -293,18 +270,27 @@ paths:
       operationId: get-me
       responses:
         '200':
-          description: OK
+          description: Current user retrieved successfully
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
     patch:
+      tags:
+        - user
+      summary: Update current user
+      description: Update the profile of the currently authenticated user.
       operationId: patch-me
       requestBody:
+        description: Patch current user properties to update.
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/UserPatch'
+            example:
+              firstName: John
+              lastName: Smith
+              email: jsmith@example.com
       responses:
         '200':
           description: Current user has been updated.
@@ -392,11 +378,6 @@ paths:
                       - success
                     example: success
                   data:
-                    allOf:
-                      - $ref: '#/components/schemas/Client'
-                    example:
-                      id: 1
-                      name: Acme Corp
                     $ref: '#/components/schemas/Client'
                 required:
                   - result
@@ -433,11 +414,6 @@ paths:
                       - success
                     example: success
                   data:
-                    allOf:
-                      - $ref: '#/components/schemas/Client'
-                    example:
-                      id: 1
-                      name: Acme Corp
                     $ref: '#/components/schemas/Client'
                 required:
                   - result
@@ -460,6 +436,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/ClientPatch'
+            example:
+              name: Acme Corp
+              description: Acme Corporation client account
         required: true
       responses:
         '200':
@@ -476,11 +455,7 @@ paths:
                     type: string
                     example: success
                   data:
-                    allOf:
-                      - $ref: '#/components/schemas/Client'
-                    example:
-                      id: 1
-                      name: Acme Corp
+                    $ref: '#/components/schemas/Client'
               example:
                 id: req-12345
                 result: success
@@ -629,11 +604,6 @@ paths:
                       - success
                     example: success
                   data:
-                    allOf:
-                      - $ref: '#/components/schemas/Location'
-                    example:
-                      id: 1
-                      name: Main Office
                     $ref: '#/components/schemas/Location'
                 required:
                   - result
@@ -670,11 +640,6 @@ paths:
                       - success
                     example: success
                   data:
-                    allOf:
-                      - $ref: '#/components/schemas/Location'
-                    example:
-                      id: 1
-                      name: Main Office
                     $ref: '#/components/schemas/Location'
                 required:
                   - result
@@ -697,6 +662,11 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/LocationPatch'
+            example:
+              name: Main Office
+              address1: 123 Main St
+              city: Springfield
+              state: IL
         required: true
       responses:
         '200':
@@ -716,11 +686,6 @@ paths:
                       - success
                     example: success
                   data:
-                    allOf:
-                      - $ref: '#/components/schemas/Location'
-                    example:
-                      id: 1
-                      name: Main Office
                     $ref: '#/components/schemas/Location'
               example:
                 id: req-12345
@@ -823,8 +788,13 @@ paths:
           $ref: '#/components/responses/LocationNotFound'
   /location/{location_id}/upload:
     post:
+      tags:
+        - files
+      summary: Upload location spreadsheet
+      description: Upload a spreadsheet to import devices for the given location.
       operationId: post-location-by-location-id-upload
       requestBody:
+        description: Multipart form containing the spreadsheet file and import configuration.
         content:
           multipart/form-data:
             schema:
@@ -835,18 +805,26 @@ paths:
                   type: string
                   enum:
                     - network_summary
+                  example: network_summary
                 file:
                   type: string
                   format: binary
+                  example: (binary file content)
                 headerRow:
                   type: integer
                   format: int32
+                  example: 1
                 columnMapping:
                   type: string
                   description: JSON-encoded object mapping each device field key to its spreadsheet column header, e.g. {"name":"Device Name"}. Kept as a string rather than a nested object so the multipart form field generates cleanly across clients.
+                  example: '{"name":"Device Name"}'
               required:
                 - file
                 - type
+            example:
+              type: network_summary
+              file: (binary file content)
+              headerRow: 1
       responses:
         '400':
           $ref: '#/components/responses/BadRequest'
@@ -861,21 +839,26 @@ paths:
                 properties:
                   id:
                     type: string
+                    example: req-12345
                   result:
                     type: string
                     enum:
                       - error
                       - success
+                    example: success
                   data:
                     type: array
                     items:
                       $ref: '#/components/schemas/Device'
+                    example: []
                 required:
                   - result
                   - id
                   - data
-      tags:
-        - files
+              example:
+                id: req-12345
+                result: success
+                data: []
     parameters:
       - $ref: '#/components/parameters/location_id'
   /parent/{parent_id}/locations:
@@ -1002,11 +985,6 @@ paths:
                       - success
                     example: success
                   data:
-                    allOf:
-                      - $ref: '#/components/schemas/Group'
-                    example:
-                      id: 1
-                      name: Administrators
                     $ref: '#/components/schemas/Group'
                 required:
                   - result
@@ -1043,11 +1021,6 @@ paths:
                       - success
                     example: success
                   data:
-                    allOf:
-                      - $ref: '#/components/schemas/Group'
-                    example:
-                      id: 1
-                      name: Administrators
                     $ref: '#/components/schemas/Group'
                 required:
                   - result
@@ -1089,11 +1062,6 @@ paths:
                       - success
                     example: success
                   data:
-                    allOf:
-                      - $ref: '#/components/schemas/Group'
-                    example:
-                      id: 1
-                      name: Administrators
                     $ref: '#/components/schemas/Group'
               example:
                 id: req-12345
@@ -1192,11 +1160,6 @@ paths:
                       - success
                     example: success
                   data:
-                    allOf:
-                      - $ref: '#/components/schemas/Network'
-                    example:
-                      id: 1
-                      name: LAN
                     $ref: '#/components/schemas/Network'
                 required:
                   - result
@@ -1233,11 +1196,6 @@ paths:
                       - success
                     example: success
                   data:
-                    allOf:
-                      - $ref: '#/components/schemas/Network'
-                    example:
-                      id: 1
-                      name: LAN
                     $ref: '#/components/schemas/Network'
                 required:
                   - result
@@ -1260,6 +1218,10 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/NetworkPatch'
+            example:
+              name: LAN
+              base: 192.168.1.0
+              mask: 255.255.255.0
         required: true
       responses:
         '200':
@@ -1279,11 +1241,6 @@ paths:
                       - success
                     example: success
                   data:
-                    allOf:
-                      - $ref: '#/components/schemas/Network'
-                    example:
-                      id: 1
-                      name: LAN
                     $ref: '#/components/schemas/Network'
               example:
                 id: req-12345
@@ -1412,11 +1369,6 @@ paths:
                       - success
                     example: success
                   data:
-                    allOf:
-                      - $ref: '#/components/schemas/Room'
-                    example:
-                      id: 1
-                      name: Server Room A
                     $ref: '#/components/schemas/Room'
                 required:
                   - result
@@ -1439,6 +1391,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/RoomPatch'
+            example:
+              name: Server Room A
+              floor: 1
         required: true
       responses:
         '200':
@@ -1458,11 +1413,6 @@ paths:
                       - success
                     example: success
                   data:
-                    allOf:
-                      - $ref: '#/components/schemas/Room'
-                    example:
-                      id: 1
-                      name: Server Room A
                     $ref: '#/components/schemas/Room'
               example:
                 id: req-12345
@@ -1632,11 +1582,6 @@ paths:
                       - success
                     example: success
                   data:
-                    allOf:
-                      - $ref: '#/components/schemas/Device'
-                    example:
-                      id: 1
-                      name: Projector 1
                     $ref: '#/components/schemas/Device'
                 required:
                   - result
@@ -1659,6 +1604,10 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/DevicePatch'
+            example:
+              name: Projector 1
+              manufacturer: Sony
+              model: VPL-FHZ80
         required: true
       responses:
         '200':
@@ -1678,11 +1627,6 @@ paths:
                       - success
                     example: success
                   data:
-                    allOf:
-                      - $ref: '#/components/schemas/Device'
-                    example:
-                      id: 1
-                      name: Projector 1
                     $ref: '#/components/schemas/Device'
               example:
                 id: req-12345
@@ -1739,15 +1683,23 @@ paths:
     post:
       tags:
         - configuration
+      summary: Create Application Configuration
+      description: Create a new application configuration key-value entry.
       operationId: post-application-configuration
       requestBody:
+        description: Application configuration entry to create.
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/ApplicationConfiguration'
+            example:
+              namespace: app
+              key: theme
+              value:
+                color: blue
       responses:
         '201':
-          description: Created
+          description: Application configuration created successfully
           content:
             application/json:
               schema:
@@ -1755,15 +1707,25 @@ paths:
                 properties:
                   id:
                     type: string
+                    example: req-12345
                   result:
                     type: string
                     enum:
                       - error
                       - success
+                    example: success
                   data:
                     $ref: '#/components/schemas/ApplicationConfiguration'
                 required:
                   - result
+              example:
+                id: req-12345
+                result: success
+                data:
+                  namespace: app
+                  key: theme
+                  value:
+                    color: blue
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -1795,13 +1757,6 @@ paths:
                       - success
                     example: success
                   data:
-                    allOf:
-                      - $ref: '#/components/schemas/ApplicationConfiguration'
-                    example:
-                      namespace: app
-                      key: theme
-                      value:
-                        color: blue
                     $ref: '#/components/schemas/ApplicationConfiguration'
                 required:
                   - result
@@ -1850,19 +1805,31 @@ paths:
                 properties:
                   id:
                     type: string
+                    example: req-12345
                   result:
                     type: string
                     enum:
                       - error
                       - success
+                    example: success
                   data:
                     $ref: '#/components/schemas/ApplicationConfiguration'
                 required:
                   - result
+              example:
+                id: req-12345
+                result: success
+                data:
+                  namespace: app
+                  key: theme
+                  value:
+                    color: red
         '404':
           $ref: '#/components/responses/NotFound'
   /upload/{upload_id}/approve:
     post:
+      summary: Approve file upload
+      description: Approve a pending file upload by ID, triggering processing.
       operationId: post-upload-by-upload-id-approve
       responses:
         '202':
@@ -1882,6 +1849,7 @@ paths:
       description: Upload a new image.
       operationId: post-content-images
       requestBody:
+        description: Multipart form containing the image file and its intended use type.
         content:
           multipart/form-data:
             schema:
@@ -1891,9 +1859,13 @@ paths:
                   type: string
                   enum:
                     - markdown
+                  example: markdown
                 file:
                   type: string
                   format: binary
+                  example: (binary file content)
+            example:
+              type: markdown
       responses:
         '200':
           description: Accepted
@@ -1905,14 +1877,19 @@ paths:
                   id:
                     type: string
                     format: uuid
+                    example: 550e8400-e29b-41d4-a716-446655440000
                   result:
                     type: string
                     enum:
                       - error
                       - success
+                    example: success
                 required:
                   - result
                   - id
+              example:
+                id: 550e8400-e29b-41d4-a716-446655440000
+                result: success
         '401':
           $ref: '#/components/responses/Unauthorized'
   /content/image/{content_id}:
@@ -1923,11 +1900,20 @@ paths:
       operationId: get-content-images-by-content-id
       responses:
         '200':
-          description: OK
+          description: Image retrieved successfully
           content:
-            image/png: {}
-            image/jpeg: {}
-            image/gif: {}
+            image/png:
+              schema:
+                type: string
+                format: binary
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+            image/gif:
+              schema:
+                type: string
+                format: binary
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
@@ -1936,8 +1922,6 @@ paths:
       - $ref: '#/components/parameters/content_id'
 components:
   responses:
-    OK:
-      description: OK
     NoContent:
       description: No Content
     BadRequest:
@@ -2121,6 +2105,7 @@ components:
         clientConfigurationData:
           type: object
           additionalProperties: true
+          example: {}
       required:
         - username
         - password
@@ -2179,6 +2164,7 @@ components:
         clientConfigurationData:
           type: object
           additionalProperties: true
+          example: {}
     Group:
       description: A security group for organizing user permissions.
       example:
@@ -2266,6 +2252,7 @@ components:
           example: Acme Corporation client account
         markdown:
           type: string
+          example: '# Notes'
       required:
         - name
     ClientPatch:
@@ -2283,6 +2270,7 @@ components:
           maxLength: 255
         markdown:
           type: string
+          example: '# Notes'
     Location:
       description: A physical location such as a building or site.
       example:
@@ -2393,6 +2381,7 @@ components:
           example: 1
         markdown:
           type: string
+          example: '# Notes'
       required:
         - name
     LocationPatch:
@@ -2443,6 +2432,7 @@ components:
           example: 1
         markdown:
           type: string
+          example: '# Notes'
     Room:
       description: A room within a location.
       example:
@@ -2517,6 +2507,7 @@ components:
           example: 1
         markdown:
           type: string
+          example: '# Notes'
       required:
         - location
         - name
@@ -2555,6 +2546,7 @@ components:
           example: 1
         markdown:
           type: string
+          example: '# Notes'
     Network:
       description: A network segment associated with a location.
       example:
@@ -2672,6 +2664,7 @@ components:
           example: 1
         markdown:
           type: string
+          example: '# Notes'
       required:
         - name
         - location
@@ -2730,6 +2723,7 @@ components:
           example: 1
         markdown:
           type: string
+          example: '# Notes'
     Device:
       description: A physical device installed in a room.
       example:
@@ -3098,6 +3092,7 @@ components:
           example: 8443
         markdown:
           type: string
+          example: '# Notes'
       required:
         - name
         - room
@@ -3281,9 +3276,15 @@ components:
           maximum: 65535
         markdown:
           type: string
+          example: '# Notes'
     ApplicationConfiguration:
       title: Application Configuration
       description: Stores the configuration data of the application in a key value store separated by namespaces.
+      example:
+        namespace: app
+        key: theme
+        value:
+          color: blue
       allOf:
         - $ref: '#/components/schemas/BaseModel'
         - type: object
