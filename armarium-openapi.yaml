@@ -843,11 +843,7 @@ paths:
                   format: int32
                 columnMapping:
                   type: string
-                  description: >-
-                    JSON-encoded object mapping each device field key to its
-                    spreadsheet column header, e.g. {"name":"Device Name"}.
-                    Kept as a string rather than a nested object so the
-                    multipart form field generates cleanly across clients.
+                  description: JSON-encoded object mapping each device field key to its spreadsheet column header, e.g. {"name":"Device Name"}. Kept as a string rather than a nested object so the multipart form field generates cleanly across clients.
               required:
                 - file
                 - type
@@ -1879,6 +1875,65 @@ paths:
         - files
     parameters:
       - $ref: '#/components/parameters/upload_id'
+  /content/image:
+    post:
+      tags:
+        - content
+      description: Upload a new image.
+      operationId: post-content-images
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                type:
+                  type: string
+                  enum:
+                    - markdown
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                required:
+                  - result
+                  - id
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /content/image/{content_id}:
+    get:
+      tags:
+        - content
+      description: Get an image by ID.
+      operationId: get-content-images-by-content-id
+      responses:
+        '200':
+          description: OK
+          content:
+            image/png: {}
+            image/jpeg: {}
+            image/gif: {}
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    parameters:
+      - $ref: '#/components/parameters/content_id'
 components:
   responses:
     OK:
@@ -2192,6 +2247,8 @@ components:
               type: string
               example: Acme Corporation client account
               maxLength: 255
+            markdown:
+              type: string
           required:
             - name
     ClientPost:
@@ -2207,6 +2264,8 @@ components:
           type: string
           maxLength: 255
           example: Acme Corporation client account
+        markdown:
+          type: string
       required:
         - name
     ClientPatch:
@@ -2222,6 +2281,8 @@ components:
           type: string
           example: Acme Corporation client account
           maxLength: 255
+        markdown:
+          type: string
     Location:
       description: A physical location such as a building or site.
       example:
@@ -2280,6 +2341,8 @@ components:
                   example: Main Office
             client:
               $ref: '#/components/schemas/Client'
+            markdown:
+              type: string
           required:
             - name
     LocationPost:
@@ -2328,6 +2391,8 @@ components:
           type: integer
           format: int64
           example: 1
+        markdown:
+          type: string
       required:
         - name
     LocationPatch:
@@ -2376,6 +2441,8 @@ components:
           type: integer
           format: int64
           example: 1
+        markdown:
+          type: string
     Room:
       description: A room within a location.
       example:
@@ -2413,6 +2480,8 @@ components:
               example: true
             location:
               $ref: '#/components/schemas/Location'
+            markdown:
+              type: string
     RoomPost:
       description: Request body for creating a new room.
       type: object
@@ -2446,6 +2515,8 @@ components:
           type: integer
           format: int64
           example: 1
+        markdown:
+          type: string
       required:
         - location
         - name
@@ -2482,6 +2553,8 @@ components:
           type: integer
           format: int64
           example: 1
+        markdown:
+          type: string
     Network:
       description: A network segment associated with a location.
       example:
@@ -2540,6 +2613,8 @@ components:
               example: 192.168.1.200
             location:
               $ref: '#/components/schemas/Location'
+            markdown:
+              type: string
           required:
             - name
     NetworkPost:
@@ -2595,6 +2670,8 @@ components:
           type: integer
           format: int64
           example: 1
+        markdown:
+          type: string
       required:
         - name
         - location
@@ -2651,6 +2728,8 @@ components:
           type: integer
           format: int64
           example: 1
+        markdown:
+          type: string
     Device:
       description: A physical device installed in a room.
       example:
@@ -2835,6 +2914,8 @@ components:
               type: integer
               example: 8443
               maximum: 65535
+            markdown:
+              type: string
           required:
             - name
     DevicePost:
@@ -3015,6 +3096,8 @@ components:
           type: integer
           maximum: 65535
           example: 8443
+        markdown:
+          type: string
       required:
         - name
         - room
@@ -3196,6 +3279,8 @@ components:
           type: integer
           example: 8443
           maximum: 65535
+        markdown:
+          type: string
     ApplicationConfiguration:
       title: Application Configuration
       description: Stores the configuration data of the application in a key value store separated by namespaces.
@@ -3336,6 +3421,15 @@ components:
       required: true
       schema:
         type: string
+      description: The ID of the uploaded file.
+    content_id:
+      name: content_id
+      in: path
+      description: The ID of the content to retrieve.
+      required: true
+      schema:
+        type: string
+        format: uuid
   securitySchemes:
     access_token:
       type: apiKey
@@ -3360,3 +3454,6 @@ tags:
   - name: user
   - name: configuration
   - name: files
+    description: Paths related to file uploads
+  - name: content
+    description: Paths related to content for use in the pages
