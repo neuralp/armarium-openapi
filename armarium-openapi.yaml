@@ -2191,9 +2191,14 @@ components:
             systemGroup:
               type: boolean
               default: false
+            autoGroup:
+              description: For automatically created groups related to organization (client) accounts.
+              type: boolean
+              default: false
           required:
             - name
             - systemGroup
+            - autoGroup
     GroupPost:
       description: Request body for creating a new group.
       type: object
