@@ -2034,6 +2034,9 @@ components:
               type: boolean
               default: true
               example: false
+            systemAccount:
+              type: boolean
+              default: false
             groups:
               type: array
               example: []
@@ -2048,6 +2051,7 @@ components:
             - aesKey
             - emailVerified
             - accountLocked
+            - systemAccount
     UserPost:
       description: Request body for creating a new user.
       type: object
@@ -2184,8 +2188,12 @@ components:
               type: string
               example: System administrators group
               maxLength: 255
+            systemGroup:
+              type: boolean
+              default: false
           required:
             - name
+            - systemGroup
     GroupPost:
       description: Request body for creating a new group.
       type: object
