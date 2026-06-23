@@ -786,6 +786,47 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/LocationNotFound'
+  /location/{location_id}/devices:
+    get:
+      tags:
+        - device
+      summary: Get Devices by Location ID
+      description: Retrieve all devices associated with the given location.
+      operationId: get-devices-locationId
+      responses:
+        '200':
+          description: Networks found for location
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: req-12345
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                    example: success
+                  data:
+                    type: array
+                    example: []
+                    items:
+                      $ref: '#/components/schemas/Device'
+                required:
+                  - result
+              example:
+                data: []
+                id: req-12345
+                result: success
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/LocationNotFound'
+    parameters:
+      - $ref: '#/components/parameters/location_id'
   /location/{location_id}/upload:
     post:
       tags:
