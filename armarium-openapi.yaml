@@ -1,4 +1,4 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
   title: armarium
   description: Interface to the Armarium Documentation Server API
@@ -1883,30 +1883,17 @@ paths:
         - files
     parameters:
       - $ref: '#/components/parameters/upload_id'
-  /content/image:
+  /content:
     post:
       tags:
         - content
       description: Upload a new image.
       operationId: post-content-images
       requestBody:
-        description: Multipart form containing the image file and its intended use type.
         content:
-          multipart/form-data:
+          application/x-www-form-urlencoded:
             schema:
-              type: object
-              properties:
-                type:
-                  type: string
-                  enum:
-                    - markdown
-                  example: markdown
-                file:
-                  type: string
-                  format: binary
-                  example: (binary file content)
-            example:
-              type: markdown
+              $ref: '#/components/schemas/FilePost'
       responses:
         '200':
           description: Accepted
@@ -1933,11 +1920,30 @@ paths:
                 result: success
         '401':
           $ref: '#/components/responses/Unauthorized'
+  /content/{content_id}:
+    get:
+      tags:
+        - content
+      description: This path is for getting the database information on a file.
+      operationId: get-content-by-content-id
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/File'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    parameters:
+      - $ref: '#/components/parameters/content_id'
   /content/image/{content_id}:
     get:
       tags:
         - content
-      description: Get an image by ID.
+      description: Get an image directly by ID.
       operationId: get-content-images-by-content-id
       responses:
         '200':
@@ -1961,6 +1967,545 @@ paths:
           $ref: '#/components/responses/NotFound'
     parameters:
       - $ref: '#/components/parameters/content_id'
+  /generic-products:
+    get:
+      tags:
+        - products
+      summary: List Generic Products
+      operationId: listGenericProducts
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/GenericProduct'
+                required:
+                  - result
+                items:
+                  $ref: '#/components/schemas/GenericProduct'
+  /generic-product:
+    post:
+      tags:
+        - products
+      summary: Create GenericProduct
+      operationId: createGenericProduct
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GenericProductPost'
+        required: true
+      responses:
+        '200':
+          description: Generic product created OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                  data:
+                    $ref: '#/components/schemas/GenericProduct'
+                required:
+                  - result
+  /generic-product/{generic_product_id}:
+    get:
+      tags:
+        - products
+      summary: Get GenericProduct
+      operationId: getGenericProduct
+      responses:
+        '200':
+          description: Return GenericProduct
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                  data:
+                    $ref: '#/components/schemas/GenericProduct'
+                required:
+                  - result
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      tags:
+        - products
+      summary: Delete GenericProduct
+      operationId: deleteGenericProduct
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      tags:
+        - products
+      summary: Partially Update GenericProduct
+      operationId: patchGenericProduct
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GenericProductPatch'
+      responses:
+        '200':
+          description: Generic Product Updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                  data:
+                    $ref: '#/components/schemas/GenericProduct'
+                required:
+                  - result
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    parameters:
+      - $ref: '#/components/parameters/generic_product_id'
+  /specific-products:
+    get:
+      tags:
+        - products
+      summary: List Specific Products
+      operationId: listSpecificProducts
+      responses:
+        '200':
+          description: Get list of SpecificProducts
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SpecificProduct'
+                required:
+                  - result
+                items:
+                  $ref: '#/components/schemas/GenericProduct'
+  /specific-product:
+    post:
+      tags:
+        - products
+      summary: Create SpecificProduct
+      operationId: createSpecificProduct
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SpecificProductPost'
+        required: true
+      responses:
+        '200':
+          description: Specific product created OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                  data:
+                    $ref: '#/components/schemas/SpecificProduct'
+                required:
+                  - result
+  /specific-product/{specific_product_id}:
+    get:
+      tags:
+        - products
+      summary: Get SpecificProduct
+      operationId: getSpecificProduct
+      responses:
+        '200':
+          description: Return SpecificProduct
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                  data:
+                    $ref: '#/components/schemas/SpecificProduct'
+                required:
+                  - result
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      tags:
+        - products
+      summary: Delete SpecificProduct
+      operationId: deleteSpecificProduct
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      tags:
+        - products
+      summary: Partially Update SpecificProduct
+      operationId: patchSpecificProduct
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SpecificProductPatch'
+      responses:
+        '200':
+          description: Specific Product Updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                  data:
+                    $ref: '#/components/schemas/SpecificProduct'
+                required:
+                  - result
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    parameters:
+      - $ref: '#/components/parameters/specific_product_id'
+  /device-commissions:
+    get:
+      tags:
+        - products
+      summary: List  the commissioned devices
+      operationId: listDeviceCommission
+      responses:
+        '200':
+          description: Get list of SpecificProducts
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/DeviceCommission'
+                required:
+                  - result
+                items:
+                  $ref: '#/components/schemas/GenericProduct'
+  /device-commission:
+    post:
+      tags:
+        - products
+      summary: Create a DeviceCommission
+      operationId: createDeviceCommission
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceCommissionPost'
+        required: true
+      responses:
+        '200':
+          description: Device commission created OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                  data:
+                    $ref: '#/components/schemas/DeviceCommission'
+                required:
+                  - result
+  /device-commission/{device_commission_id}:
+    get:
+      tags:
+        - products
+      summary: Get Device Commission
+      operationId: getDeviceCommission
+      responses:
+        '200':
+          description: Return Device Commission OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                  data:
+                    $ref: '#/components/schemas/DeviceCommission'
+                required:
+                  - result
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      tags:
+        - products
+      summary: Delete Device Commission
+      operationId: deleteDeviceCommission
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      tags:
+        - products
+      summary: Partially Update DeviceCommission
+      operationId: patchDeviceCommission
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceCommissionPatch'
+      responses:
+        '200':
+          description: Specific Product Updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                  data:
+                    $ref: '#/components/schemas/DeviceCommission'
+                required:
+                  - result
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    parameters:
+      - $ref: '#/components/parameters/device_commission_id'
+  /commission-projects:
+    get:
+      summary: List Commission Projects
+      operationId: listCommissionProjects
+      responses:
+        '200':
+          description: Get Commission Projects OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CommissionProject'
+                required:
+                  - result
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /commission-project:
+    post:
+      summary: Create CommissionProject
+      operationId: createCommissionProject
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommissionProjectPost'
+        required: true
+      responses:
+        '201':
+          description: Created commission project
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                  data:
+                    $ref: '#/components/schemas/CommissionProject'
+                required:
+                  - result
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /commission-projects/{project_id}:
+    get:
+      summary: Get CommissionProject
+      operationId: getCommissionProject
+      responses:
+        '200':
+          description: Get commission project OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                  data:
+                    $ref: '#/components/schemas/CommissionProject'
+                required:
+                  - result
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    delete:
+      summary: Delete CommissionProject
+      operationId: deleteCommissionProject
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    patch:
+      summary: Partially Update CommissionProject
+      operationId: patchCommissionProject
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommissionProjectPatch'
+        required: true
+      responses:
+        '200':
+          description: Path commission project OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                  data:
+                    $ref: '#/components/schemas/CommissionProject'
+                required:
+                  - result
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+    parameters:
+      - $ref: '#/components/parameters/project_id'
 components:
   responses:
     NoContent:
@@ -3361,6 +3906,357 @@ components:
             - namespace
             - key
             - value
+    CommissioningStep:
+      type: object
+      properties:
+        step:
+          type: integer
+        action:
+          type: string
+        completed:
+          type: boolean
+        completedBy:
+          type: string
+        completedDate:
+          type: string
+          format: date-time
+      required:
+        - step
+        - action
+      additionalProperties: false
+      description: A commission step is meant to be stored in a JSON blob per device and should not be assigned its own table in the database.
+    GenericProduct:
+      allOf:
+        - $ref: '#/components/schemas/BaseModel'
+        - type: object
+          properties:
+            type:
+              type: string
+              maxLength: 64
+            subtype:
+              type: string
+              maxLength: 64
+            description:
+              type: string
+            steps:
+              type: array
+              items:
+                $ref: '#/components/schemas/CommissioningStep'
+          required:
+            - subtype
+            - type
+    GenericProductPost:
+      type: object
+      properties:
+        type:
+          type: string
+          maxLength: 64
+        subtype:
+          type: string
+          maxLength: 64
+        steps:
+          type: array
+          items:
+            type: number
+        description:
+          type: string
+      required:
+        - subtype
+        - type
+    GenericProductPatch:
+      type: object
+      properties:
+        type:
+          type: string
+          maxLength: 64
+        subtype:
+          type: string
+          maxLength: 64
+        steps:
+          type: array
+          items:
+            type: number
+        description:
+          type: string
+    SpecificProduct:
+      allOf:
+        - $ref: '#/components/schemas/BaseModel'
+        - type: object
+          properties:
+            manufacturer:
+              type: string
+              maxLength: 64
+            model:
+              type: string
+              maxLength: 64
+            description:
+              type: string
+            genericSteps:
+              $ref: '#/components/schemas/GenericProduct'
+            additionalSteps:
+              type: array
+              items:
+                $ref: '#/components/schemas/CommissioningStep'
+          required:
+            - manufacturer
+            - model
+    SpecificProductPost:
+      type: object
+      properties:
+        manufacturer:
+          type: string
+          maxLength: 64
+        model:
+          type: string
+          maxLength: 64
+        discription:
+          type: string
+        genericSteps:
+          type: integer
+          format: int64
+        additionalSteps:
+          type: array
+          items:
+            $ref: '#/components/schemas/CommissioningStep'
+      required:
+        - manufacturer
+        - model
+    SpecificProductPatch:
+      type: object
+      properties:
+        manufacturer:
+          type: string
+          maxLength: 64
+        model:
+          type: string
+          maxLength: 64
+        discription:
+          type: string
+        genericSteps:
+          type: integer
+          format: int64
+        additionalSteps:
+          type: array
+          items:
+            $ref: '#/components/schemas/CommissioningStep'
+    DeviceCommission:
+      allOf:
+        - $ref: '#/components/schemas/BaseModel'
+        - type: object
+          properties:
+            device:
+              $ref: '#/components/schemas/Device'
+            completed:
+              type: boolean
+              default: false
+            inProgress:
+              type: boolean
+              default: false
+            steps:
+              type: array
+              items:
+                $ref: '#/components/schemas/CommissioningStep'
+          required:
+            - device
+            - completed
+            - inProgress
+    DeviceCommissionPost:
+      type: object
+      properties:
+        device:
+          $ref: '#/components/schemas/Device'
+        completed:
+          type: boolean
+          default: false
+        percentage:
+          type: integer
+          format: int32
+          default: 0
+          minimum: 0
+          maximum: 100
+        steps:
+          type: array
+          items:
+            $ref: '#/components/schemas/CommissioningStep'
+      required:
+        - device
+        - completed
+        - percentage
+    DeviceCommissionPatch:
+      type: object
+      properties:
+        device:
+          $ref: '#/components/schemas/Device'
+        completed:
+          type: boolean
+          default: false
+        percentage:
+          type: integer
+          format: int32
+          default: 0
+          minimum: 0
+          maximum: 100
+        steps:
+          type: array
+          items:
+            $ref: '#/components/schemas/CommissioningStep'
+    CommissionProject:
+      allOf:
+        - $ref: '#/components/schemas/BaseModel'
+        - type: object
+          properties:
+            name:
+              type: string
+              maxLength: 64
+            description:
+              type: string
+            client:
+              $ref: '#/components/schemas/Client'
+            assignedUsers:
+              type: array
+              items:
+                $ref: '#/components/schemas/User'
+            complete:
+              type: boolean
+              default: false
+            inProgress:
+              type: boolean
+              default: false
+            progress:
+              description: progress percentage expressed as an integer
+              type: integer
+              default: 0
+              minimum: 0
+              maximum: 100
+            devices:
+              type: array
+              items:
+                $ref: '#/components/schemas/DeviceCommission'
+          required:
+            - name
+            - complete
+            - inProgress
+            - progress
+    CommissionProjectPost:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 64
+        description:
+          type: string
+        assignedUsers:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+        complete:
+          type: boolean
+          default: false
+        inProgress:
+          type: boolean
+          default: false
+        progress:
+          type: integer
+          default: 0
+          minimum: 0
+          maximum: 100
+        devices:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeviceCommission'
+      required:
+        - name
+        - complete
+        - inProgress
+        - progress
+    CommissionProjectPatch:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 64
+        description:
+          type: string
+        assignedUsers:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+        complete:
+          type: boolean
+        inProgress:
+          type: boolean
+        progress:
+          type: integer
+          default: 0
+          minimum: 0
+          maximum: 100
+        devices:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeviceCommission'
+    File:
+      allOf:
+        - $ref: '#/components/schemas/BaseModel'
+        - type: object
+          properties:
+            uuid:
+              type: string
+              format: uuid
+            name:
+              type: string
+              maxLength: 128
+            type:
+              type: string
+              enum:
+                - image
+                - drawing
+                - documentation
+                - configuration
+                - user_interface
+                - program
+                - dsp
+            size:
+              type: integer
+              format: int64
+            client:
+              $ref: '#/components/schemas/Client'
+            location:
+              $ref: '#/components/schemas/Location'
+            room:
+              $ref: '#/components/schemas/Room'
+            device:
+              $ref: '#/components/schemas/Device'
+          required:
+            - uuid
+            - type
+            - name
+    FilePost:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 128
+        type:
+          type: string
+          enum:
+            - image
+            - drawing
+            - documentation
+            - configuration
+            - user_interface
+            - program
+            - dsp
+        client:
+          $ref: '#/components/schemas/Client'
+        location:
+          $ref: '#/components/schemas/Location'
+        room:
+          $ref: '#/components/schemas/Room'
+        device:
+          $ref: '#/components/schemas/Device'
+      required:
+        - type
+        - name
   parameters:
     page:
       name: page
@@ -3485,6 +4381,34 @@ components:
       schema:
         type: string
         format: uuid
+    generic_product_id:
+      name: generic_product_id
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+    specific_product_id:
+      name: specific_product_id
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+    device_commission_id:
+      name: device_commission_id
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+    project_id:
+      name: project_id
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
   securitySchemes:
     access_token:
       type: apiKey
@@ -3512,3 +4436,5 @@ tags:
     description: Paths related to file uploads
   - name: content
     description: Paths related to content for use in the pages
+  - name: products
+  - name: commissioning
