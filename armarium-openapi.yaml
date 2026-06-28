@@ -3939,7 +3939,8 @@ components:
             description:
               type: string
             steps:
-              type: array
+              description: JSON blob of CommissioningStep
+              type: object
               items:
                 $ref: '#/components/schemas/CommissioningStep'
           required:
@@ -3955,9 +3956,10 @@ components:
           type: string
           maxLength: 64
         steps:
-          type: array
+          type: object
           items:
             type: number
+          description: JSON blob of CommissioningStep
         description:
           type: string
       required:
@@ -3973,9 +3975,11 @@ components:
           type: string
           maxLength: 64
         steps:
-          type: array
+          type: object
           items:
             type: number
+            $ref: '#/components/schemas/CommissioningStep'
+          description: JSON blob of CommissioningStep
         description:
           type: string
     SpecificProduct:
@@ -3994,7 +3998,8 @@ components:
             genericSteps:
               $ref: '#/components/schemas/GenericProduct'
             additionalSteps:
-              type: array
+              description: JSON blob of CommissioningStep
+              type: object
               items:
                 $ref: '#/components/schemas/CommissioningStep'
           required:
@@ -4009,15 +4014,16 @@ components:
         model:
           type: string
           maxLength: 64
-        discription:
-          type: string
         genericSteps:
-          type: integer
           format: int64
+          $ref: '#/components/schemas/GenericProduct'
         additionalSteps:
-          type: array
+          type: object
           items:
             $ref: '#/components/schemas/CommissioningStep'
+          description: JSON blob of CommissioningStep
+        description:
+          type: string
       required:
         - manufacturer
         - model
@@ -4030,15 +4036,16 @@ components:
         model:
           type: string
           maxLength: 64
-        discription:
-          type: string
         genericSteps:
-          type: integer
           format: int64
+          $ref: '#/components/schemas/GenericProduct'
         additionalSteps:
-          type: array
+          type: object
           items:
             $ref: '#/components/schemas/CommissioningStep'
+          description: JSON blob of CommissioningStep
+        description:
+          type: string
     DeviceCommission:
       allOf:
         - $ref: '#/components/schemas/BaseModel'
@@ -4053,7 +4060,8 @@ components:
               type: boolean
               default: false
             steps:
-              type: array
+              description: JSON blob of CommissioningStep
+              type: object
               items:
                 $ref: '#/components/schemas/CommissioningStep'
           required:
@@ -4075,9 +4083,10 @@ components:
           minimum: 0
           maximum: 100
         steps:
-          type: array
+          type: object
           items:
             $ref: '#/components/schemas/CommissioningStep'
+          description: JSON blob of CommissioningStep
       required:
         - device
         - completed
@@ -4097,9 +4106,10 @@ components:
           minimum: 0
           maximum: 100
         steps:
-          type: array
+          type: object
           items:
             $ref: '#/components/schemas/CommissioningStep'
+          description: JSON blob of CommissioningStep
     CommissionProject:
       allOf:
         - $ref: '#/components/schemas/BaseModel'
