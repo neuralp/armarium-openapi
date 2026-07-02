@@ -28,17 +28,17 @@ paths:
               properties:
                 username:
                   type: string
+                  example: jsmith
                   maxLength: 255
                   pattern: ^[A-Za-z_-]+
-                  example: jsmith
                 password:
                   type: string
                   format: password
-                  maxLength: 255
                   example: '********'
+                  maxLength: 255
             example:
-              username: jsmith
               password: '********'
+              username: jsmith
       responses:
         '200':
           description: OK
@@ -88,6 +88,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/page'
         - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/search'
       responses:
         '200':
           description: Users retrieved successfully
@@ -107,15 +108,15 @@ paths:
                     example: success
                   data:
                     type: array
+                    example: []
                     items:
                       $ref: '#/components/schemas/User'
-                    example: []
                 required:
                   - result
               example:
+                data: []
                 id: req-12345
                 result: success
-                data: []
         '401':
           $ref: '#/components/responses/Unauthorized'
   /user:
@@ -132,11 +133,11 @@ paths:
             schema:
               $ref: '#/components/schemas/UserPost'
             example:
-              username: jsmith
-              password: '********'
+              accountLocked: true
               aesKey: YWVzS2V5QmFzZTY0
               emailVerified: false
-              accountLocked: true
+              password: '********'
+              username: jsmith
       responses:
         '400':
           $ref: '#/components/responses/BadRequest'
@@ -163,18 +164,17 @@ paths:
                   data:
                     $ref: '#/components/schemas/User'
               example:
-                id: req-12345
-                result: success
                 data:
-                  id: 1
-                  username: jsmith
-                  password: '********'
+                  accountLocked: false
                   aesKey: YWVzS2V5QmFzZTY0
                   emailVerified: false
-                  accountLocked: false
+                  id: 1
+                  password: '********'
+                  systemAccount: false
+                  username: jsmith
+                id: req-12345
+                result: success
   /user/{user_id}:
-    parameters:
-      - $ref: '#/components/parameters/user_id'
     get:
       tags:
         - user
@@ -209,6 +209,16 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/UserNotFound'
+    delete:
+      tags:
+        - user
+      summary: Delete user by User ID
+      operationId: delete-user-by-user-id
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '404':
+          $ref: '#/components/responses/NotFound'
     patch:
       tags:
         - user
@@ -222,9 +232,9 @@ paths:
             schema:
               $ref: '#/components/schemas/UserPatch'
             example:
+              email: jsmith@example.com
               firstName: John
               lastName: Smith
-              email: jsmith@example.com
         required: true
       responses:
         '200':
@@ -252,16 +262,8 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/UserNotFound'
-    delete:
-      tags:
-        - user
-      summary: Delete user by User ID
-      operationId: delete-user-by-user-id
-      responses:
-        '204':
-          $ref: '#/components/responses/NoContent'
-        '404':
-          $ref: '#/components/responses/NotFound'
+    parameters:
+      - $ref: '#/components/parameters/user_id'
   /me:
     get:
       tags:
@@ -288,9 +290,9 @@ paths:
             schema:
               $ref: '#/components/schemas/UserPatch'
             example:
+              email: jsmith@example.com
               firstName: John
               lastName: Smith
-              email: jsmith@example.com
       responses:
         '200':
           description: Current user has been updated.
@@ -310,6 +312,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/page'
         - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/search'
       responses:
         '200':
           description: Clients retrieved successfully
@@ -329,15 +332,15 @@ paths:
                     example: success
                   data:
                     type: array
+                    example: []
                     items:
                       $ref: '#/components/schemas/Client'
-                    example: []
                 required:
                   - result
               example:
+                data: []
                 id: req-12345
                 result: success
-                data: []
         '401':
           $ref: '#/components/responses/Unauthorized'
   /client:
@@ -354,8 +357,8 @@ paths:
             schema:
               $ref: '#/components/schemas/ClientPost'
             example:
-              name: Acme Corp
               description: Acme Corporation
+              name: Acme Corp
       responses:
         '400':
           $ref: '#/components/responses/BadRequest'
@@ -382,14 +385,12 @@ paths:
                 required:
                   - result
               example:
-                id: req-12345
-                result: success
                 data:
                   id: 1
                   name: Acme Corp
+                id: req-12345
+                result: success
   /client/{client_id}:
-    parameters:
-      - $ref: '#/components/parameters/client_id'
     get:
       tags:
         - client
@@ -424,6 +425,16 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/ClientNotFound'
+    delete:
+      tags:
+        - client
+      summary: Delete client by Client ID
+      operationId: delete-client-by-client-id
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '404':
+          $ref: '#/components/responses/NotFound'
     patch:
       tags:
         - client
@@ -437,8 +448,8 @@ paths:
             schema:
               $ref: '#/components/schemas/ClientPatch'
             example:
-              name: Acme Corp
               description: Acme Corporation client account
+              name: Acme Corp
         required: true
       responses:
         '200':
@@ -463,25 +474,19 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/ClientNotFound'
-    delete:
-      tags:
-        - client
-      summary: Delete client by Client ID
-      operationId: delete-client-by-client-id
-      responses:
-        '204':
-          $ref: '#/components/responses/NoContent'
-        '404':
-          $ref: '#/components/responses/NotFound'
-  /client/{client_id}/locations:
     parameters:
       - $ref: '#/components/parameters/client_id'
+  /client/{client_id}/locations:
     get:
       tags:
         - location
       summary: Get Locations by Client ID
       description: Retrieve the locations for a particular client.
       operationId: get-location-clientId
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/search'
       responses:
         '200':
           description: Locations found for client
@@ -504,24 +509,26 @@ paths:
                     example: Acme Corp
                   data:
                     type: array
+                    example: []
                     items:
                       $ref: '#/components/schemas/Location'
-                    example: []
                   parents:
                     type: array
+                    example: []
                     items:
                       $ref: '#/components/schemas/Location'
-                    example: []
                 required:
                   - result
               example:
+                data: []
                 id: req-12345
                 result: success
-                data: []
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
           description: Client location not found
+    parameters:
+      - $ref: '#/components/parameters/client_id'
   /locations:
     get:
       tags:
@@ -532,6 +539,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/page'
         - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/search'
       responses:
         '200':
           description: Locations retrieved successfully
@@ -551,15 +559,15 @@ paths:
                     example: success
                   data:
                     type: array
+                    example: []
                     items:
                       $ref: '#/components/schemas/Location'
-                    example: []
                 required:
                   - result
               example:
+                data: []
                 id: req-12345
                 result: success
-                data: []
         '401':
           $ref: '#/components/responses/Unauthorized'
   /location:
@@ -576,12 +584,12 @@ paths:
             schema:
               $ref: '#/components/schemas/LocationPost'
             example:
-              name: Main Office
               address1: 123 Main St
               city: Springfield
+              client: 1
+              name: Main Office
               state: IL
               zip: '62701'
-              client: 1
       responses:
         '400':
           $ref: '#/components/responses/BadRequest'
@@ -608,14 +616,12 @@ paths:
                 required:
                   - result
               example:
-                id: req-12345
-                result: success
                 data:
                   id: 1
                   name: Main Office
+                id: req-12345
+                result: success
   /location/{location_id}:
-    parameters:
-      - $ref: '#/components/parameters/location_id'
     get:
       tags:
         - location
@@ -650,6 +656,16 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/LocationNotFound'
+    delete:
+      tags:
+        - location
+      summary: Delete location by Location ID
+      operationId: delete-location-by-location-id
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '404':
+          $ref: '#/components/responses/NotFound'
     patch:
       tags:
         - location
@@ -663,9 +679,9 @@ paths:
             schema:
               $ref: '#/components/schemas/LocationPatch'
             example:
-              name: Main Office
               address1: 123 Main St
               city: Springfield
+              name: Main Office
               state: IL
         required: true
       responses:
@@ -694,25 +710,19 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/LocationNotFound'
-    delete:
-      tags:
-        - location
-      summary: Delete location by Location ID
-      operationId: delete-location-by-location-id
-      responses:
-        '204':
-          $ref: '#/components/responses/NoContent'
-        '404':
-          $ref: '#/components/responses/NotFound'
-  /location/{location_id}/networks:
     parameters:
       - $ref: '#/components/parameters/location_id'
+  /location/{location_id}/networks:
     get:
       tags:
         - network
       summary: Get Networks by Location ID
       description: Retrieve all networks associated with the given location.
       operationId: get-networks-locationId
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/search'
       responses:
         '200':
           description: Networks found for location
@@ -732,28 +742,32 @@ paths:
                     example: success
                   data:
                     type: array
+                    example: []
                     items:
                       $ref: '#/components/schemas/Network'
-                    example: []
                 required:
                   - result
               example:
+                data: []
                 id: req-12345
                 result: success
-                data: []
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/LocationNotFound'
-  /location/{location_id}/rooms:
     parameters:
       - $ref: '#/components/parameters/location_id'
+  /location/{location_id}/rooms:
     get:
       tags:
         - room
       summary: Get Rooms by Location ID
       description: Retrieve all rooms associated with the given location.
       operationId: get-rooms-locationId
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/search'
       responses:
         '200':
           description: Rooms found for location
@@ -773,19 +787,21 @@ paths:
                     example: success
                   data:
                     type: array
+                    example: []
                     items:
                       $ref: '#/components/schemas/Room'
-                    example: []
                 required:
                   - result
               example:
+                data: []
                 id: req-12345
                 result: success
-                data: []
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/LocationNotFound'
+    parameters:
+      - $ref: '#/components/parameters/location_id'
   /location/{location_id}/devices:
     get:
       tags:
@@ -793,9 +809,13 @@ paths:
       summary: Get Devices by Location ID
       description: Retrieve all devices associated with the given location.
       operationId: get-devices-locationId
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/search'
       responses:
         '200':
-          description: Networks found for location
+          description: Devices found for location
           content:
             application/json:
               schema:
@@ -856,16 +876,16 @@ paths:
                   format: int32
                   example: 1
                 columnMapping:
-                  type: string
                   description: JSON-encoded object mapping each device field key to its spreadsheet column header, e.g. {"name":"Device Name"}. Kept as a string rather than a nested object so the multipart form field generates cleanly across clients.
+                  type: string
                   example: '{"name":"Device Name"}'
               required:
                 - file
                 - type
             example:
-              type: network_summary
               file: (binary file content)
               headerRow: 1
+              type: network_summary
       responses:
         '400':
           $ref: '#/components/responses/BadRequest'
@@ -889,28 +909,30 @@ paths:
                     example: success
                   data:
                     type: array
+                    example: []
                     items:
                       $ref: '#/components/schemas/Device'
-                    example: []
                 required:
                   - result
                   - id
                   - data
               example:
+                data: []
                 id: req-12345
                 result: success
-                data: []
     parameters:
       - $ref: '#/components/parameters/location_id'
   /parent/{parent_id}/locations:
-    parameters:
-      - $ref: '#/components/parameters/parent_id'
     get:
       tags:
         - location
       summary: Get Locations by Parent Location ID
       description: Retrieve the locations that are sub-locations to the parent ID.
       operationId: get-location-parentId
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/search'
       responses:
         '200':
           description: Sub-locations found
@@ -930,24 +952,26 @@ paths:
                     example: success
                   data:
                     type: array
+                    example: []
                     items:
                       $ref: '#/components/schemas/Location'
-                    example: []
                   parents:
                     type: array
+                    example: []
                     items:
                       $ref: '#/components/schemas/Location'
-                    example: []
                 required:
                   - result
               example:
+                data: []
                 id: req-12345
                 result: success
-                data: []
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
           description: Parent location not found
+    parameters:
+      - $ref: '#/components/parameters/parent_id'
   /groups:
     get:
       tags:
@@ -958,6 +982,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/page'
         - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/search'
       responses:
         '200':
           description: Groups retrieved successfully
@@ -977,15 +1002,15 @@ paths:
                     example: success
                   data:
                     type: array
+                    example: []
                     items:
                       $ref: '#/components/schemas/Group'
-                    example: []
                 required:
                   - result
               example:
+                data: []
                 id: req-12345
                 result: success
-                data: []
         '401':
           $ref: '#/components/responses/Unauthorized'
   /group:
@@ -1002,8 +1027,8 @@ paths:
             schema:
               $ref: '#/components/schemas/GroupPost'
             example:
-              name: Administrators
               description: System administrators
+              name: Administrators
       responses:
         '400':
           $ref: '#/components/responses/BadRequest'
@@ -1030,14 +1055,14 @@ paths:
                 required:
                   - result
               example:
-                id: req-12345
-                result: success
                 data:
+                  autoGroup: false
                   id: 1
                   name: Administrators
+                  systemGroup: false
+                id: req-12345
+                result: success
   /group/{group_id}:
-    parameters:
-      - $ref: '#/components/parameters/group_id'
     get:
       tags:
         - group
@@ -1072,6 +1097,16 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/GroupNotFound'
+    delete:
+      tags:
+        - group
+      summary: Delete group by Group ID
+      operationId: delete-group-by-group-id
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '404':
+          $ref: '#/components/responses/NotFound'
     patch:
       tags:
         - group
@@ -1111,16 +1146,8 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/GroupNotFound'
-    delete:
-      tags:
-        - group
-      summary: Delete group by Group ID
-      operationId: delete-group-by-group-id
-      responses:
-        '204':
-          $ref: '#/components/responses/NoContent'
-        '404':
-          $ref: '#/components/responses/NotFound'
+    parameters:
+      - $ref: '#/components/parameters/group_id'
   /networks:
     get:
       tags:
@@ -1131,6 +1158,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/page'
         - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/search'
       responses:
         '200':
           description: Networks retrieved successfully
@@ -1150,15 +1178,15 @@ paths:
                     example: success
                   data:
                     type: array
+                    example: []
                     items:
                       $ref: '#/components/schemas/Network'
-                    example: []
                 required:
                   - result
               example:
+                data: []
                 id: req-12345
                 result: success
-                data: []
         '401':
           $ref: '#/components/responses/Unauthorized'
   /network:
@@ -1175,10 +1203,10 @@ paths:
             schema:
               $ref: '#/components/schemas/NetworkPost'
             example:
-              name: LAN
               base: 192.168.1.0
-              mask: 255.255.255.0
               location: 1
+              mask: 255.255.255.0
+              name: LAN
       responses:
         '400':
           $ref: '#/components/responses/BadRequest'
@@ -1205,14 +1233,12 @@ paths:
                 required:
                   - result
               example:
-                id: req-12345
-                result: success
                 data:
                   id: 1
                   name: LAN
+                id: req-12345
+                result: success
   /network/{network_id}:
-    parameters:
-      - $ref: '#/components/parameters/network_id'
     get:
       tags:
         - network
@@ -1247,6 +1273,16 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NetworkNotFound'
+    delete:
+      tags:
+        - network
+      summary: Delete network by Network ID
+      operationId: delete-network-network-id
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '404':
+          $ref: '#/components/responses/NotFound'
     patch:
       tags:
         - network
@@ -1260,9 +1296,9 @@ paths:
             schema:
               $ref: '#/components/schemas/NetworkPatch'
             example:
-              name: LAN
               base: 192.168.1.0
               mask: 255.255.255.0
+              name: LAN
         required: true
       responses:
         '200':
@@ -1290,16 +1326,8 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NetworkNotFound'
-    delete:
-      tags:
-        - network
-      summary: Delete network by Network ID
-      operationId: delete-network-network-id
-      responses:
-        '204':
-          $ref: '#/components/responses/NoContent'
-        '404':
-          $ref: '#/components/responses/NotFound'
+    parameters:
+      - $ref: '#/components/parameters/network_id'
   /rooms:
     get:
       tags:
@@ -1310,6 +1338,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/page'
         - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/search'
       responses:
         '200':
           description: Rooms retrieved successfully
@@ -1329,15 +1358,15 @@ paths:
                     example: success
                   data:
                     type: array
+                    example: []
                     items:
                       $ref: '#/components/schemas/Room'
-                    example: []
                 required:
                   - result
               example:
+                data: []
                 id: req-12345
                 result: success
-                data: []
         '401':
           $ref: '#/components/responses/Unauthorized'
   /room:
@@ -1354,10 +1383,10 @@ paths:
             schema:
               $ref: '#/components/schemas/RoomPost'
             example:
-              name: Server Room A
-              number: '101'
               floor: 1
               location: 1
+              name: Server Room A
+              number: '101'
       responses:
         '400':
           $ref: '#/components/responses/BadRequest'
@@ -1384,8 +1413,6 @@ paths:
                 required:
                   - result
   /room/{room_id}:
-    parameters:
-      - $ref: '#/components/parameters/room_id'
     get:
       tags:
         - room
@@ -1420,6 +1447,16 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/RoomNotFound'
+    delete:
+      tags:
+        - room
+      summary: Delete room by Room ID
+      operationId: delete-room-room-id
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '404':
+          $ref: '#/components/responses/NotFound'
     patch:
       tags:
         - room
@@ -1433,8 +1470,8 @@ paths:
             schema:
               $ref: '#/components/schemas/RoomPatch'
             example:
-              name: Server Room A
               floor: 1
+              name: Server Room A
         required: true
       responses:
         '200':
@@ -1462,25 +1499,19 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/RoomNotFound'
-    delete:
-      tags:
-        - room
-      summary: Delete room by Room ID
-      operationId: delete-room-room-id
-      responses:
-        '204':
-          $ref: '#/components/responses/NoContent'
-        '404':
-          $ref: '#/components/responses/NotFound'
-  /room/{room_id}/devices:
     parameters:
       - $ref: '#/components/parameters/room_id'
+  /room/{room_id}/devices:
     get:
       tags:
         - device
       summary: Get Devices by Room ID
       description: Retrieve all devices installed in the given room.
       operationId: get-devices-roomId
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/search'
       responses:
         '200':
           description: Devices found for room
@@ -1500,19 +1531,21 @@ paths:
                     example: success
                   data:
                     type: array
+                    example: []
                     items:
                       $ref: '#/components/schemas/Device'
-                    example: []
                 required:
                   - result
               example:
+                data: []
                 id: req-12345
                 result: success
-                data: []
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/RoomNotFound'
+    parameters:
+      - $ref: '#/components/parameters/room_id'
   /devices:
     get:
       tags:
@@ -1523,6 +1556,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/page'
         - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/search'
       responses:
         '200':
           description: Devices retrieved successfully
@@ -1542,15 +1576,15 @@ paths:
                     example: success
                   data:
                     type: array
+                    example: []
                     items:
                       $ref: '#/components/schemas/Device'
-                    example: []
                 required:
                   - result
               example:
+                data: []
                 id: req-12345
                 result: success
-                data: []
         '401':
           $ref: '#/components/responses/Unauthorized'
   /device:
@@ -1567,9 +1601,9 @@ paths:
             schema:
               $ref: '#/components/schemas/DevicePost'
             example:
-              name: Projector 1
               manufacturer: Sony
               model: VPL-FHZ80
+              name: Projector 1
               room: 1
       responses:
         '400':
@@ -1597,8 +1631,6 @@ paths:
                 required:
                   - result
   /device/{device_id}:
-    parameters:
-      - $ref: '#/components/parameters/device_id'
     get:
       tags:
         - device
@@ -1633,6 +1665,16 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/DeviceNotFound'
+    delete:
+      tags:
+        - device
+      summary: Delete device by Device ID
+      operationId: delete-device-device-id
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '404':
+          $ref: '#/components/responses/NotFound'
     patch:
       tags:
         - device
@@ -1646,9 +1688,9 @@ paths:
             schema:
               $ref: '#/components/schemas/DevicePatch'
             example:
-              name: Projector 1
               manufacturer: Sony
               model: VPL-FHZ80
+              name: Projector 1
         required: true
       responses:
         '200':
@@ -1676,16 +1718,8 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/DeviceNotFound'
-    delete:
-      tags:
-        - device
-      summary: Delete device by Device ID
-      operationId: delete-device-device-id
-      responses:
-        '204':
-          $ref: '#/components/responses/NoContent'
-        '404':
-          $ref: '#/components/responses/NotFound'
+    parameters:
+      - $ref: '#/components/parameters/device_id'
   /application-configurations:
     get:
       tags:
@@ -1711,15 +1745,15 @@ paths:
                     example: success
                   data:
                     type: array
+                    example: []
                     items:
                       $ref: '#/components/schemas/ApplicationConfiguration'
-                    example: []
                 required:
                   - result
               example:
+                data: []
                 id: req-12345
                 result: success
-                data: []
   /application-configuration:
     post:
       tags:
@@ -1734,8 +1768,8 @@ paths:
             schema:
               $ref: '#/components/schemas/ApplicationConfiguration'
             example:
-              namespace: app
               key: theme
+              namespace: app
               value:
                 color: blue
       responses:
@@ -1760,21 +1794,18 @@ paths:
                 required:
                   - result
               example:
-                id: req-12345
-                result: success
                 data:
-                  namespace: app
                   key: theme
+                  namespace: app
                   value:
                     color: blue
+                id: req-12345
+                result: success
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
   /application-configuration/{configuration_namespace}/{configuration_key}:
-    parameters:
-      - $ref: '#/components/parameters/configuration_namespace'
-      - $ref: '#/components/parameters/configuration_key'
     get:
       tags:
         - configuration
@@ -1802,13 +1833,13 @@ paths:
                 required:
                   - result
               example:
-                id: req-12345
-                result: success
                 data:
-                  namespace: app
                   key: theme
+                  namespace: app
                   value:
                     color: blue
+                id: req-12345
+                result: success
     delete:
       tags:
         - configuration
@@ -1831,8 +1862,8 @@ paths:
             schema:
               $ref: '#/components/schemas/ApplicationConfiguration'
             example:
-              namespace: app
               key: theme
+              namespace: app
               value:
                 color: red
         required: true
@@ -1858,17 +1889,22 @@ paths:
                 required:
                   - result
               example:
-                id: req-12345
-                result: success
                 data:
-                  namespace: app
                   key: theme
+                  namespace: app
                   value:
                     color: red
+                id: req-12345
+                result: success
         '404':
           $ref: '#/components/responses/NotFound'
+    parameters:
+      - $ref: '#/components/parameters/configuration_namespace'
+      - $ref: '#/components/parameters/configuration_key'
   /upload/{upload_id}/approve:
     post:
+      tags:
+        - files
       summary: Approve file upload
       description: Approve a pending file upload by ID, triggering processing.
       operationId: post-upload-by-upload-id-approve
@@ -1879,21 +1915,63 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
-      tags:
-        - files
     parameters:
       - $ref: '#/components/parameters/upload_id'
   /content:
+    get:
+      tags:
+        - content
+      summary: List content
+      description: Retrieve a list of content files matching the search criteria.
+      operationId: get-content
+      parameters:
+        - $ref: '#/components/parameters/search'
+      responses:
+        '200':
+          description: Content found OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: req-12345
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                    example: success
+                  data:
+                    type: array
+                    example: []
+                    items:
+                      $ref: '#/components/schemas/File'
+                required:
+                  - result
+              example:
+                data: []
+                id: req-12345
+                result: success
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
     post:
       tags:
         - content
       description: Upload a new image.
       operationId: post-content-images
       requestBody:
+        description: The image file metadata to upload.
         content:
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/FilePost'
+            example:
+              name: floorplan.png
+              type: image
       responses:
         '200':
           description: Accepted
@@ -1928,11 +2006,15 @@ paths:
       operationId: get-content-by-content-id
       responses:
         '200':
-          description: OK
+          description: Content retrieved OK
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/File'
+              example:
+                uuid: 550e8400-e29b-41d4-a716-446655440000
+                name: floorplan.png
+                type: image
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
@@ -1973,9 +2055,25 @@ paths:
         - products
       summary: List Generic Products
       operationId: listGenericProducts
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/search'
+        - name: type_search
+          in: query
+          description: Filter generic products by type.
+          schema:
+            type: string
+            maxLength: 64
+        - name: subtype_search
+          in: query
+          description: Filter generic products by subtype.
+          schema:
+            type: string
+            maxLength: 64
       responses:
         '200':
-          description: OK
+          description: Generic products retrieved successfully
           content:
             application/json:
               schema:
@@ -1983,19 +2081,28 @@ paths:
                 properties:
                   id:
                     type: string
+                    example: req-12345
                   result:
                     type: string
                     enum:
                       - error
                       - success
+                    example: success
                   data:
                     type: array
+                    example: []
                     items:
                       $ref: '#/components/schemas/GenericProduct'
                 required:
                   - result
-                items:
-                  $ref: '#/components/schemas/GenericProduct'
+              example:
+                data: []
+                id: req-12345
+                result: success
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
   /generic-product:
     post:
       tags:
@@ -2003,10 +2110,14 @@ paths:
       summary: Create GenericProduct
       operationId: createGenericProduct
       requestBody:
+        description: Fields for creating a new generic product.
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/GenericProductPost'
+            example:
+              type: projector
+              subtype: laser
         required: true
       responses:
         '200':
@@ -2018,15 +2129,20 @@ paths:
                 properties:
                   id:
                     type: string
+                    example: req-12345
                   result:
                     type: string
                     enum:
                       - error
                       - success
+                    example: success
                   data:
                     $ref: '#/components/schemas/GenericProduct'
                 required:
                   - result
+              example:
+                id: req-12345
+                result: success
   /generic-product/{generic_product_id}:
     get:
       tags:
@@ -2043,15 +2159,20 @@ paths:
                 properties:
                   id:
                     type: string
+                    example: req-12345
                   result:
                     type: string
                     enum:
                       - error
                       - success
+                    example: success
                   data:
                     $ref: '#/components/schemas/GenericProduct'
                 required:
                   - result
+              example:
+                id: req-12345
+                result: success
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
@@ -2074,10 +2195,14 @@ paths:
       summary: Partially Update GenericProduct
       operationId: patchGenericProduct
       requestBody:
+        description: Fields to update on the generic product.
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/GenericProductPatch'
+            example:
+              type: projector
+              subtype: laser
       responses:
         '200':
           description: Generic Product Updated
@@ -2088,15 +2213,20 @@ paths:
                 properties:
                   id:
                     type: string
+                    example: req-12345
                   result:
                     type: string
                     enum:
                       - error
                       - success
+                    example: success
                   data:
                     $ref: '#/components/schemas/GenericProduct'
                 required:
                   - result
+              example:
+                id: req-12345
+                result: success
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
@@ -2109,6 +2239,22 @@ paths:
         - products
       summary: List Specific Products
       operationId: listSpecificProducts
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/search'
+        - name: manufacturer_search
+          in: query
+          description: Filter specific products by manufacturer.
+          schema:
+            type: string
+            maxLength: 64
+        - name: model_search
+          in: query
+          description: Filter specific products by model.
+          schema:
+            type: string
+            maxLength: 64
       responses:
         '200':
           description: Get list of SpecificProducts
@@ -2119,19 +2265,24 @@ paths:
                 properties:
                   id:
                     type: string
+                    example: req-12345
                   result:
                     type: string
                     enum:
                       - error
                       - success
+                    example: success
                   data:
                     type: array
+                    example: []
                     items:
                       $ref: '#/components/schemas/SpecificProduct'
                 required:
                   - result
-                items:
-                  $ref: '#/components/schemas/GenericProduct'
+              example:
+                data: []
+                id: req-12345
+                result: success
   /specific-product:
     post:
       tags:
@@ -2139,10 +2290,14 @@ paths:
       summary: Create SpecificProduct
       operationId: createSpecificProduct
       requestBody:
+        description: Fields for creating a new specific product.
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/SpecificProductPost'
+            example:
+              manufacturer: Sony
+              model: VPL-FHZ80
         required: true
       responses:
         '200':
@@ -2154,15 +2309,20 @@ paths:
                 properties:
                   id:
                     type: string
+                    example: req-12345
                   result:
                     type: string
                     enum:
                       - error
                       - success
+                    example: success
                   data:
                     $ref: '#/components/schemas/SpecificProduct'
                 required:
                   - result
+              example:
+                id: req-12345
+                result: success
   /specific-product/{specific_product_id}:
     get:
       tags:
@@ -2179,15 +2339,20 @@ paths:
                 properties:
                   id:
                     type: string
+                    example: req-12345
                   result:
                     type: string
                     enum:
                       - error
                       - success
+                    example: success
                   data:
                     $ref: '#/components/schemas/SpecificProduct'
                 required:
                   - result
+              example:
+                id: req-12345
+                result: success
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
@@ -2210,10 +2375,14 @@ paths:
       summary: Partially Update SpecificProduct
       operationId: patchSpecificProduct
       requestBody:
+        description: Fields to update on the specific product.
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/SpecificProductPatch'
+            example:
+              manufacturer: Sony
+              model: VPL-FHZ80
       responses:
         '200':
           description: Specific Product Updated
@@ -2224,15 +2393,20 @@ paths:
                 properties:
                   id:
                     type: string
+                    example: req-12345
                   result:
                     type: string
                     enum:
                       - error
                       - success
+                    example: success
                   data:
                     $ref: '#/components/schemas/SpecificProduct'
                 required:
                   - result
+              example:
+                id: req-12345
+                result: success
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
@@ -2245,9 +2419,13 @@ paths:
         - products
       summary: List  the commissioned devices
       operationId: listDeviceCommission
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/search'
       responses:
         '200':
-          description: Get list of SpecificProducts
+          description: Device commissions retrieved successfully
           content:
             application/json:
               schema:
@@ -2255,19 +2433,24 @@ paths:
                 properties:
                   id:
                     type: string
+                    example: req-12345
                   result:
                     type: string
                     enum:
                       - error
                       - success
+                    example: success
                   data:
                     type: array
+                    example: []
                     items:
                       $ref: '#/components/schemas/DeviceCommission'
                 required:
                   - result
-                items:
-                  $ref: '#/components/schemas/GenericProduct'
+              example:
+                data: []
+                id: req-12345
+                result: success
   /device-commission:
     post:
       tags:
@@ -2275,10 +2458,16 @@ paths:
       summary: Create a DeviceCommission
       operationId: createDeviceCommission
       requestBody:
+        description: Fields for creating a device commission.
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/DeviceCommissionPost'
+            example:
+              device:
+                name: Projector 1
+              completed: false
+              inProgress: false
         required: true
       responses:
         '200':
@@ -2290,15 +2479,20 @@ paths:
                 properties:
                   id:
                     type: string
+                    example: req-12345
                   result:
                     type: string
                     enum:
                       - error
                       - success
+                    example: success
                   data:
                     $ref: '#/components/schemas/DeviceCommission'
                 required:
                   - result
+              example:
+                id: req-12345
+                result: success
   /device-commission/{device_commission_id}:
     get:
       tags:
@@ -2315,15 +2509,20 @@ paths:
                 properties:
                   id:
                     type: string
+                    example: req-12345
                   result:
                     type: string
                     enum:
                       - error
                       - success
+                    example: success
                   data:
                     $ref: '#/components/schemas/DeviceCommission'
                 required:
                   - result
+              example:
+                id: req-12345
+                result: success
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
@@ -2346,13 +2545,17 @@ paths:
       summary: Partially Update DeviceCommission
       operationId: patchDeviceCommission
       requestBody:
+        description: Fields to update on the device commission.
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/DeviceCommissionPatch'
+            example:
+              completed: true
+              inProgress: false
       responses:
         '200':
-          description: Specific Product Updated
+          description: Device commission updated
           content:
             application/json:
               schema:
@@ -2360,15 +2563,20 @@ paths:
                 properties:
                   id:
                     type: string
+                    example: req-12345
                   result:
                     type: string
                     enum:
                       - error
                       - success
+                    example: success
                   data:
                     $ref: '#/components/schemas/DeviceCommission'
                 required:
                   - result
+              example:
+                id: req-12345
+                result: success
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
@@ -2377,8 +2585,14 @@ paths:
       - $ref: '#/components/parameters/device_commission_id'
   /commission-projects:
     get:
+      tags:
+        - commissioning
       summary: List Commission Projects
       operationId: listCommissionProjects
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/search'
       responses:
         '200':
           description: Get Commission Projects OK
@@ -2389,28 +2603,43 @@ paths:
                 properties:
                   id:
                     type: string
+                    example: req-12345
                   result:
                     type: string
                     enum:
                       - error
                       - success
+                    example: success
                   data:
                     type: array
+                    example: []
                     items:
                       $ref: '#/components/schemas/CommissionProject'
                 required:
                   - result
+              example:
+                data: []
+                id: req-12345
+                result: success
         '401':
           $ref: '#/components/responses/Unauthorized'
   /commission-project:
     post:
+      tags:
+        - commissioning
       summary: Create CommissionProject
       operationId: createCommissionProject
       requestBody:
+        description: Fields for creating a commission project.
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/CommissionProjectPost'
+            example:
+              name: Acme Rollout
+              complete: false
+              inProgress: false
+              progress: 0
         required: true
       responses:
         '201':
@@ -2422,21 +2651,28 @@ paths:
                 properties:
                   id:
                     type: string
+                    example: req-12345
                   result:
                     type: string
                     enum:
                       - error
                       - success
+                    example: success
                   data:
                     $ref: '#/components/schemas/CommissionProject'
                 required:
                   - result
+              example:
+                id: req-12345
+                result: success
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
   /commission-projects/{project_id}:
     get:
+      tags:
+        - commissioning
       summary: Get CommissionProject
       operationId: getCommissionProject
       responses:
@@ -2449,20 +2685,27 @@ paths:
                 properties:
                   id:
                     type: string
+                    example: req-12345
                   result:
                     type: string
                     enum:
                       - error
                       - success
+                    example: success
                   data:
                     $ref: '#/components/schemas/CommissionProject'
                 required:
                   - result
+              example:
+                id: req-12345
+                result: success
         '404':
           $ref: '#/components/responses/NotFound'
         '401':
           $ref: '#/components/responses/Unauthorized'
     delete:
+      tags:
+        - commissioning
       summary: Delete CommissionProject
       operationId: deleteCommissionProject
       responses:
@@ -2473,13 +2716,19 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
     patch:
+      tags:
+        - commissioning
       summary: Partially Update CommissionProject
       operationId: patchCommissionProject
       requestBody:
+        description: Fields to update on the commission project.
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/CommissionProjectPatch'
+            example:
+              name: Acme Rollout
+              progress: 50
         required: true
       responses:
         '200':
@@ -2491,15 +2740,20 @@ paths:
                 properties:
                   id:
                     type: string
+                    example: req-12345
                   result:
                     type: string
                     enum:
                       - error
                       - success
+                    example: success
                   data:
                     $ref: '#/components/schemas/CommissionProject'
                 required:
                   - result
+              example:
+                id: req-12345
+                result: success
         '404':
           $ref: '#/components/responses/NotFound'
         '400':
@@ -2507,31 +2761,6 @@ paths:
     parameters:
       - $ref: '#/components/parameters/project_id'
 components:
-  responses:
-    NoContent:
-      description: No Content
-    BadRequest:
-      description: Required information missing.
-    Unauthorized:
-      description: Unauthorized
-    NotFound:
-      description: Not Found
-    UserNotFound:
-      description: User not found
-    ClientNotFound:
-      description: Client not found
-    LocationNotFound:
-      description: Location not found
-    GroupNotFound:
-      description: Group not found
-    NetworkNotFound:
-      description: Network not found
-    RoomNotFound:
-      description: Room not found
-    DeviceNotFound:
-      description: Device not found
-    Accepted:
-      description: Content accepted.
   schemas:
     BaseModel:
       title: BaseModel
@@ -2542,8 +2771,8 @@ components:
           description: Autogenerated ID from the database.
           type: integer
           format: int64
-          readOnly: true
           example: 1
+          readOnly: true
         created:
           description: Datetime the model was created handled serverside.
           type: string
@@ -2565,12 +2794,13 @@ components:
     User:
       description: A user account on the system.
       example:
-        id: 1
-        username: jsmith
-        password: '********'
+        accountLocked: false
         aesKey: YWVzS2V5QmFzZTY0
         emailVerified: false
-        accountLocked: false
+        id: 1
+        password: '********'
+        systemAccount: false
+        username: jsmith
       allOf:
         - $ref: '#/components/schemas/BaseModel'
         - type: object
@@ -2644,14 +2874,14 @@ components:
       properties:
         username:
           type: string
+          example: jsmith
           maxLength: 64
           pattern: ^[A-Za-z0-9_-]+
-          example: jsmith
         password:
           type: string
           format: password
-          maxLength: 255
           example: '********'
+          maxLength: 255
         aesKey:
           type: string
           format: byte
@@ -2666,19 +2896,19 @@ components:
           example: cnNhUHJpdmF0ZUtleQ==
         firstName:
           type: string
+          example: John
           maxLength: 255
           pattern: ^[A-Za-z0-9 -]+
-          example: John
         lastName:
           type: string
+          example: Smith
           maxLength: 255
           pattern: ^[A-Za-z0-9 -]+
-          example: Smith
         email:
           type: string
           format: email
-          maxLength: 255
           example: jsmith@example.com
+          maxLength: 255
         emailVerified:
           type: boolean
           default: false
@@ -2689,13 +2919,13 @@ components:
           example: false
         groups:
           type: array
+          example: []
           items:
             $ref: '#/components/schemas/Group'
-          example: []
         clientConfigurationData:
           type: object
-          additionalProperties: true
           example: {}
+          additionalProperties: true
       required:
         - username
         - password
@@ -2753,14 +2983,16 @@ components:
             type: integer
         clientConfigurationData:
           type: object
-          additionalProperties: true
           example: {}
+          additionalProperties: true
     Group:
       description: A security group for organizing user permissions.
       example:
+        autoGroup: false
+        description: System administrators group
         id: 1
         name: Administrators
-        description: System administrators group
+        systemGroup: false
       allOf:
         - $ref: '#/components/schemas/BaseModel'
         - type: object
@@ -2791,13 +3023,13 @@ components:
       properties:
         name:
           type: string
+          example: Administrators
           maxLength: 64
           pattern: ^[A-Za-z0-9 _.#-]+
-          example: Administrators
         description:
           type: string
-          maxLength: 255
           example: System administrators group
+          maxLength: 255
       required:
         - name
     GroupPatch:
@@ -2816,9 +3048,9 @@ components:
     Client:
       description: An organizational client account.
       example:
+        description: Acme Corporation client account
         id: 1
         name: Acme Corp
-        description: Acme Corporation client account
       allOf:
         - $ref: '#/components/schemas/BaseModel'
         - type: object
@@ -2842,13 +3074,13 @@ components:
       properties:
         name:
           type: string
+          example: Acme Corp
           maxLength: 64
           pattern: ^[A-Za-z0-9 _.#-]+
-          example: Acme Corp
         description:
           type: string
-          maxLength: 255
           example: Acme Corporation client account
+          maxLength: 255
         markdown:
           type: string
           example: '# Notes'
@@ -2873,9 +3105,9 @@ components:
     Location:
       description: A physical location such as a building or site.
       example:
+        city: Springfield
         id: 1
         name: Main Office
-        city: Springfield
         state: IL
       allOf:
         - $ref: '#/components/schemas/BaseModel'
@@ -2938,38 +3170,38 @@ components:
       properties:
         name:
           type: string
+          example: Main Office
           maxLength: 64
           pattern: ^[A-Za-z0-9 _.#-]+$
-          example: Main Office
         description:
           type: string
-          maxLength: 255
           example: Primary office location
+          maxLength: 255
         address1:
           type: string
+          example: 123 Main St
           maxLength: 255
           pattern: ^[A-Za-z0-9 _.#-]+$
-          example: 123 Main St
         address2:
           type: string
+          example: Suite 100
           maxLength: 255
           pattern: ^[A-Za-z0-9 _.#-]+$
-          example: Suite 100
         city:
           type: string
+          example: Springfield
           maxLength: 64
           pattern: ^[A-Za-z0-9-_.]+$
-          example: Springfield
         state:
           type: string
+          example: IL
           maxLength: 2
           pattern: ^[A-Za-z ]+$
-          example: IL
         zip:
           type: string
+          example: '62701'
           maxLength: 12
           pattern: ^[A-Za-z0-9-]+$
-          example: '62701'
         parent:
           type: integer
           format: int64
@@ -3035,9 +3267,9 @@ components:
     Room:
       description: A room within a location.
       example:
+        floor: 1
         id: 1
         name: Server Room A
-        floor: 1
       allOf:
         - $ref: '#/components/schemas/BaseModel'
         - type: object
@@ -3077,21 +3309,21 @@ components:
       properties:
         name:
           type: string
-          maxLength: 64
           example: Server Room A
+          maxLength: 64
         number:
           type: string
-          maxLength: 10
           example: '101'
+          maxLength: 10
         description:
           type: string
-          maxLength: 255
           example: Primary server room
+          maxLength: 255
         floor:
           type: integer
+          example: 1
           minimum: -10
           maximum: 255
-          example: 1
         complete:
           type: boolean
           default: false
@@ -3149,10 +3381,10 @@ components:
     Network:
       description: A network segment associated with a location.
       example:
-        id: 1
-        name: LAN
         base: 192.168.1.0
+        id: 1
         mask: 255.255.255.0
+        name: LAN
       allOf:
         - $ref: '#/components/schemas/BaseModel'
         - type: object
@@ -3214,12 +3446,12 @@ components:
       properties:
         name:
           type: string
-          maxLength: 64
           example: LAN
+          maxLength: 64
         description:
           type: string
-          maxLength: 255
           example: Local area network
+          maxLength: 255
         base:
           type: string
           format: ipv4
@@ -3238,9 +3470,9 @@ components:
           example: 8.8.4.4
         vlanId:
           type: integer
+          example: 100
           minimum: 1
           maximum: 1024
-          example: 100
         addressMethod:
           type: string
           enum:
@@ -3327,9 +3559,9 @@ components:
       description: A physical device installed in a room.
       example:
         id: 1
-        name: Projector 1
         manufacturer: Sony
         model: VPL-FHZ80
+        name: Projector 1
       allOf:
         - $ref: '#/components/schemas/BaseModel'
         - type: object
@@ -3517,32 +3749,32 @@ components:
       properties:
         name:
           type: string
-          maxLength: 64
           example: Projector 1
+          maxLength: 64
         description:
           type: string
-          maxLength: 255
           example: Main conference room projector
+          maxLength: 255
         manufacturer:
           type: string
-          maxLength: 64
           example: Sony
+          maxLength: 64
         model:
           type: string
-          maxLength: 64
           example: VPL-FHZ80
+          maxLength: 64
         serial:
           type: string
-          maxLength: 64
           example: SN12345678
+          maxLength: 64
         installed:
           type: boolean
           default: false
           example: true
         installedAt:
           type: string
-          maxLength: 64
           example: 2024-01-15
+          maxLength: 64
         room:
           type: integer
           format: int64
@@ -3585,48 +3817,48 @@ components:
           example: 4
         hostname1:
           type: string
+          example: projector-1
           maxLength: 63
           pattern: ^[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?$
-          example: projector-1
         hostname2:
           type: string
+          example: projector-1-ctrl
           maxLength: 63
           pattern: ^[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?$
-          example: projector-1-ctrl
         hostname3:
           type: string
+          example: projector-1-mgmt
           maxLength: 63
           pattern: ^[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?$
-          example: projector-1-mgmt
         hostname4:
           type: string
+          example: projector-1-aux
           maxLength: 63
           pattern: ^[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?$
-          example: projector-1-aux
         mac1:
           type: string
-          pattern: ^([0-9A-Fa-f]{2}[:\-]){5}[0-9A-Fa-f]{2}$|^([0-9A-Fa-f]{4}\.){2}[0-9A-Fa-f]{4}$|^[0-9A-Fa-f]{12}$
           example: AA:BB:CC:DD:EE:01
+          pattern: ^([0-9A-Fa-f]{2}[:\-]){5}[0-9A-Fa-f]{2}$|^([0-9A-Fa-f]{4}\.){2}[0-9A-Fa-f]{4}$|^[0-9A-Fa-f]{12}$
         mac2:
           type: string
-          pattern: ^([0-9A-Fa-f]{2}[:\-]){5}[0-9A-Fa-f]{2}$|^([0-9A-Fa-f]{4}\.){2}[0-9A-Fa-f]{4}$|^[0-9A-Fa-f]{12}$
           example: AA:BB:CC:DD:EE:02
+          pattern: ^([0-9A-Fa-f]{2}[:\-]){5}[0-9A-Fa-f]{2}$|^([0-9A-Fa-f]{4}\.){2}[0-9A-Fa-f]{4}$|^[0-9A-Fa-f]{12}$
         mac3:
           type: string
-          pattern: ^([0-9A-Fa-f]{2}[:\-]){5}[0-9A-Fa-f]{2}$|^([0-9A-Fa-f]{4}\.){2}[0-9A-Fa-f]{4}$|^[0-9A-Fa-f]{12}$
           example: AA:BB:CC:DD:EE:03
+          pattern: ^([0-9A-Fa-f]{2}[:\-]){5}[0-9A-Fa-f]{2}$|^([0-9A-Fa-f]{4}\.){2}[0-9A-Fa-f]{4}$|^[0-9A-Fa-f]{12}$
         mac4:
           type: string
-          pattern: ^([0-9A-Fa-f]{2}[:\-]){5}[0-9A-Fa-f]{2}$|^([0-9A-Fa-f]{4}\.){2}[0-9A-Fa-f]{4}$|^[0-9A-Fa-f]{12}$
           example: AA:BB:CC:DD:EE:04
+          pattern: ^([0-9A-Fa-f]{2}[:\-]){5}[0-9A-Fa-f]{2}$|^([0-9A-Fa-f]{4}\.){2}[0-9A-Fa-f]{4}$|^[0-9A-Fa-f]{12}$
         username1:
           type: string
-          maxLength: 63
           example: admin
+          maxLength: 63
         username2:
           type: string
-          maxLength: 63
           example: monitor
+          maxLength: 63
         password1:
           type: string
           example: '********'
@@ -3635,16 +3867,16 @@ components:
           example: '********'
         jack:
           type: string
-          maxLength: 8
           example: J01
+          maxLength: 8
         switch:
           type: string
-          maxLength: 64
           example: SW-01
+          maxLength: 64
         port:
           type: string
-          maxLength: 8
           example: Gi0/1
+          maxLength: 8
         poeType:
           type: string
           enum:
@@ -3679,16 +3911,16 @@ components:
         ipId:
           type: string
           format: byte
-          maxLength: 4
           example: '03'
+          maxLength: 4
         serverPort1:
           type: integer
-          maximum: 65535
           example: 8080
+          maximum: 65535
         serverPort2:
           type: integer
-          maximum: 65535
           example: 8443
+          maximum: 65535
         markdown:
           type: string
           example: '# Notes'
@@ -3880,8 +4112,8 @@ components:
       title: Application Configuration
       description: Stores the configuration data of the application in a key value store separated by namespaces.
       example:
-        namespace: app
         key: theme
+        namespace: app
         value:
           color: blue
       allOf:
@@ -3907,6 +4139,7 @@ components:
             - key
             - value
     CommissioningStep:
+      description: A commission step is meant to be stored in a JSON blob per device and should not be assigned its own table in the database.
       type: object
       properties:
         step:
@@ -3924,8 +4157,11 @@ components:
         - step
         - action
       additionalProperties: false
-      description: A commission step is meant to be stored in a JSON blob per device and should not be assigned its own table in the database.
     GenericProduct:
+      description: A generic product commissioning template defined by type and subtype.
+      example:
+        type: projector
+        subtype: laser
       allOf:
         - $ref: '#/components/schemas/BaseModel'
         - type: object
@@ -3939,7 +4175,7 @@ components:
             description:
               type: string
             steps:
-              description: JSON blob of CommissioningStep
+              description: JSON blob of CommissioningStep records for this generic product.
               type: object
               items:
                 $ref: '#/components/schemas/CommissioningStep'
@@ -3947,42 +4183,56 @@ components:
             - subtype
             - type
     GenericProductPost:
+      description: Request body for creating a new generic product.
       type: object
       properties:
         type:
           type: string
           maxLength: 64
+          example: projector
         subtype:
           type: string
           maxLength: 64
+          example: laser
         steps:
+          description: JSON blob of CommissioningStep records to apply when creating the generic product.
           type: object
+          example: {}
           items:
             type: number
-          description: JSON blob of CommissioningStep
         description:
           type: string
+          example: Standard projector commissioning template
       required:
         - subtype
         - type
     GenericProductPatch:
+      description: Request body for updating a generic product.
       type: object
       properties:
         type:
           type: string
           maxLength: 64
+          example: projector
         subtype:
           type: string
           maxLength: 64
+          example: laser
         steps:
+          description: JSON blob of CommissioningStep records to apply when updating the generic product.
           type: object
+          example: {}
           items:
-            type: number
             $ref: '#/components/schemas/CommissioningStep'
-          description: JSON blob of CommissioningStep
+            type: number
         description:
           type: string
+          example: Standard projector commissioning template
     SpecificProduct:
+      description: A specific product identified by manufacturer and model.
+      example:
+        manufacturer: Sony
+        model: VPL-FHZ80
       allOf:
         - $ref: '#/components/schemas/BaseModel'
         - type: object
@@ -3998,7 +4248,7 @@ components:
             genericSteps:
               $ref: '#/components/schemas/GenericProduct'
             additionalSteps:
-              description: JSON blob of CommissioningStep
+              description: JSON blob of CommissioningStep records specific to this product.
               type: object
               items:
                 $ref: '#/components/schemas/CommissioningStep'
@@ -4006,47 +4256,61 @@ components:
             - manufacturer
             - model
     SpecificProductPost:
+      description: Request body for creating a new specific product.
       type: object
       properties:
         manufacturer:
           type: string
           maxLength: 64
+          example: Sony
         model:
           type: string
           maxLength: 64
+          example: VPL-FHZ80
         genericSteps:
-          format: int64
           $ref: '#/components/schemas/GenericProduct'
         additionalSteps:
+          description: JSON blob of CommissioningStep records to add when creating the specific product.
           type: object
+          example: {}
           items:
             $ref: '#/components/schemas/CommissioningStep'
-          description: JSON blob of CommissioningStep
         description:
           type: string
+          example: Laser projector specific commissioning notes
       required:
         - manufacturer
         - model
     SpecificProductPatch:
+      description: Request body for updating a specific product.
       type: object
       properties:
         manufacturer:
           type: string
           maxLength: 64
+          example: Sony
         model:
           type: string
           maxLength: 64
+          example: VPL-FHZ80
         genericSteps:
-          format: int64
           $ref: '#/components/schemas/GenericProduct'
         additionalSteps:
+          description: JSON blob of CommissioningStep records to add when updating the specific product.
           type: object
+          example: {}
           items:
             $ref: '#/components/schemas/CommissioningStep'
-          description: JSON blob of CommissioningStep
         description:
           type: string
+          example: Laser projector specific commissioning notes
     DeviceCommission:
+      description: The commissioning record and progress for a single device.
+      example:
+        device:
+          name: Projector 1
+        completed: false
+        inProgress: false
       allOf:
         - $ref: '#/components/schemas/BaseModel'
         - type: object
@@ -4060,7 +4324,7 @@ components:
               type: boolean
               default: false
             steps:
-              description: JSON blob of CommissioningStep
+              description: JSON blob of CommissioningStep records completed for this device.
               type: object
               items:
                 $ref: '#/components/schemas/CommissioningStep'
@@ -4069,6 +4333,7 @@ components:
             - completed
             - inProgress
     DeviceCommissionPost:
+      description: Request body for creating a device commission.
       type: object
       properties:
         device:
@@ -4076,22 +4341,21 @@ components:
         completed:
           type: boolean
           default: false
-        percentage:
-          type: integer
-          format: int32
-          default: 0
-          minimum: 0
-          maximum: 100
         steps:
+          description: JSON blob of CommissioningStep records to set when creating the device commission.
           type: object
+          example: {}
           items:
             $ref: '#/components/schemas/CommissioningStep'
-          description: JSON blob of CommissioningStep
+        inProgress:
+          type: boolean
+          default: false
       required:
         - device
         - completed
-        - percentage
+        - inProgress
     DeviceCommissionPatch:
+      description: Request body for updating a device commission.
       type: object
       properties:
         device:
@@ -4099,18 +4363,22 @@ components:
         completed:
           type: boolean
           default: false
-        percentage:
-          type: integer
-          format: int32
-          default: 0
-          minimum: 0
-          maximum: 100
         steps:
+          description: JSON blob of CommissioningStep records to set when updating the device commission.
           type: object
+          example: {}
           items:
             $ref: '#/components/schemas/CommissioningStep'
-          description: JSON blob of CommissioningStep
+        inProgress:
+          type: boolean
+          example: false
     CommissionProject:
+      description: A project that groups device commissions for a client.
+      example:
+        name: Acme Rollout
+        complete: false
+        inProgress: false
+        progress: 0
       allOf:
         - $ref: '#/components/schemas/BaseModel'
         - type: object
@@ -4148,15 +4416,19 @@ components:
             - inProgress
             - progress
     CommissionProjectPost:
+      description: Request body for creating a commission project.
       type: object
       properties:
         name:
           type: string
           maxLength: 64
+          example: Acme Rollout
         description:
           type: string
+          example: Commissioning project for Acme Corp
         assignedUsers:
           type: array
+          example: []
           items:
             $ref: '#/components/schemas/User'
         complete:
@@ -4170,8 +4442,10 @@ components:
           default: 0
           minimum: 0
           maximum: 100
+          example: 0
         devices:
           type: array
+          example: []
           items:
             $ref: '#/components/schemas/DeviceCommission'
       required:
@@ -4180,31 +4454,44 @@ components:
         - inProgress
         - progress
     CommissionProjectPatch:
+      description: Request body for updating a commission project.
       type: object
       properties:
         name:
           type: string
           maxLength: 64
+          example: Acme Rollout
         description:
           type: string
+          example: Commissioning project for Acme Corp
         assignedUsers:
           type: array
+          example: []
           items:
             $ref: '#/components/schemas/User'
         complete:
           type: boolean
+          example: false
         inProgress:
           type: boolean
+          example: false
         progress:
           type: integer
           default: 0
           minimum: 0
           maximum: 100
+          example: 50
         devices:
           type: array
+          example: []
           items:
             $ref: '#/components/schemas/DeviceCommission'
     File:
+      description: Metadata for a stored file such as an image or document.
+      example:
+        uuid: 550e8400-e29b-41d4-a716-446655440000
+        name: floorplan.png
+        type: image
       allOf:
         - $ref: '#/components/schemas/BaseModel'
         - type: object
@@ -4241,11 +4528,13 @@ components:
             - type
             - name
     FilePost:
+      description: Request body for creating a file record.
       type: object
       properties:
         name:
           type: string
           maxLength: 128
+          example: floorplan.png
         type:
           type: string
           enum:
@@ -4256,6 +4545,7 @@ components:
             - user_interface
             - program
             - dsp
+          example: image
         client:
           $ref: '#/components/schemas/Client'
         location:
@@ -4267,6 +4557,31 @@ components:
       required:
         - type
         - name
+  responses:
+    NoContent:
+      description: No Content
+    BadRequest:
+      description: Required information missing.
+    Unauthorized:
+      description: Unauthorized
+    NotFound:
+      description: Not Found
+    UserNotFound:
+      description: User not found
+    ClientNotFound:
+      description: Client not found
+    LocationNotFound:
+      description: Location not found
+    GroupNotFound:
+      description: Group not found
+    NetworkNotFound:
+      description: Network not found
+    RoomNotFound:
+      description: Room not found
+    DeviceNotFound:
+      description: Device not found
+    Accepted:
+      description: Content accepted.
   parameters:
     page:
       name: page
@@ -4282,13 +4597,20 @@ components:
       schema:
         type: integer
         default: 500
-        maximum: 1000
         example: 50
+        maximum: 1000
+    search:
+      name: search
+      in: query
+      description: Filter results by a free-text search term.
+      schema:
+        type: string
+        maxLength: 64
     user_id:
       name: user_id
       in: path
-      required: true
       description: The unique ID of the user.
+      required: true
       schema:
         type: integer
         format: int64
@@ -4296,8 +4618,8 @@ components:
     client_id:
       name: client_id
       in: path
-      required: true
       description: The unique ID of the client.
+      required: true
       schema:
         type: integer
         format: int64
@@ -4305,8 +4627,8 @@ components:
     parent_id:
       name: parent_id
       in: path
-      required: true
       description: The unique ID of the parent location.
+      required: true
       schema:
         type: integer
         format: int64
@@ -4314,8 +4636,8 @@ components:
     location_id:
       name: location_id
       in: path
-      required: true
       description: The unique ID of the location.
+      required: true
       schema:
         type: integer
         format: int64
@@ -4323,8 +4645,8 @@ components:
     group_id:
       name: group_id
       in: path
-      required: true
       description: The unique ID of the group.
+      required: true
       schema:
         type: integer
         format: int64
@@ -4332,8 +4654,8 @@ components:
     room_id:
       name: room_id
       in: path
-      required: true
       description: The unique ID of the room.
+      required: true
       schema:
         type: integer
         format: int64
@@ -4341,8 +4663,8 @@ components:
     network_id:
       name: network_id
       in: path
-      required: true
       description: The unique ID of the network.
+      required: true
       schema:
         type: integer
         format: int64
@@ -4350,8 +4672,8 @@ components:
     device_id:
       name: device_id
       in: path
-      required: true
       description: The unique ID of the device.
+      required: true
       schema:
         type: integer
         format: int64
@@ -4359,30 +4681,30 @@ components:
     configuration_namespace:
       name: configuration_namespace
       in: path
-      required: true
       description: The namespace of the application configuration.
+      required: true
       schema:
         type: string
-        maxLength: 64
         example: app
+        maxLength: 64
         pattern: ^[A-Za-z0-9_.-]+
     configuration_key:
       name: configuration_key
       in: path
-      required: true
       description: The key of the application configuration.
+      required: true
       schema:
         type: string
-        maxLength: 64
         example: theme
+        maxLength: 64
         pattern: ^[A-Za-z0-9_.-]+
     upload_id:
       name: upload_id
       in: path
+      description: The ID of the uploaded file.
       required: true
       schema:
         type: string
-      description: The ID of the uploaded file.
     content_id:
       name: content_id
       in: path
@@ -4394,6 +4716,7 @@ components:
     generic_product_id:
       name: generic_product_id
       in: path
+      description: The unique ID of the generic product.
       required: true
       schema:
         type: integer
@@ -4401,6 +4724,7 @@ components:
     specific_product_id:
       name: specific_product_id
       in: path
+      description: The unique ID of the specific product.
       required: true
       schema:
         type: integer
@@ -4408,6 +4732,7 @@ components:
     device_commission_id:
       name: device_commission_id
       in: path
+      description: The unique ID of the device commission.
       required: true
       schema:
         type: integer
@@ -4415,6 +4740,7 @@ components:
     project_id:
       name: project_id
       in: path
+      description: The unique ID of the commission project.
       required: true
       schema:
         type: integer
