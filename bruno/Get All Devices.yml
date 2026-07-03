@@ -5,7 +5,11 @@ info:
 
 http:
   method: GET
-  url: "{{BaseURL}}/devices"
+  url: "{{BaseURL}}/devices?search=ex-usb"
+  params:
+    - name: search
+      value: ex-usb
+      type: query
   auth: inherit
 
 settings:

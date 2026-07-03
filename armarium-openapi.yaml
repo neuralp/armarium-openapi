@@ -2103,6 +2103,84 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
+  /generic-products/types:
+    get:
+      tags:
+        - products
+      summary: List Generic Products type fields in an array
+      operationId: listGenericProductsTypes
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/limit'
+      responses:
+        '200':
+          description: Generic products types list retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: req-12345
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                    example: success
+                  data:
+                    type: array
+                    example: []
+                    items:
+                      type: string
+                required:
+                  - result
+              example:
+                data: []
+                id: req-12345
+                result: success
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /generic-products/subtypes:
+    get:
+      tags:
+        - products
+      summary: List Generic Products subtype fields in an array
+      operationId: listGenericProductsSubtypes
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/limit'
+      responses:
+        '200':
+          description: Generic products subtypes list retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: req-12345
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                    example: success
+                  data:
+                    type: array
+                    example: []
+                    items:
+                      type: string
+                required:
+                  - result
+              example:
+                data: []
+                id: req-12345
+                result: success
+        '401':
+          $ref: '#/components/responses/Unauthorized'
   /generic-product:
     post:
       tags:
@@ -2416,7 +2494,7 @@ paths:
   /device-commissions:
     get:
       tags:
-        - products
+        - commissioning
       summary: List  the commissioned devices
       operationId: listDeviceCommission
       parameters:
@@ -2454,7 +2532,7 @@ paths:
   /device-commission:
     post:
       tags:
-        - products
+        - commissioning
       summary: Create a DeviceCommission
       operationId: createDeviceCommission
       requestBody:
@@ -2496,7 +2574,7 @@ paths:
   /device-commission/{device_commission_id}:
     get:
       tags:
-        - products
+        - commissioning
       summary: Get Device Commission
       operationId: getDeviceCommission
       responses:
@@ -2529,7 +2607,7 @@ paths:
           $ref: '#/components/responses/NotFound'
     delete:
       tags:
-        - products
+        - commissioning
       summary: Delete Device Commission
       operationId: deleteDeviceCommission
       responses:
@@ -2541,7 +2619,7 @@ paths:
           $ref: '#/components/responses/NotFound'
     patch:
       tags:
-        - products
+        - commissioning
       summary: Partially Update DeviceCommission
       operationId: patchDeviceCommission
       requestBody:
