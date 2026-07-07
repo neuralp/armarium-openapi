@@ -4504,6 +4504,11 @@ components:
         description:
           type: string
           example: Commissioning project for Acme Corp
+        client:
+          description: Id of the client the project belongs to.
+          type: integer
+          nullable: true
+          example: 1
         assignedUsers:
           type: array
           example: []
@@ -4542,6 +4547,11 @@ components:
         description:
           type: string
           example: Commissioning project for Acme Corp
+        client:
+          description: Id of the client the project belongs to.
+          type: integer
+          nullable: true
+          example: 1
         assignedUsers:
           type: array
           example: []
