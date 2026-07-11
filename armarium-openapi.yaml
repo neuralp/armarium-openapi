@@ -4341,12 +4341,12 @@ components:
       properties:
         type:
           type: string
-          maxLength: 64
           example: projector
+          maxLength: 64
         subtype:
           type: string
-          maxLength: 64
           example: laser
+          maxLength: 64
         steps:
           description: JSON blob of CommissioningStep records to apply when creating the generic product.
           type: object
@@ -4365,12 +4365,12 @@ components:
       properties:
         type:
           type: string
-          maxLength: 64
           example: projector
+          maxLength: 64
         subtype:
           type: string
-          maxLength: 64
           example: laser
+          maxLength: 64
         steps:
           description: JSON blob of CommissioningStep records to apply when updating the generic product.
           type: object
@@ -4414,12 +4414,12 @@ components:
       properties:
         manufacturer:
           type: string
-          maxLength: 64
           example: Sony
+          maxLength: 64
         model:
           type: string
-          maxLength: 64
           example: VPL-FHZ80
+          maxLength: 64
         genericSteps:
           $ref: '#/components/schemas/GenericProduct'
         additionalSteps:
@@ -4440,12 +4440,12 @@ components:
       properties:
         manufacturer:
           type: string
-          maxLength: 64
           example: Sony
+          maxLength: 64
         model:
           type: string
-          maxLength: 64
           example: VPL-FHZ80
+          maxLength: 64
         genericSteps:
           $ref: '#/components/schemas/GenericProduct'
         additionalSteps:
@@ -4574,8 +4574,8 @@ components:
       properties:
         name:
           type: string
-          maxLength: 64
           example: Acme Rollout
+          maxLength: 64
         description:
           type: string
           example: Commissioning project for Acme Corp
@@ -4599,9 +4599,9 @@ components:
         progress:
           type: integer
           default: 0
+          example: 0
           minimum: 0
           maximum: 100
-          example: 0
         devices:
           type: array
           example: []
@@ -4618,8 +4618,8 @@ components:
       properties:
         name:
           type: string
-          maxLength: 64
           example: Acme Rollout
+          maxLength: 64
         description:
           type: string
           example: Commissioning project for Acme Corp
@@ -4643,9 +4643,9 @@ components:
         progress:
           type: integer
           default: 0
+          example: 50
           minimum: 0
           maximum: 100
-          example: 50
         devices:
           type: array
           example: []
@@ -4698,8 +4698,8 @@ components:
       properties:
         name:
           type: string
-          maxLength: 128
           example: floorplan.png
+          maxLength: 128
         type:
           type: string
           enum:
@@ -4723,9 +4723,10 @@ components:
         - type
         - name
     SearchResultData:
+      description: Results from a successful search.
       type: object
       properties:
-        field:
+        type:
           description: The specific schema from the database that matched.
           type: string
           enum:
@@ -4741,7 +4742,7 @@ components:
           format: int64
         name:
           type: string
-        type:
+        field:
           description: The field name of the database object that matched the trigram
           type: string
         matchedText:
@@ -4753,7 +4754,6 @@ components:
         - name
         - field
         - matchedText
-      description: Results from a successful search.
   responses:
     NoContent:
       description: No Content
