@@ -1720,6 +1720,47 @@ paths:
           $ref: '#/components/responses/DeviceNotFound'
     parameters:
       - $ref: '#/components/parameters/device_id'
+  /device/{device_id}/device-commissions:
+    get:
+      tags:
+        - commissioning
+      summary: Get Device Commissions by Device ID
+      description: Retrieve all commissioning records for the given device.
+      operationId: get-device-by-device-id-device-commissions
+      responses:
+        '200':
+          description: device commissions retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: req-12345
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                    example: success
+                  data:
+                    type: array
+                    example: []
+                    items:
+                      $ref: '#/components/schemas/DeviceCommission'
+                required:
+                  - result
+              example:
+                data: []
+                id: req-12345
+                result: success
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    parameters:
+      - $ref: '#/components/parameters/device_id'
   /application-configurations:
     get:
       tags:
@@ -2838,16 +2879,17 @@ paths:
           $ref: '#/components/responses/BadRequest'
     parameters:
       - $ref: '#/components/parameters/project_id'
-  /device/{device_id}/device-commissions:
+  /search:
     get:
       tags:
-        - commissioning
-      summary: Get Device Commissions by Device ID
-      description: Retrieve all commissioning records for the given device.
-      operationId: get-device-by-device-id-device-commissions
+        - general
+      description: This search will search all schemas for the search text requested.
+      operationId: get-search
+      parameters:
+        - $ref: '#/components/parameters/search'
       responses:
         '200':
-          description: device commissions retrieved successfully
+          description: Search OK
           content:
             application/json:
               schema:
@@ -2855,30 +2897,22 @@ paths:
                 properties:
                   id:
                     type: string
-                    example: req-12345
+                    example: 1
                   result:
                     type: string
                     enum:
                       - error
                       - success
-                    example: success
                   data:
                     type: array
-                    example: []
                     items:
-                      $ref: '#/components/schemas/DeviceCommission'
+                      $ref: '#/components/schemas/SearchResultData'
                 required:
                   - result
-              example:
-                data: []
-                id: req-12345
-                result: success
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
-        '404':
-          $ref: '#/components/responses/NotFound'
-    parameters:
-      - $ref: '#/components/parameters/device_id'
 components:
   schemas:
     BaseModel:
@@ -4688,6 +4722,38 @@ components:
       required:
         - type
         - name
+    SearchResultData:
+      type: object
+      properties:
+        field:
+          description: The specific schema from the database that matched.
+          type: string
+          enum:
+            - client
+            - location
+            - room
+            - network
+            - device
+            - commission_project
+        id:
+          description: The ID of the matched row of data to be utilized along with the type to link to the specific item.
+          type: integer
+          format: int64
+        name:
+          type: string
+        type:
+          description: The field name of the database object that matched the trigram
+          type: string
+        matchedText:
+          description: The field data that matched the trigram in the database.  Used for display purposes in the results.
+          type: string
+      required:
+        - id
+        - type
+        - name
+        - field
+        - matchedText
+      description: Results from a successful search.
   responses:
     NoContent:
       description: No Content
@@ -4890,6 +4956,7 @@ components:
 security:
   - access_token: []
 tags:
+  - name: general
   - name: authentication
   - name: client
   - name: device
