@@ -2838,6 +2838,47 @@ paths:
           $ref: '#/components/responses/BadRequest'
     parameters:
       - $ref: '#/components/parameters/project_id'
+  /device/{device_id}/device-commissions:
+    get:
+      tags:
+        - commissioning
+      summary: Get Device Commissions by Device ID
+      description: Retrieve all commissioning records for the given device.
+      operationId: get-device-by-device-id-device-commissions
+      responses:
+        '200':
+          description: device commissions retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: req-12345
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                    example: success
+                  data:
+                    type: array
+                    example: []
+                    items:
+                      $ref: '#/components/schemas/DeviceCommission'
+                required:
+                  - result
+              example:
+                data: []
+                id: req-12345
+                result: success
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    parameters:
+      - $ref: '#/components/parameters/device_id'
 components:
   schemas:
     BaseModel:
@@ -4506,8 +4547,9 @@ components:
           example: Commissioning project for Acme Corp
         client:
           description: Id of the client the project belongs to.
-          type: integer
-          nullable: true
+          type:
+            - integer
+            - 'null'
           example: 1
         assignedUsers:
           type: array
@@ -4548,9 +4590,10 @@ components:
           type: string
           example: Commissioning project for Acme Corp
         client:
-          description: Id of the client the project belongs to.
-          type: integer
-          nullable: true
+          description: Id of the client to reassign the project to.
+          type:
+            - integer
+            - 'null'
           example: 1
         assignedUsers:
           type: array
