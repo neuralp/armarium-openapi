@@ -4664,6 +4664,8 @@ components:
             uuid:
               type: string
               format: uuid
+            filename:
+              type: string
             name:
               type: string
               maxLength: 128
@@ -4681,17 +4683,26 @@ components:
               type: integer
               format: int64
             client:
-              $ref: '#/components/schemas/Client'
+              type: array
+              items:
+                $ref: '#/components/schemas/Client'
             location:
-              $ref: '#/components/schemas/Location'
+              type: array
+              items:
+                $ref: '#/components/schemas/Location'
             room:
-              $ref: '#/components/schemas/Room'
+              type: array
+              items:
+                $ref: '#/components/schemas/Room'
             device:
-              $ref: '#/components/schemas/Device'
+              type: array
+              items:
+                $ref: '#/components/schemas/Device'
           required:
             - uuid
             - type
             - name
+            - filename
     FilePost:
       description: Request body for creating a file record.
       type: object
@@ -4719,9 +4730,16 @@ components:
           $ref: '#/components/schemas/Room'
         device:
           $ref: '#/components/schemas/Device'
+        file:
+          type: string
+          format: binary
+        filename:
+          type: string
       required:
         - type
         - name
+        - filename
+        - file
     SearchResultData:
       description: Results from a successful search.
       type: object
