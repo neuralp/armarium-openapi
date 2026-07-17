@@ -2013,6 +2013,8 @@ paths:
             example:
               name: floorplan.png
               type: image
+              filename: floorplan.png
+              file: (binary file content)
       responses:
         '200':
           description: Accepted
@@ -2056,6 +2058,8 @@ paths:
                 uuid: 550e8400-e29b-41d4-a716-446655440000
                 name: floorplan.png
                 type: image
+                filename: floorplan.png
+                device: []
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
@@ -2084,6 +2088,27 @@ paths:
               schema:
                 type: string
                 format: binary
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    parameters:
+      - $ref: '#/components/parameters/content_id'
+  /content/document/{content_id}:
+    get:
+      tags:
+        - content
+      description: Get a document directly by ID.
+      operationId: get-content-document-by-content-id
+      responses:
+        '200':
+          description: Document retrieved successfully
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+                example: (binary PDF content)
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
@@ -2756,6 +2781,7 @@ paths:
               $ref: '#/components/schemas/CommissionProjectPost'
             example:
               name: Acme Rollout
+              client: 1
               complete: false
               inProgress: false
               progress: 0
@@ -2897,18 +2923,24 @@ paths:
                 properties:
                   id:
                     type: string
-                    example: 1
+                    example: req-12345
                   result:
                     type: string
                     enum:
                       - error
                       - success
+                    example: success
                   data:
                     type: array
+                    example: []
                     items:
                       $ref: '#/components/schemas/SearchResultData'
                 required:
                   - result
+              example:
+                data: []
+                id: req-12345
+                result: success
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -4481,6 +4513,9 @@ components:
               type: object
               items:
                 $ref: '#/components/schemas/CommissioningStep'
+            markdown:
+              description: Notes for the commission of this device
+              type: string
           required:
             - device
             - completed
@@ -4503,6 +4538,9 @@ components:
         inProgress:
           type: boolean
           default: false
+        markdown:
+          type: string
+          example: '# Commissioning notes'
       required:
         - device
         - completed
@@ -4525,10 +4563,16 @@ components:
         inProgress:
           type: boolean
           example: false
+        markdown:
+          type: string
+          example: '# Commissioning notes'
     CommissionProject:
       description: A project that groups device commissions for a client.
       example:
         name: Acme Rollout
+        client:
+          id: 1
+          name: Acme Corp
         complete: false
         inProgress: false
         progress: 0
@@ -4568,6 +4612,7 @@ components:
             - complete
             - inProgress
             - progress
+            - client
     CommissionProjectPost:
       description: Request body for creating a commission project.
       type: object
@@ -4612,6 +4657,7 @@ components:
         - complete
         - inProgress
         - progress
+        - client
     CommissionProjectPatch:
       description: Request body for updating a commission project.
       type: object
@@ -4657,6 +4703,8 @@ components:
         uuid: 550e8400-e29b-41d4-a716-446655440000
         name: floorplan.png
         type: image
+        filename: floorplan.png
+        device: []
       allOf:
         - $ref: '#/components/schemas/BaseModel'
         - type: object
@@ -4669,6 +4717,9 @@ components:
             name:
               type: string
               maxLength: 128
+            description:
+              type: string
+              maxLength: 64
             type:
               type: string
               enum:
@@ -4703,6 +4754,7 @@ components:
             - type
             - name
             - filename
+            - device
     FilePost:
       description: Request body for creating a file record.
       type: object
@@ -4733,8 +4785,10 @@ components:
         file:
           type: string
           format: binary
+          example: (binary file content)
         filename:
           type: string
+          example: floorplan.png
       required:
         - type
         - name
