@@ -2066,6 +2066,33 @@ paths:
           $ref: '#/components/responses/NotFound'
     parameters:
       - $ref: '#/components/parameters/content_id'
+    patch:
+      tags:
+        - content
+      operationId: patch-content-by-content-id
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FilePatch'
+      responses:
+        '202':
+          $ref: '#/components/responses/Accepted'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      operationId: delete-content-by-content-id
+      responses:
+        '200':
+          description: File deleted
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
   /content/image/{content_id}:
     get:
       tags:
@@ -4780,6 +4807,9 @@ components:
           type: string
           example: floorplan.png
           maxLength: 128
+        description:
+          type: string
+          maxLength: 64
         type:
           type: string
           enum:
@@ -4811,6 +4841,39 @@ components:
         - name
         - filename
         - file
+    FilePatch:
+      description: Request body for patching a file record.
+      type: object
+      properties:
+        name:
+          type: string
+          example: floorplan.png
+          maxLength: 128
+        description:
+          type: string
+          maxLength: 64
+        type:
+          type: string
+          enum:
+            - image
+            - drawing
+            - documentation
+            - configuration
+            - user_interface
+            - program
+            - dsp
+          example: image
+        client:
+          $ref: '#/components/schemas/Client'
+        location:
+          $ref: '#/components/schemas/Location'
+        room:
+          $ref: '#/components/schemas/Room'
+        device:
+          $ref: '#/components/schemas/Device'
+        filename:
+          type: string
+          example: floorplan.png
     SearchResultData:
       description: Results from a successful search.
       type: object
