@@ -2115,6 +2115,23 @@ paths:
           $ref: '#/components/responses/NotFound'
     parameters:
       - $ref: '#/components/parameters/content_id'
+  /content/file/{content_id}:
+    get:
+      tags:
+        - content
+      description: Get a document directly by ID.
+      operationId: get-content-file-by-content-id
+      responses:
+        '200':
+          description: File retrieved successfully
+          content:
+            application/octet-stream: {}
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    parameters:
+      - $ref: '#/components/parameters/content_id'
   /generic-products:
     get:
       tags:
