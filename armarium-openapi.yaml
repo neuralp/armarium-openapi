@@ -119,68 +119,13 @@ paths:
                 result: success
         '401':
           $ref: '#/components/responses/Unauthorized'
-  /user:
-    post:
-      tags:
-        - user
-      summary: Create New User
-      description: Create a new user.
-      operationId: post-user
-      requestBody:
-        description: Post the necessary fields for the API to create a new user.
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserPost'
-            example:
-              accountLocked: true
-              aesKey: YWVzS2V5QmFzZTY0
-              emailVerified: false
-              password: '********'
-              username: jsmith
-      responses:
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '409':
-          description: Username already taken
-        '201':
-          description: User created successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: string
-                    example: req-12345
-                  result:
-                    type: string
-                    enum:
-                      - error
-                      - success
-                    example: success
-                  data:
-                    $ref: '#/components/schemas/User'
-              example:
-                data:
-                  accountLocked: false
-                  aesKey: YWVzS2V5QmFzZTY0
-                  emailVerified: false
-                  id: 1
-                  password: '********'
-                  systemAccount: false
-                  username: jsmith
-                id: req-12345
-                result: success
   /user/{user_id}:
     get:
       tags:
         - user
       summary: Get User Info by User ID
       description: Retrieve the information of the user with the matching user ID.
-      operationId: get-user-userId
+      operationId: get-user-by-user-id
       responses:
         '200':
           description: User found
@@ -224,7 +169,7 @@ paths:
         - user
       summary: Update User Information
       description: Update the information of an existing user.
-      operationId: patch-users-userId
+      operationId: patch-user-by-user-id
       requestBody:
         description: Patch user properties to update.
         content:
@@ -302,6 +247,162 @@ paths:
                 $ref: '#/components/schemas/User'
         '401':
           $ref: '#/components/responses/Unauthorized'
+  /user-invites:
+    get:
+      tags:
+        - user
+      summary: List User Invites
+      operationId: get-user-invites
+      responses:
+        '200':
+          description: User invites retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: req-12345
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                    example: success
+                  data:
+                    type: array
+                    example: []
+                    items:
+                      $ref: '#/components/schemas/UserInvite'
+                required:
+                  - result
+              example:
+                data: []
+                id: req-12345
+                result: success
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /user-invite:
+    post:
+      tags:
+        - user
+      summary: Create User Invite
+      operationId: post-user-invite
+      requestBody:
+        description: Details of the user invite to create.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserInvitePost'
+        required: true
+      responses:
+        '201':
+          description: User invite created successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: req-12345
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                    example: success
+                  data:
+                    $ref: '#/components/schemas/UserInvite'
+                required:
+                  - result
+              example:
+                id: req-12345
+                result: success
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /user-invite/{invite_id}:
+    get:
+      tags:
+        - user
+      summary: Get User Invite
+      operationId: get-user-invite-by-invite-id
+      responses:
+        '200':
+          description: User invite retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: req-12345
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                    example: success
+                  data:
+                    $ref: '#/components/schemas/UserInvite'
+                required:
+                  - result
+              example:
+                id: req-12345
+                result: success
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      tags:
+        - user
+      summary: Delete User Invite
+      operationId: delete-user-invite-by-invite-id
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    parameters:
+      - $ref: '#/components/parameters/invite_id'
+  /register/{registration_id}:
+    post:
+      tags:
+        - user
+      summary: Register User
+      description: Complete a user registration using the token from a user invite.
+      operationId: post-register-by-registration-id
+      requestBody:
+        description: The invite token and details of the user account to create.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                  example: 8f14e45fceea167a5a36dedd4bea2543
+                user:
+                  $ref: '#/components/schemas/UserPost'
+              required:
+                - token
+      responses:
+        '201':
+          description: Registration successful
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+      security: []
+    parameters:
+      - $ref: '#/components/parameters/registration_id'
   /clients:
     get:
       tags:
@@ -396,7 +497,7 @@ paths:
         - client
       summary: Get Client by Client ID
       description: Retrieve the information of the client with the matching client ID.
-      operationId: get-client-clientId
+      operationId: get-client-by-client-id
       responses:
         '200':
           description: Client found
@@ -440,7 +541,7 @@ paths:
         - client
       summary: Update Client Information
       description: Update the information of an existing client.
-      operationId: patch-client-clientId
+      operationId: patch-client-by-client-id
       requestBody:
         description: Patch client properties to update.
         content:
@@ -482,7 +583,7 @@ paths:
         - location
       summary: Get Locations by Client ID
       description: Retrieve the locations for a particular client.
-      operationId: get-location-clientId
+      operationId: get-locations-by-client-id
       parameters:
         - $ref: '#/components/parameters/page'
         - $ref: '#/components/parameters/limit'
@@ -627,7 +728,7 @@ paths:
         - location
       summary: Get Location by Location ID
       description: Retrieve the information of the location with the matching location ID.
-      operationId: get-location-locationId
+      operationId: get-location-by-location-id
       responses:
         '200':
           description: Location found
@@ -671,7 +772,7 @@ paths:
         - location
       summary: Update Location Information
       description: Update the information of an existing location.
-      operationId: patch-location-locationId
+      operationId: patch-location-by-location-id
       requestBody:
         description: Patch location properties to update.
         content:
@@ -718,7 +819,7 @@ paths:
         - network
       summary: Get Networks by Location ID
       description: Retrieve all networks associated with the given location.
-      operationId: get-networks-locationId
+      operationId: get-networks-by-location-id
       parameters:
         - $ref: '#/components/parameters/page'
         - $ref: '#/components/parameters/limit'
@@ -763,7 +864,7 @@ paths:
         - room
       summary: Get Rooms by Location ID
       description: Retrieve all rooms associated with the given location.
-      operationId: get-rooms-locationId
+      operationId: get-rooms-by-location-id
       parameters:
         - $ref: '#/components/parameters/page'
         - $ref: '#/components/parameters/limit'
@@ -808,7 +909,7 @@ paths:
         - device
       summary: Get Devices by Location ID
       description: Retrieve all devices associated with the given location.
-      operationId: get-devices-locationId
+      operationId: get-devices-by-location-id
       parameters:
         - $ref: '#/components/parameters/page'
         - $ref: '#/components/parameters/limit'
@@ -928,7 +1029,7 @@ paths:
         - location
       summary: Get Locations by Parent Location ID
       description: Retrieve the locations that are sub-locations to the parent ID.
-      operationId: get-location-parentId
+      operationId: get-locations-by-parent-id
       parameters:
         - $ref: '#/components/parameters/page'
         - $ref: '#/components/parameters/limit'
@@ -1068,7 +1169,7 @@ paths:
         - group
       summary: Get Group by Group ID
       description: Retrieve the information of the group with the matching group ID.
-      operationId: get-group-groupId
+      operationId: get-group-by-group-id
       responses:
         '200':
           description: Group found
@@ -1112,7 +1213,7 @@ paths:
         - group
       summary: Update Group Information
       description: Update the information of an existing group.
-      operationId: patch-group-groupId
+      operationId: patch-group-by-group-id
       requestBody:
         description: Patch group properties to update.
         content:
@@ -1244,7 +1345,7 @@ paths:
         - network
       summary: Get Network by Network ID
       description: Retrieve the information of the network with the matching network ID.
-      operationId: get-network-networkId
+      operationId: get-network-by-network-id
       responses:
         '200':
           description: Network found
@@ -1277,7 +1378,7 @@ paths:
       tags:
         - network
       summary: Delete network by Network ID
-      operationId: delete-network-network-id
+      operationId: delete-network-by-network-id
       responses:
         '204':
           $ref: '#/components/responses/NoContent'
@@ -1288,7 +1389,7 @@ paths:
         - network
       summary: Update Network Information
       description: Update the information of an existing network.
-      operationId: patch-network-networkId
+      operationId: patch-network-by-network-id
       requestBody:
         description: Patch network properties to update.
         content:
@@ -1418,7 +1519,7 @@ paths:
         - room
       summary: Get Room by Room ID
       description: Retrieve the information of the room with the matching room ID.
-      operationId: get-room-roomId
+      operationId: get-room-by-room-id
       responses:
         '200':
           description: Room found
@@ -1451,7 +1552,7 @@ paths:
       tags:
         - room
       summary: Delete room by Room ID
-      operationId: delete-room-room-id
+      operationId: delete-room-by-room-id
       responses:
         '204':
           $ref: '#/components/responses/NoContent'
@@ -1462,7 +1563,7 @@ paths:
         - room
       summary: Update Room Information
       description: Update the information of an existing room.
-      operationId: patch-room-roomId
+      operationId: patch-room-by-room-id
       requestBody:
         description: Patch room properties to update.
         content:
@@ -1507,7 +1608,7 @@ paths:
         - device
       summary: Get Devices by Room ID
       description: Retrieve all devices installed in the given room.
-      operationId: get-devices-roomId
+      operationId: get-devices-by-room-id
       parameters:
         - $ref: '#/components/parameters/page'
         - $ref: '#/components/parameters/limit'
@@ -1636,7 +1737,7 @@ paths:
         - device
       summary: Get Device by Device ID
       description: Retrieve the information of the device with the matching device ID.
-      operationId: get-device-deviceId
+      operationId: get-device-by-device-id
       responses:
         '200':
           description: Device found
@@ -1669,7 +1770,7 @@ paths:
       tags:
         - device
       summary: Delete device by Device ID
-      operationId: delete-device-device-id
+      operationId: delete-device-by-device-id
       responses:
         '204':
           $ref: '#/components/responses/NoContent'
@@ -1680,7 +1781,7 @@ paths:
         - device
       summary: Update Device Information
       description: Update the information of an existing device.
-      operationId: patch-device-deviceId
+      operationId: patch-device-by-device-id
       requestBody:
         description: Patch device properties to update.
         content:
@@ -1726,7 +1827,7 @@ paths:
         - commissioning
       summary: Get Device Commissions by Device ID
       description: Retrieve all commissioning records for the given device.
-      operationId: get-device-by-device-id-device-commissions
+      operationId: get-device-commissions-by-device-id
       responses:
         '200':
           description: device commissions retrieved successfully
@@ -1766,7 +1867,7 @@ paths:
       tags:
         - configuration
       summary: List Application Configurations
-      operationId: listApplicationConfigurations
+      operationId: get-application-configurations
       responses:
         '200':
           description: Application configurations retrieved successfully
@@ -1851,7 +1952,7 @@ paths:
       tags:
         - configuration
       summary: Get ApplicationConfiguration
-      operationId: getApplicationConfiguration
+      operationId: get-application-configuration
       responses:
         '200':
           description: Configuration retrieved successfully
@@ -1885,7 +1986,7 @@ paths:
       tags:
         - configuration
       summary: Delete ApplicationConfiguration
-      operationId: deleteApplicationConfiguration
+      operationId: delete-application-configuration
       responses:
         '204':
           $ref: '#/components/responses/NoContent'
@@ -1895,7 +1996,7 @@ paths:
       tags:
         - configuration
       summary: Partially Update ApplicationConfiguration
-      operationId: patchApplicationConfiguration
+      operationId: patch-application-configuration
       requestBody:
         description: Patch application configuration properties to update.
         content:
@@ -2003,11 +2104,11 @@ paths:
       tags:
         - content
       description: Upload a new image.
-      operationId: post-content-images
+      operationId: post-content
       requestBody:
         description: The image file metadata to upload.
         content:
-          application/x-www-form-urlencoded:
+          multipart/form-data:
             schema:
               $ref: '#/components/schemas/FilePost'
             example:
@@ -2016,8 +2117,8 @@ paths:
               filename: floorplan.png
               file: (binary file content)
       responses:
-        '200':
-          description: Accepted
+        '201':
+          description: File upload created; pending approval.
           content:
             application/json:
               schema:
@@ -2069,8 +2170,10 @@ paths:
     patch:
       tags:
         - content
+      description: Update the metadata of a file by ID.
       operationId: patch-content-by-content-id
       requestBody:
+        description: The file metadata fields to update.
         content:
           application/json:
             schema:
@@ -2085,10 +2188,13 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
     delete:
+      tags:
+        - content
+      description: Delete a file by ID.
       operationId: delete-content-by-content-id
       responses:
-        '200':
-          description: File deleted
+        '204':
+          $ref: '#/components/responses/NoContent'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
@@ -2098,7 +2204,7 @@ paths:
       tags:
         - content
       description: Get an image directly by ID.
-      operationId: get-content-images-by-content-id
+      operationId: get-content-image-by-content-id
       responses:
         '200':
           description: Image retrieved successfully
@@ -2146,13 +2252,17 @@ paths:
     get:
       tags:
         - content
-      description: Get a document directly by ID.
+      description: Get a file directly by ID.
       operationId: get-content-file-by-content-id
       responses:
         '200':
           description: File retrieved successfully
           content:
-            application/octet-stream: {}
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+                example: (binary file content)
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
@@ -2164,7 +2274,7 @@ paths:
       tags:
         - products
       summary: List Generic Products
-      operationId: listGenericProducts
+      operationId: get-generic-products
       parameters:
         - $ref: '#/components/parameters/page'
         - $ref: '#/components/parameters/limit'
@@ -2218,7 +2328,7 @@ paths:
       tags:
         - products
       summary: List Generic Products type fields in an array
-      operationId: listGenericProductsTypes
+      operationId: get-generic-products-types
       parameters:
         - $ref: '#/components/parameters/page'
         - $ref: '#/components/parameters/limit'
@@ -2257,7 +2367,7 @@ paths:
       tags:
         - products
       summary: List Generic Products subtype fields in an array
-      operationId: listGenericProductsSubtypes
+      operationId: get-generic-products-subtypes
       parameters:
         - $ref: '#/components/parameters/page'
         - $ref: '#/components/parameters/limit'
@@ -2296,7 +2406,7 @@ paths:
       tags:
         - products
       summary: Create GenericProduct
-      operationId: createGenericProduct
+      operationId: post-generic-product
       requestBody:
         description: Fields for creating a new generic product.
         content:
@@ -2308,7 +2418,7 @@ paths:
               subtype: laser
         required: true
       responses:
-        '200':
+        '201':
           description: Generic product created OK
           content:
             application/json:
@@ -2336,7 +2446,7 @@ paths:
       tags:
         - products
       summary: Get GenericProduct
-      operationId: getGenericProduct
+      operationId: get-generic-product-by-generic-product-id
       responses:
         '200':
           description: Return GenericProduct
@@ -2369,7 +2479,7 @@ paths:
       tags:
         - products
       summary: Delete GenericProduct
-      operationId: deleteGenericProduct
+      operationId: delete-generic-product-by-generic-product-id
       responses:
         '204':
           $ref: '#/components/responses/NoContent'
@@ -2381,7 +2491,7 @@ paths:
       tags:
         - products
       summary: Partially Update GenericProduct
-      operationId: patchGenericProduct
+      operationId: patch-generic-product-by-generic-product-id
       requestBody:
         description: Fields to update on the generic product.
         content:
@@ -2426,7 +2536,7 @@ paths:
       tags:
         - products
       summary: List Specific Products
-      operationId: listSpecificProducts
+      operationId: get-specific-products
       parameters:
         - $ref: '#/components/parameters/page'
         - $ref: '#/components/parameters/limit'
@@ -2476,7 +2586,7 @@ paths:
       tags:
         - products
       summary: Create SpecificProduct
-      operationId: createSpecificProduct
+      operationId: post-specific-product
       requestBody:
         description: Fields for creating a new specific product.
         content:
@@ -2488,7 +2598,7 @@ paths:
               model: VPL-FHZ80
         required: true
       responses:
-        '200':
+        '201':
           description: Specific product created OK
           content:
             application/json:
@@ -2516,7 +2626,7 @@ paths:
       tags:
         - products
       summary: Get SpecificProduct
-      operationId: getSpecificProduct
+      operationId: get-specific-product-by-specific-product-id
       responses:
         '200':
           description: Return SpecificProduct
@@ -2549,7 +2659,7 @@ paths:
       tags:
         - products
       summary: Delete SpecificProduct
-      operationId: deleteSpecificProduct
+      operationId: delete-specific-product-by-specific-product-id
       responses:
         '204':
           $ref: '#/components/responses/NoContent'
@@ -2561,7 +2671,7 @@ paths:
       tags:
         - products
       summary: Partially Update SpecificProduct
-      operationId: patchSpecificProduct
+      operationId: patch-specific-product-by-specific-product-id
       requestBody:
         description: Fields to update on the specific product.
         content:
@@ -2606,7 +2716,7 @@ paths:
       tags:
         - commissioning
       summary: List  the commissioned devices
-      operationId: listDeviceCommission
+      operationId: get-device-commissions
       parameters:
         - $ref: '#/components/parameters/page'
         - $ref: '#/components/parameters/limit'
@@ -2644,7 +2754,7 @@ paths:
       tags:
         - commissioning
       summary: Create a DeviceCommission
-      operationId: createDeviceCommission
+      operationId: post-device-commission
       requestBody:
         description: Fields for creating a device commission.
         content:
@@ -2658,7 +2768,7 @@ paths:
               inProgress: false
         required: true
       responses:
-        '200':
+        '201':
           description: Device commission created OK
           content:
             application/json:
@@ -2686,7 +2796,7 @@ paths:
       tags:
         - commissioning
       summary: Get Device Commission
-      operationId: getDeviceCommission
+      operationId: get-device-commission-by-device-commission-id
       responses:
         '200':
           description: Return Device Commission OK
@@ -2719,7 +2829,7 @@ paths:
       tags:
         - commissioning
       summary: Delete Device Commission
-      operationId: deleteDeviceCommission
+      operationId: delete-device-commission-by-device-commission-id
       responses:
         '204':
           $ref: '#/components/responses/NoContent'
@@ -2731,7 +2841,7 @@ paths:
       tags:
         - commissioning
       summary: Partially Update DeviceCommission
-      operationId: patchDeviceCommission
+      operationId: patch-device-commission-by-device-commission-id
       requestBody:
         description: Fields to update on the device commission.
         content:
@@ -2776,7 +2886,7 @@ paths:
       tags:
         - commissioning
       summary: List Commission Projects
-      operationId: listCommissionProjects
+      operationId: get-commission-projects
       parameters:
         - $ref: '#/components/parameters/page'
         - $ref: '#/components/parameters/limit'
@@ -2816,7 +2926,7 @@ paths:
       tags:
         - commissioning
       summary: Create CommissionProject
-      operationId: createCommissionProject
+      operationId: post-commission-project
       requestBody:
         description: Fields for creating a commission project.
         content:
@@ -2858,12 +2968,12 @@ paths:
           $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
-  /commission-projects/{project_id}:
+  /commission-project/{commission_project_id}:
     get:
       tags:
         - commissioning
       summary: Get CommissionProject
-      operationId: getCommissionProject
+      operationId: get-commission-project-by-commission-project-id
       responses:
         '200':
           description: Get commission project OK
@@ -2896,7 +3006,7 @@ paths:
       tags:
         - commissioning
       summary: Delete CommissionProject
-      operationId: deleteCommissionProject
+      operationId: delete-commission-project-by-commission-project-id
       responses:
         '204':
           $ref: '#/components/responses/NoContent'
@@ -2908,7 +3018,7 @@ paths:
       tags:
         - commissioning
       summary: Partially Update CommissionProject
-      operationId: patchCommissionProject
+      operationId: patch-commission-project-by-commission-project-id
       requestBody:
         description: Fields to update on the commission project.
         content:
@@ -2948,7 +3058,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
     parameters:
-      - $ref: '#/components/parameters/project_id'
+      - $ref: '#/components/parameters/commission_project_id'
   /search:
     get:
       tags:
@@ -3214,6 +3324,58 @@ components:
           type: object
           example: {}
           additionalProperties: true
+    UserInvite:
+      description: An invitation for a new user to register an account.
+      example:
+        id: 1
+        email: jsmith@example.com
+        token: 8f14e45fceea167a5a36dedd4bea2543
+        defaultGroup:
+          autoGroup: false
+          description: System administrators group
+          id: 1
+          name: Administrators
+          systemGroup: false
+        expires: '2024-02-01T00:00:00Z'
+      allOf:
+        - $ref: '#/components/schemas/BaseModel'
+        - type: object
+          properties:
+            email:
+              type: string
+              format: email
+            token:
+              type: string
+            defaultGroup:
+              $ref: '#/components/schemas/Group'
+            expires:
+              type: string
+              format: date-time
+            usedAt:
+              type: string
+              format: date-time
+          required:
+            - email
+            - defaultGroup
+            - token
+            - expires
+    UserInvitePost:
+      description: Request body for creating a user invite.
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          example: jsmith@example.com
+        token:
+          type: string
+          example: 8f14e45fceea167a5a36dedd4bea2543
+        defaultGroup:
+          $ref: '#/components/schemas/Group'
+      required:
+        - email
+        - defaultGroup
+        - token
     Group:
       description: A security group for organizing user permissions.
       example:
@@ -4809,6 +4971,7 @@ components:
           maxLength: 128
         description:
           type: string
+          example: Floorplan of the main building.
           maxLength: 64
         type:
           type: string
@@ -4851,6 +5014,7 @@ components:
           maxLength: 128
         description:
           type: string
+          example: Floorplan of the main building.
           maxLength: 64
         type:
           type: string
@@ -4864,13 +5028,25 @@ components:
             - dsp
           example: image
         client:
-          $ref: '#/components/schemas/Client'
+          type: array
+          example: []
+          items:
+            $ref: '#/components/schemas/Client'
         location:
-          $ref: '#/components/schemas/Location'
+          type: array
+          example: []
+          items:
+            $ref: '#/components/schemas/Location'
         room:
-          $ref: '#/components/schemas/Room'
+          type: array
+          example: []
+          items:
+            $ref: '#/components/schemas/Room'
         device:
-          $ref: '#/components/schemas/Device'
+          type: array
+          example: []
+          items:
+            $ref: '#/components/schemas/Device'
         filename:
           type: string
           example: floorplan.png
@@ -5086,14 +5262,28 @@ components:
       schema:
         type: integer
         format: int64
-    project_id:
-      name: project_id
+    commission_project_id:
+      name: commission_project_id
       in: path
       description: The unique ID of the commission project.
       required: true
       schema:
         type: integer
         format: int64
+    invite_id:
+      name: invite_id
+      in: path
+      description: The ID of the invite
+      required: true
+      schema:
+        type: string
+    registration_id:
+      name: registration_id
+      in: path
+      description: The registration ID from the user invite.
+      required: true
+      schema:
+        type: string
   securitySchemes:
     access_token:
       type: apiKey
