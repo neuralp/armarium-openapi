@@ -3336,7 +3336,7 @@ components:
           id: 1
           name: Administrators
           systemGroup: false
-        expires: '2024-02-01T00:00:00Z'
+        expires: 2024-02-01T00:00:00Z
       allOf:
         - $ref: '#/components/schemas/BaseModel'
         - type: object
@@ -3367,15 +3367,11 @@ components:
           type: string
           format: email
           example: jsmith@example.com
-        token:
-          type: string
-          example: 8f14e45fceea167a5a36dedd4bea2543
         defaultGroup:
           $ref: '#/components/schemas/Group'
       required:
         - email
         - defaultGroup
-        - token
     Group:
       description: A security group for organizing user permissions.
       example:
