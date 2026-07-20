@@ -3197,6 +3197,10 @@ components:
               example: []
               items:
                 $ref: '#/components/schemas/Group'
+            clients:
+              type: array
+              items:
+                $ref: '#/components/schemas/Client'
             clientConfigurationData:
               type: object
               additionalProperties: true
@@ -3453,8 +3457,18 @@ components:
               maxLength: 255
             markdown:
               type: string
+            rsaPublicKey:
+              description: Default public key to encrypt sensitive information for the client.
+              type: string
+              format: byte
+            rsaPrivateKey:
+              description: Default private key for decrypting sensitive client information.  Stored encrypted by the default administrator account.
+              type: string
+              format: byte
           required:
             - name
+            - rsaPublicKey
+            - rsaPrivateKey
     ClientPost:
       description: Request body for creating a new client.
       type: object
@@ -3489,6 +3503,17 @@ components:
         markdown:
           type: string
           example: '# Notes'
+    ClientKeys:
+      description: Key table that containes the encrypted Client keys per client per user.
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/User'
+        client:
+          $ref: '#/components/schemas/Client'
+        key:
+          type: string
+          format: byte
     Location:
       description: A physical location such as a building or site.
       example:
