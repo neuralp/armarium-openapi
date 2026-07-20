@@ -460,6 +460,8 @@ paths:
             example:
               description: Acme Corporation
               name: Acme Corp
+              rsaPrivateKey: cnNhUHJpdmF0ZUtleQ==
+              rsaPublicKey: cnNhUHVibGljS2V5
       responses:
         '400':
           $ref: '#/components/responses/BadRequest'
@@ -489,6 +491,8 @@ paths:
                 data:
                   id: 1
                   name: Acme Corp
+                  rsaPrivateKey: cnNhUHJpdmF0ZUtleQ==
+                  rsaPublicKey: cnNhUHVibGljS2V5
                 id: req-12345
                 result: success
   /client/{client_id}:
@@ -3265,6 +3269,10 @@ components:
           example: []
           items:
             $ref: '#/components/schemas/Group'
+        clients:
+          type: array
+          items:
+            $ref: '#/components/schemas/Client'
         clientConfigurationData:
           type: object
           example: {}
@@ -3324,6 +3332,11 @@ components:
           example: []
           items:
             type: integer
+        clients:
+          type: array
+          example: []
+          items:
+            type: integer
         clientConfigurationData:
           type: object
           example: {}
@@ -3340,7 +3353,7 @@ components:
           id: 1
           name: Administrators
           systemGroup: false
-        expires: 2024-02-01T00:00:00Z
+        expires: '2024-02-01T00:00:00Z'
       allOf:
         - $ref: '#/components/schemas/BaseModel'
         - type: object
@@ -3442,6 +3455,8 @@ components:
         description: Acme Corporation client account
         id: 1
         name: Acme Corp
+        rsaPrivateKey: cnNhUHJpdmF0ZUtleQ==
+        rsaPublicKey: cnNhUHVibGljS2V5
       allOf:
         - $ref: '#/components/schemas/BaseModel'
         - type: object
@@ -3485,8 +3500,18 @@ components:
         markdown:
           type: string
           example: '# Notes'
+        rsaPublicKey:
+          type: string
+          format: byte
+          example: cnNhUHVibGljS2V5
+        rsaPrivateKey:
+          type: string
+          format: byte
+          example: cnNhUHJpdmF0ZUtleQ==
       required:
         - name
+        - rsaPublicKey
+        - rsaPrivateKey
     ClientPatch:
       description: Request body for updating a client.
       type: object
@@ -3503,6 +3528,14 @@ components:
         markdown:
           type: string
           example: '# Notes'
+        rsaPublicKey:
+          type: string
+          format: byte
+          example: cnNhUHVibGljS2V5
+        rsaPrivateKey:
+          type: string
+          format: byte
+          example: cnNhUHJpdmF0ZUtleQ==
     ClientKeys:
       description: Key table that containes the encrypted Client keys per client per user.
       type: object
@@ -4800,6 +4833,8 @@ components:
         client:
           id: 1
           name: Acme Corp
+          rsaPrivateKey: cnNhUHJpdmF0ZUtleQ==
+          rsaPublicKey: cnNhUHVibGljS2V5
         complete: false
         inProgress: false
         progress: 0
