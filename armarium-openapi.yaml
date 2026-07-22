@@ -634,6 +634,183 @@ paths:
           description: Client location not found
     parameters:
       - $ref: '#/components/parameters/client_id'
+  /client-keys:
+    get:
+      summary: List Client Keys
+      operationId: listClientKeys
+      responses:
+        '200':
+          description: ClientKey retrieved OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: req-12345
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                    example: success
+                  data:
+                    type: array
+                    example: []
+                    items:
+                      $ref: '#/components/schemas/ClientKey'
+                required:
+                  - result
+              example:
+                data: []
+                id: req-12345
+                result: success
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      tags:
+        - client
+  /client-key:
+    post:
+      summary: Create Client Key
+      operationId: createClientKey
+      requestBody:
+        description: Post the necessary fields for the API to create a new client key.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClientKeyPost'
+            example:
+              client:
+                description: Acme Corporation client account
+                id: 1
+                name: Acme Corp
+                rsaPrivateKey: cnNhUHJpdmF0ZUtleQ==
+                rsaPublicKey: cnNhUHVibGljS2V5
+              key: ZW5jcnlwdGVkS2V5
+              user:
+                accountLocked: false
+                aesKey: YWVzS2V5QmFzZTY0
+                emailVerified: false
+                id: 1
+                password: '********'
+                systemAccount: false
+                username: jsmith
+        required: true
+      responses:
+        '200':
+          description: client-key posted OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: req-12345
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                    example: success
+                  data:
+                    $ref: '#/components/schemas/ClientKey'
+                required:
+                  - result
+              example:
+                data:
+                  client:
+                    description: Acme Corporation client account
+                    id: 1
+                    name: Acme Corp
+                    rsaPrivateKey: cnNhUHJpdmF0ZUtleQ==
+                    rsaPublicKey: cnNhUHVibGljS2V5
+                  key: ZW5jcnlwdGVkS2V5
+                  replaced: false
+                  user:
+                    accountLocked: false
+                    aesKey: YWVzS2V5QmFzZTY0
+                    emailVerified: false
+                    id: 1
+                    password: '********'
+                    systemAccount: false
+                    username: jsmith
+                id: req-12345
+                result: success
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      tags:
+        - client
+  /client-key/{key_id}:
+    get:
+      summary: Get Client Key
+      operationId: getClientKey
+      responses:
+        '200':
+          description: client-key retrieved OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: req-12345
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                    example: success
+                  data:
+                    $ref: '#/components/schemas/ClientKey'
+                required:
+                  - result
+              example:
+                data:
+                  client:
+                    description: Acme Corporation client account
+                    id: 1
+                    name: Acme Corp
+                    rsaPrivateKey: cnNhUHJpdmF0ZUtleQ==
+                    rsaPublicKey: cnNhUHVibGljS2V5
+                  key: ZW5jcnlwdGVkS2V5
+                  replaced: false
+                  user:
+                    accountLocked: false
+                    aesKey: YWVzS2V5QmFzZTY0
+                    emailVerified: false
+                    id: 1
+                    password: '********'
+                    systemAccount: false
+                    username: jsmith
+                id: req-12345
+                result: success
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      tags:
+        - client
+    delete:
+      summary: Delete Client Key
+      operationId: deleteClientKey
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      tags:
+        - client
+    parameters:
+      - $ref: '#/components/parameters/key_id'
   /locations:
     get:
       tags:
@@ -3536,8 +3713,47 @@ components:
           type: string
           format: byte
           example: cnNhUHJpdmF0ZUtleQ==
-    ClientKeys:
+    ClientKey:
       description: Key table that containes the encrypted Client keys per client per user.
+      example:
+        client:
+          description: Acme Corporation client account
+          id: 1
+          name: Acme Corp
+          rsaPrivateKey: cnNhUHJpdmF0ZUtleQ==
+          rsaPublicKey: cnNhUHVibGljS2V5
+        id: 1
+        key: ZW5jcnlwdGVkS2V5
+        replaced: false
+        user:
+          accountLocked: false
+          aesKey: YWVzS2V5QmFzZTY0
+          emailVerified: false
+          id: 1
+          password: '********'
+          systemAccount: false
+          username: jsmith
+      allOf:
+        - $ref: '#/components/schemas/BaseModel'
+        - type: object
+          properties:
+            user:
+              $ref: '#/components/schemas/User'
+            client:
+              $ref: '#/components/schemas/Client'
+            key:
+              type: string
+              format: byte
+            replaced:
+              type: boolean
+              default: false
+          required:
+            - user
+            - client
+            - key
+            - replaced
+    ClientKeyPost:
+      description: Request body for creating a new client key.
       type: object
       properties:
         user:
@@ -3547,6 +3763,11 @@ components:
         key:
           type: string
           format: byte
+          example: ZW5jcnlwdGVkS2V5
+      required:
+        - user
+        - client
+        - key
     Location:
       description: A physical location such as a building or site.
       example:
@@ -5340,6 +5561,13 @@ components:
       required: true
       schema:
         type: string
+    key_id:
+      name: key_id
+      in: path
+      description: The unique ID of the client key.
+      schema:
+        type: string
+      required: true
   securitySchemes:
     access_token:
       type: apiKey
