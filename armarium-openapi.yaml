@@ -811,6 +811,234 @@ paths:
         - client
     parameters:
       - $ref: '#/components/parameters/key_id'
+  /cloud-management-services:
+    get:
+      tags:
+        - client
+      summary: List Cloud Management Services
+      operationId: listCloudManagementServices
+      responses:
+        '200':
+          description: CloudManagementService retrieved OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: req-12345
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                    example: success
+                  data:
+                    type: array
+                    example: []
+                    items:
+                      $ref: '#/components/schemas/CloudManagementService'
+                required:
+                  - result
+              example:
+                data: []
+                id: req-12345
+                result: success
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /cloud-management-service:
+    post:
+      tags:
+        - client
+      summary: Create Cloud Management Service
+      operationId: createCloudManagementService
+      requestBody:
+        description: Post the necessary fields for the API to create a new cloud management service.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CloudManagementServicePost'
+            example:
+              accountName: acme-prod
+              active: true
+              adminAccount: admin@acme.com
+              adminPassword: '********'
+              client: 1
+              description: Production AWS account
+              expiration: '2027-01-01'
+              manufacturer: Amazon
+              service: AWS
+        required: true
+      responses:
+        '200':
+          description: cloud-management-service posted OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: req-12345
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                    example: success
+                  data:
+                    $ref: '#/components/schemas/CloudManagementService'
+                required:
+                  - result
+              example:
+                data:
+                  accountName: acme-prod
+                  active: true
+                  adminAccount: admin@acme.com
+                  adminPassword: '********'
+                  client:
+                    description: Acme Corporation client account
+                    id: 1
+                    name: Acme Corp
+                    rsaPrivateKey: cnNhUHJpdmF0ZUtleQ==
+                    rsaPublicKey: cnNhUHVibGljS2V5
+                  description: Production AWS account
+                  expiration: '2027-01-01'
+                  id: 1
+                  manufacturer: Amazon
+                  service: AWS
+                id: req-12345
+                result: success
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /cloud-management-service/{service_id}:
+    get:
+      tags:
+        - client
+      summary: Get Cloud Management Service
+      operationId: getCloudManagementService
+      responses:
+        '200':
+          description: cloud-management-service retrieved OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: req-12345
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                    example: success
+                  data:
+                    $ref: '#/components/schemas/CloudManagementService'
+                required:
+                  - result
+              example:
+                data:
+                  accountName: acme-prod
+                  active: true
+                  adminAccount: admin@acme.com
+                  adminPassword: '********'
+                  client:
+                    description: Acme Corporation client account
+                    id: 1
+                    name: Acme Corp
+                    rsaPrivateKey: cnNhUHJpdmF0ZUtleQ==
+                    rsaPublicKey: cnNhUHVibGljS2V5
+                  description: Production AWS account
+                  expiration: '2027-01-01'
+                  id: 1
+                  manufacturer: Amazon
+                  service: AWS
+                id: req-12345
+                result: success
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      tags:
+        - client
+      summary: Delete Cloud Management Service
+      operationId: deleteCloudManagementService
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      tags:
+        - client
+      summary: Update Cloud Management Service
+      operationId: patchCloudManagementService
+      requestBody:
+        description: Patch cloud management service properties to update.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CloudManagementServicePatch'
+            example:
+              accountName: acme-prod
+              description: Production AWS account
+        required: true
+      responses:
+        '200':
+          description: Cloud management service updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: req-12345
+                  result:
+                    type: string
+                    enum:
+                      - error
+                      - success
+                    example: success
+                  data:
+                    $ref: '#/components/schemas/CloudManagementService'
+                required:
+                  - result
+              example:
+                data:
+                  accountName: acme-prod
+                  active: true
+                  adminAccount: admin@acme.com
+                  adminPassword: '********'
+                  client:
+                    description: Acme Corporation client account
+                    id: 1
+                    name: Acme Corp
+                    rsaPrivateKey: cnNhUHJpdmF0ZUtleQ==
+                    rsaPublicKey: cnNhUHVibGljS2V5
+                  description: Production AWS account
+                  expiration: '2027-01-01'
+                  id: 1
+                  manufacturer: Amazon
+                  service: AWS
+                id: req-12345
+                result: success
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    parameters:
+      - $ref: '#/components/parameters/service_id'
   /locations:
     get:
       tags:
@@ -3768,6 +3996,130 @@ components:
         - user
         - client
         - key
+    CloudManagementService:
+      description: A cloud provider account managed on behalf of a client.
+      example:
+        accountName: acme-prod
+        active: true
+        adminAccount: admin@acme.com
+        adminPassword: '********'
+        client:
+          description: Acme Corporation client account
+          id: 1
+          name: Acme Corp
+          rsaPrivateKey: cnNhUHJpdmF0ZUtleQ==
+          rsaPublicKey: cnNhUHVibGljS2V5
+        description: Production AWS account
+        expiration: '2027-01-01'
+        id: 1
+        manufacturer: Amazon
+        service: AWS
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/BaseModel'
+        - type: object
+          properties:
+            client:
+              $ref: '#/components/schemas/Client'
+            service:
+              type: string
+              example: AWS
+            manufacturer:
+              type: string
+              example: Amazon
+            description:
+              type: string
+              example: Production AWS account
+            accountName:
+              type: string
+              example: acme-prod
+            adminAccount:
+              type: string
+              example: admin@acme.com
+            adminPassword:
+              type: string
+              format: password
+              example: '********'
+            expiration:
+              type: string
+              format: date
+              example: '2027-01-01'
+            active:
+              type: boolean
+              default: true
+              example: true
+          required:
+            - client
+            - service
+            - active
+    CloudManagementServicePost:
+      description: Request body for creating a new cloud management service.
+      type: object
+      properties:
+        client:
+          type: integer
+          format: int64
+          example: 1
+        service:
+          type: string
+          example: AWS
+        manufacturer:
+          type: string
+          example: Amazon
+        description:
+          type: string
+          example: Production AWS account
+        accountName:
+          type: string
+          example: acme-prod
+        adminAccount:
+          type: string
+          example: admin@acme.com
+        adminPassword:
+          type: string
+          format: password
+          example: '********'
+        expiration:
+          type: string
+          format: date
+          example: '2027-01-01'
+        active:
+          type: boolean
+          default: true
+      required:
+        - client
+        - service
+        - active
+    CloudManagementServicePatch:
+      description: Request body for updating a cloud management service.
+      type: object
+      properties:
+        service:
+          type: string
+          example: AWS
+        manufacturer:
+          type: string
+          example: Amazon
+        description:
+          type: string
+          example: Production AWS account
+        accountName:
+          type: string
+          example: acme-prod
+        adminAccount:
+          type: string
+          example: admin@acme.com
+        adminPassword:
+          type: string
+          format: password
+          example: '********'
+        expiration:
+          type: string
+          format: date
+          example: '2027-01-01'
+        active:
+          type: boolean
+          example: true
     Location:
       description: A physical location such as a building or site.
       example:
@@ -5566,8 +5918,18 @@ components:
       in: path
       description: The unique ID of the client key.
       schema:
-        type: string
+        type: integer
+        format: int64
       required: true
+    service_id:
+      name: service_id
+      in: path
+      description: The unique ID of the cloud management service.
+      required: true
+      schema:
+        type: integer
+        format: int64
+        example: 1
   securitySchemes:
     access_token:
       type: apiKey
