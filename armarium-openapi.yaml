@@ -3613,6 +3613,21 @@ components:
             clientConfigurationData:
               type: object
               additionalProperties: true
+            lastEditedEntities:
+              type: array
+              readOnly: true
+              description: >-
+                Server-maintained list of the clients whose entities the user
+                most recently edited, most-recent-first. Read-only.
+              items:
+                type: object
+                properties:
+                  type:
+                    type: string
+                  id:
+                    type: integer
+                  label:
+                    type: string
           required:
             - username
             - password
