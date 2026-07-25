@@ -4657,6 +4657,18 @@ components:
               $ref: '#/components/schemas/Network'
             network4:
               $ref: '#/components/schemas/Network'
+            interface1:
+              type: string
+              maxLength: 32
+            interface2:
+              type: string
+              maxLength: 32
+            interface3:
+              type: string
+              maxLength: 32
+            interface4:
+              type: string
+              maxLength: 32
             hostname1:
               type: string
               example: projector-1
@@ -4701,10 +4713,24 @@ components:
               type: string
               example: monitor
               maxLength: 63
+            username3:
+              type: string
+              example: admin
+              maxLength: 63
+            username4:
+              type: string
+              example: admin
+              maxLength: 63
             password1:
               type: string
               example: '********'
             password2:
+              type: string
+              example: '********'
+            password3:
+              type: string
+              example: '********'
+            password4:
               type: string
               example: '********'
             jack:
@@ -4848,6 +4874,18 @@ components:
           type: integer
           format: int64
           example: 4
+        interface1:
+          type: string
+          maxLength: 32
+        interface2:
+          type: string
+          maxLength: 32
+        interface3:
+          type: string
+          maxLength: 32
+        interface4:
+          type: string
+          maxLength: 32
         hostname1:
           type: string
           example: projector-1
@@ -4892,10 +4930,24 @@ components:
           type: string
           example: monitor
           maxLength: 63
+        username3:
+          type: string
+          example: monitor
+          maxLength: 63
+        username4:
+          type: string
+          example: monitor
+          maxLength: 63
         password1:
           type: string
           example: '********'
         password2:
+          type: string
+          example: '********'
+        password3:
+          type: string
+          example: '********'
+        password4:
           type: string
           example: '********'
         jack:
@@ -5032,6 +5084,18 @@ components:
           type: integer
           format: int64
           example: 4
+        interface1:
+          type: string
+          maxLength: 32
+        interface2:
+          type: string
+          maxLength: 32
+        interface3:
+          type: string
+          maxLength: 32
+        interface4:
+          type: string
+          maxLength: 32
         hostname1:
           type: string
           example: projector-1
@@ -5076,10 +5140,24 @@ components:
           type: string
           example: monitor
           maxLength: 63
+        username3:
+          type: string
+          example: monitor
+          maxLength: 63
+        username4:
+          type: string
+          example: monitor
+          maxLength: 63
         password1:
           type: string
           example: '********'
         password2:
+          type: string
+          example: '********'
+        password3:
+          type: string
+          example: '********'
+        password4:
           type: string
           example: '********'
         jack:
