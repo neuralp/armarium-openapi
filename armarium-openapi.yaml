@@ -460,8 +460,7 @@ paths:
             example:
               description: Acme Corporation
               name: Acme Corp
-              rsaPrivateKey: cnNhUHJpdmF0ZUtleQ==
-              rsaPublicKey: cnNhUHVibGljS2V5
+              encryptionKey: ZW5jcnlwdGlvbktleQ==
       responses:
         '400':
           $ref: '#/components/responses/BadRequest'
@@ -491,8 +490,7 @@ paths:
                 data:
                   id: 1
                   name: Acme Corp
-                  rsaPrivateKey: cnNhUHJpdmF0ZUtleQ==
-                  rsaPublicKey: cnNhUHVibGljS2V5
+                  encryptionKey: ZW5jcnlwdGlvbktleQ==
                 id: req-12345
                 result: success
   /client/{client_id}:
@@ -687,8 +685,7 @@ paths:
                 description: Acme Corporation client account
                 id: 1
                 name: Acme Corp
-                rsaPrivateKey: cnNhUHJpdmF0ZUtleQ==
-                rsaPublicKey: cnNhUHVibGljS2V5
+                encryptionKey: ZW5jcnlwdGlvbktleQ==
               key: ZW5jcnlwdGVkS2V5
               user:
                 accountLocked: false
@@ -726,8 +723,7 @@ paths:
                     description: Acme Corporation client account
                     id: 1
                     name: Acme Corp
-                    rsaPrivateKey: cnNhUHJpdmF0ZUtleQ==
-                    rsaPublicKey: cnNhUHVibGljS2V5
+                    encryptionKey: ZW5jcnlwdGlvbktleQ==
                   key: ZW5jcnlwdGVkS2V5
                   replaced: false
                   user:
@@ -777,8 +773,7 @@ paths:
                     description: Acme Corporation client account
                     id: 1
                     name: Acme Corp
-                    rsaPrivateKey: cnNhUHJpdmF0ZUtleQ==
-                    rsaPublicKey: cnNhUHVibGljS2V5
+                    encryptionKey: ZW5jcnlwdGlvbktleQ==
                   key: ZW5jcnlwdGVkS2V5
                   replaced: false
                   user:
@@ -903,8 +898,7 @@ paths:
                     description: Acme Corporation client account
                     id: 1
                     name: Acme Corp
-                    rsaPrivateKey: cnNhUHJpdmF0ZUtleQ==
-                    rsaPublicKey: cnNhUHVibGljS2V5
+                    encryptionKey: ZW5jcnlwdGlvbktleQ==
                   description: Production AWS account
                   expiration: '2027-01-01'
                   id: 1
@@ -953,8 +947,7 @@ paths:
                     description: Acme Corporation client account
                     id: 1
                     name: Acme Corp
-                    rsaPrivateKey: cnNhUHJpdmF0ZUtleQ==
-                    rsaPublicKey: cnNhUHVibGljS2V5
+                    encryptionKey: ZW5jcnlwdGlvbktleQ==
                   description: Production AWS account
                   expiration: '2027-01-01'
                   id: 1
@@ -1024,8 +1017,7 @@ paths:
                     description: Acme Corporation client account
                     id: 1
                     name: Acme Corp
-                    rsaPrivateKey: cnNhUHJpdmF0ZUtleQ==
-                    rsaPublicKey: cnNhUHVibGljS2V5
+                    encryptionKey: ZW5jcnlwdGlvbktleQ==
                   description: Production AWS account
                   expiration: '2027-01-01'
                   id: 1
@@ -3525,7 +3517,7 @@ components:
           description: Datetime the model was created handled serverside.
           type: string
           format: date-time
-          example: 2024-01-01T00:00:00Z
+          example: '2024-01-01T00:00:00Z'
         createdBy:
           description: Username the model was created by
           type: string
@@ -3534,7 +3526,7 @@ components:
           description: Datetime the model was updated handled server side.
           type: string
           format: date-time
-          example: 2024-01-01T00:00:00Z
+          example: '2024-01-01T00:00:00Z'
         updatedBy:
           description: Username the model was updated by
           type: string
@@ -3616,9 +3608,7 @@ components:
             lastEditedEntities:
               type: array
               readOnly: true
-              description: >-
-                Server-maintained list of the clients whose entities the user
-                most recently edited, most-recent-first. Read-only.
+              description: Server-maintained list of the clients whose entities the user most recently edited, most-recent-first. Read-only.
               items:
                 type: object
                 properties:
@@ -3875,8 +3865,7 @@ components:
         description: Acme Corporation client account
         id: 1
         name: Acme Corp
-        rsaPrivateKey: cnNhUHJpdmF0ZUtleQ==
-        rsaPublicKey: cnNhUHVibGljS2V5
+        encryptionKey: ZW5jcnlwdGlvbktleQ==
       allOf:
         - $ref: '#/components/schemas/BaseModel'
         - type: object
@@ -3892,18 +3881,13 @@ components:
               maxLength: 255
             markdown:
               type: string
-            rsaPublicKey:
-              description: Default public key to encrypt sensitive information for the client.
-              type: string
-              format: byte
-            rsaPrivateKey:
-              description: Default private key for decrypting sensitive client information.  Stored encrypted by the default administrator account.
+            encryptionKey:
+              description: Default key used to encrypt sensitive information for the client.
               type: string
               format: byte
           required:
             - name
-            - rsaPublicKey
-            - rsaPrivateKey
+            - encryptionKey
     ClientPost:
       description: Request body for creating a new client.
       type: object
@@ -3920,18 +3904,13 @@ components:
         markdown:
           type: string
           example: '# Notes'
-        rsaPublicKey:
+        encryptionKey:
           type: string
           format: byte
-          example: cnNhUHVibGljS2V5
-        rsaPrivateKey:
-          type: string
-          format: byte
-          example: cnNhUHJpdmF0ZUtleQ==
+          example: ZW5jcnlwdGlvbktleQ==
       required:
         - name
-        - rsaPublicKey
-        - rsaPrivateKey
+        - encryptionKey
     ClientPatch:
       description: Request body for updating a client.
       type: object
@@ -3948,14 +3927,10 @@ components:
         markdown:
           type: string
           example: '# Notes'
-        rsaPublicKey:
+        encryptionKey:
           type: string
           format: byte
-          example: cnNhUHVibGljS2V5
-        rsaPrivateKey:
-          type: string
-          format: byte
-          example: cnNhUHJpdmF0ZUtleQ==
+          example: ZW5jcnlwdGlvbktleQ==
     ClientKey:
       description: Key table that containes the encrypted Client keys per client per user.
       example:
@@ -3963,8 +3938,7 @@ components:
           description: Acme Corporation client account
           id: 1
           name: Acme Corp
-          rsaPrivateKey: cnNhUHJpdmF0ZUtleQ==
-          rsaPublicKey: cnNhUHVibGljS2V5
+          encryptionKey: ZW5jcnlwdGlvbktleQ==
         id: 1
         key: ZW5jcnlwdGVkS2V5
         replaced: false
@@ -4022,8 +3996,7 @@ components:
           description: Acme Corporation client account
           id: 1
           name: Acme Corp
-          rsaPrivateKey: cnNhUHJpdmF0ZUtleQ==
-          rsaPublicKey: cnNhUHVibGljS2V5
+          encryptionKey: ZW5jcnlwdGlvbktleQ==
         description: Production AWS account
         expiration: '2027-01-01'
         id: 1
@@ -4627,7 +4600,7 @@ components:
               example: true
             installedAt:
               type: string
-              example: 2024-01-15
+              example: '2024-01-15'
               maxLength: 64
             configured:
               type: boolean
@@ -4781,7 +4754,7 @@ components:
               description: Current compile date/time
               type: string
               format: date-time
-              example: 2024-01-01T00:00:00Z
+              example: '2024-01-01T00:00:00Z'
             ipId:
               description: Crestron IPID of the device
               type: string
@@ -4832,7 +4805,7 @@ components:
           example: true
         installedAt:
           type: string
-          example: 2024-01-15
+          example: '2024-01-15'
           maxLength: 64
         room:
           type: integer
@@ -4992,7 +4965,7 @@ components:
         runningProgramDate:
           type: string
           format: date-time
-          example: 2024-01-01T00:00:00Z
+          example: '2024-01-01T00:00:00Z'
         ipId:
           type: string
           format: byte
@@ -5042,7 +5015,7 @@ components:
           example: true
         installedAt:
           type: string
-          example: 2024-01-15
+          example: '2024-01-15'
           maxLength: 64
         room:
           type: integer
@@ -5202,7 +5175,7 @@ components:
         runningProgramDate:
           type: string
           format: date-time
-          example: 2024-01-01T00:00:00Z
+          example: '2024-01-01T00:00:00Z'
         ipId:
           type: string
           format: byte
@@ -5499,8 +5472,7 @@ components:
         client:
           id: 1
           name: Acme Corp
-          rsaPrivateKey: cnNhUHJpdmF0ZUtleQ==
-          rsaPublicKey: cnNhUHVibGljS2V5
+          encryptionKey: ZW5jcnlwdGlvbktleQ==
         complete: false
         inProgress: false
         progress: 0
