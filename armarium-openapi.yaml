@@ -3827,6 +3827,11 @@ components:
               description: For automatically created groups related to organization (client) accounts.
               type: boolean
               default: false
+            permissions:
+              type: array
+              items:
+                type: string
+                $ref: '#/components/schemas/Permissions'
           required:
             - name
             - systemGroup
@@ -3844,6 +3849,10 @@ components:
           type: string
           example: System administrators group
           maxLength: 255
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Permissions'
       required:
         - name
     GroupPatch:
@@ -3859,6 +3868,10 @@ components:
           type: string
           example: System administrators group
           maxLength: 255
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Permissions'
     Client:
       description: An organizational client account.
       example:
@@ -5776,6 +5789,36 @@ components:
         - name
         - field
         - matchedText
+    Permissions:
+      type: string
+      enum:
+        - administrator
+        - read_users
+        - write_users
+        - add_users
+        - read_groups
+        - write_groups
+        - add_groups
+        - read_clients
+        - write_clients
+        - add_clients
+        - read_locations
+        - write_locations
+        - add_locations
+        - read_devices
+        - write_devices
+        - add_devices
+        - read_products
+        - write_products
+        - add_products
+        - read_content
+        - write_content
+        - add_content
+        - read_commission
+        - write_commission
+        - add_commission
+        - restricted_client_view
+        - restricted_client_write
   responses:
     NoContent:
       description: No Content
