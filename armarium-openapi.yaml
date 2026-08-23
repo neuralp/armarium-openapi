@@ -5349,6 +5349,8 @@ components:
               type: object
               items:
                 $ref: '#/components/schemas/CommissioningStep'
+            procedure:
+              type: string
           required:
             - manufacturer
             - model
@@ -5364,6 +5366,9 @@ components:
           type: string
           example: VPL-FHZ80
           maxLength: 64
+        description:
+          type: string
+          example: Laser projector specific commissioning notes
         genericSteps:
           $ref: '#/components/schemas/GenericProduct'
         additionalSteps:
@@ -5372,9 +5377,8 @@ components:
           example: {}
           items:
             $ref: '#/components/schemas/CommissioningStep'
-        description:
+        procedure:
           type: string
-          example: Laser projector specific commissioning notes
       required:
         - manufacturer
         - model
@@ -5390,6 +5394,9 @@ components:
           type: string
           example: VPL-FHZ80
           maxLength: 64
+        description:
+          type: string
+          example: Laser projector specific commissioning notes
         genericSteps:
           $ref: '#/components/schemas/GenericProduct'
         additionalSteps:
@@ -5398,9 +5405,8 @@ components:
           example: {}
           items:
             $ref: '#/components/schemas/CommissioningStep'
-        description:
+        procedure:
           type: string
-          example: Laser projector specific commissioning notes
     DeviceCommission:
       description: The commissioning record and progress for a single device.
       example:
@@ -5428,6 +5434,9 @@ components:
             markdown:
               description: Notes for the commission of this device
               type: string
+            procedure:
+              description: The original procedure for the device
+              type: string
           required:
             - device
             - completed
@@ -5453,6 +5462,8 @@ components:
         markdown:
           type: string
           example: '# Commissioning notes'
+        procedure:
+          type: string
       required:
         - device
         - completed

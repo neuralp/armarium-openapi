@@ -5,10 +5,10 @@ info:
 
 http:
   method: GET
-  url: "{{BaseURL}}/content?location=12"
+  url: "{{BaseURL}}/content?location=1"
   params:
     - name: location
-      value: "12"
+      value: "1"
       type: query
   auth: inherit
 
