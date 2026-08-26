@@ -4457,6 +4457,9 @@ components:
               $ref: '#/components/schemas/Location'
             markdown:
               type: string
+            gateway:
+              type: string
+              format: ipv4
           required:
             - name
     NetworkPost:
@@ -4479,6 +4482,9 @@ components:
           type: string
           format: ipv4
           example: 255.255.255.0
+        gateway:
+          type: string
+          format: ipv4
         dns1:
           type: string
           format: ipv4
@@ -4538,6 +4544,9 @@ components:
           type: string
           format: ipv4
           example: 255.255.255.0
+        gateway:
+          type: string
+          format: ipv4
         dns1:
           type: string
           format: ipv4
@@ -4635,6 +4644,14 @@ components:
               type: string
               format: ipv4
               example: 192.168.4.10
+            ipAssignmentType1:
+              $ref: '#/components/schemas/DeviceIpAssignmentType'
+            ipAssignmentType2:
+              $ref: '#/components/schemas/DeviceIpAssignmentType'
+            ipAssignmentType3:
+              $ref: '#/components/schemas/DeviceIpAssignmentType'
+            ipAssignmentType4:
+              $ref: '#/components/schemas/DeviceIpAssignmentType'
             network1:
               $ref: '#/components/schemas/Network'
             network2:
@@ -4844,6 +4861,14 @@ components:
           type: string
           format: ipv4
           example: 192.168.4.10
+        ipAssignmentType1:
+          $ref: '#/components/schemas/DeviceIpAssignmentType'
+        ipAssignmentType2:
+          $ref: '#/components/schemas/DeviceIpAssignmentType'
+        ipAssignmentType3:
+          $ref: '#/components/schemas/DeviceIpAssignmentType'
+        ipAssignmentType4:
+          $ref: '#/components/schemas/DeviceIpAssignmentType'
         network1:
           type: integer
           format: int64
@@ -5054,6 +5079,14 @@ components:
           type: string
           format: ipv4
           example: 192.168.4.10
+        ipAssignmentType1:
+          $ref: '#/components/schemas/DeviceIpAssignmentType'
+        ipAssignmentType2:
+          $ref: '#/components/schemas/DeviceIpAssignmentType'
+        ipAssignmentType3:
+          $ref: '#/components/schemas/DeviceIpAssignmentType'
+        ipAssignmentType4:
+          $ref: '#/components/schemas/DeviceIpAssignmentType'
         network1:
           type: integer
           format: int64
@@ -5205,6 +5238,12 @@ components:
         markdown:
           type: string
           example: '# Notes'
+    DeviceIpAssignmentType:
+      type: string
+      enum:
+        - dhcp
+        - static
+        - reserved
     ApplicationConfiguration:
       title: Application Configuration
       description: Stores the configuration data of the application in a key value store separated by namespaces.
