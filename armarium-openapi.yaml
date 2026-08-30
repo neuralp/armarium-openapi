@@ -5741,6 +5741,7 @@ components:
             - user_interface
             - program
             - dsp
+            - document_image
           example: image
         client:
           $ref: '#/components/schemas/Client'
@@ -5774,17 +5775,6 @@ components:
           type: string
           example: Floorplan of the main building.
           maxLength: 64
-        type:
-          type: string
-          enum:
-            - image
-            - drawing
-            - documentation
-            - configuration
-            - user_interface
-            - program
-            - dsp
-          example: image
         client:
           type: array
           example: []
@@ -5805,9 +5795,6 @@ components:
           example: []
           items:
             $ref: '#/components/schemas/Device'
-        filename:
-          type: string
-          example: floorplan.png
     SearchResultData:
       description: Results from a successful search.
       type: object
