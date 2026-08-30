@@ -5693,6 +5693,7 @@ components:
                 - user_interface
                 - program
                 - dsp
+                - document_image
             size:
               type: integer
               format: int64
