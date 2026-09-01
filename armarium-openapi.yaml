@@ -253,6 +253,9 @@ paths:
         - user
       summary: List User Invites
       operationId: get-user-invites
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/limit'
       responses:
         '200':
           description: User invites retrieved successfully.
@@ -636,6 +639,9 @@ paths:
     get:
       summary: List Client Keys
       operationId: listClientKeys
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/limit'
       responses:
         '200':
           description: ClientKey retrieved OK
@@ -812,6 +818,10 @@ paths:
         - client
       summary: List Cloud Management Services
       operationId: listCloudManagementServices
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/search'
       responses:
         '200':
           description: CloudManagementService retrieved OK
@@ -2229,6 +2239,9 @@ paths:
       summary: Get Device Commissions by Device ID
       description: Retrieve all commissioning records for the given device.
       operationId: get-device-commissions-by-device-id
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/limit'
       responses:
         '200':
           description: device commissions retrieved successfully
@@ -2269,6 +2282,9 @@ paths:
         - configuration
       summary: List Application Configurations
       operationId: get-application-configurations
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/limit'
       responses:
         '200':
           description: Application configurations retrieved successfully
@@ -2468,6 +2484,8 @@ paths:
       description: Retrieve a list of content files matching the search criteria.
       operationId: get-content
       parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/limit'
         - $ref: '#/components/parameters/search'
       responses:
         '200':
@@ -3467,6 +3485,8 @@ paths:
       description: This search will search all schemas for the search text requested.
       operationId: get-search
       parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/limit'
         - $ref: '#/components/parameters/search'
       responses:
         '200':
@@ -5889,6 +5909,8 @@ components:
       description: The page of results to return based on the limit.
       schema:
         type: integer
+        default: 1
+        minimum: 1
         example: 1
     limit:
       name: limit
@@ -5897,6 +5919,7 @@ components:
       schema:
         type: integer
         default: 500
+        minimum: 1
         example: 50
         maximum: 1000
     search:
