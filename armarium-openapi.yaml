@@ -3488,6 +3488,13 @@ paths:
         - $ref: '#/components/parameters/page'
         - $ref: '#/components/parameters/limit'
         - $ref: '#/components/parameters/search'
+        - name: client
+          in: query
+          description: Limit results to the selected client and entities owned by that client.
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
       responses:
         '200':
           description: Search OK
