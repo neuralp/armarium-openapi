@@ -119,6 +119,17 @@ paths:
                 result: success
         '401':
           $ref: '#/components/responses/Unauthorized'
+  /users/count:
+    get:
+      tags:
+        - user
+      summary: Get count of users
+      operationId: get-users-count
+      responses:
+        '200':
+          $ref: '#/components/responses/Count'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
   /user/{user_id}:
     get:
       tags:
@@ -288,6 +299,19 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
+  /user-invites/count:
+    get:
+      tags:
+        - user
+      summary: Get count of user invites
+      operationId: get-user-invites-count
+      responses:
+        '200':
+          $ref: '#/components/responses/Count'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
   /user-invite:
     post:
       tags:
@@ -445,6 +469,17 @@ paths:
                 data: []
                 id: req-12345
                 result: success
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /clients/count:
+    get:
+      tags:
+        - client
+      summary: Get count of clients
+      operationId: get-clients-count
+      responses:
+        '200':
+          $ref: '#/components/responses/Count'
         '401':
           $ref: '#/components/responses/Unauthorized'
   /client:
@@ -635,6 +670,21 @@ paths:
           description: Client location not found
     parameters:
       - $ref: '#/components/parameters/client_id'
+  /client/{client_id}/locations/count:
+    get:
+      tags:
+        - location
+      summary: Get count of locations by client ID
+      operationId: get-locations-by-client-id-count
+      responses:
+        '200':
+          $ref: '#/components/responses/Count'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/ClientNotFound'
+    parameters:
+      - $ref: '#/components/parameters/client_id'
   /client-keys:
     get:
       summary: List Client Keys
@@ -676,6 +726,19 @@ paths:
           $ref: '#/components/responses/NotFound'
       tags:
         - client
+  /client-keys/count:
+    get:
+      tags:
+        - client
+      summary: Get count of client keys
+      operationId: listClientKeysCount
+      responses:
+        '200':
+          $ref: '#/components/responses/Count'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
   /client-key:
     post:
       summary: Create Client Key
@@ -850,6 +913,19 @@ paths:
                 data: []
                 id: req-12345
                 result: success
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /cloud-management-services/count:
+    get:
+      tags:
+        - client
+      summary: Get count of cloud management services
+      operationId: listCloudManagementServicesCount
+      responses:
+        '200':
+          $ref: '#/components/responses/Count'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
@@ -1082,6 +1158,17 @@ paths:
                 result: success
         '401':
           $ref: '#/components/responses/Unauthorized'
+  /locations/count:
+    get:
+      tags:
+        - location
+      summary: Get count of locations
+      operationId: get-locations-count
+      responses:
+        '200':
+          $ref: '#/components/responses/Count'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
   /location:
     post:
       tags:
@@ -1269,6 +1356,21 @@ paths:
           $ref: '#/components/responses/LocationNotFound'
     parameters:
       - $ref: '#/components/parameters/location_id'
+  /location/{location_id}/networks/count:
+    get:
+      tags:
+        - network
+      summary: Get count of networks by location ID
+      operationId: get-networks-by-location-id-count
+      responses:
+        '200':
+          $ref: '#/components/responses/Count'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/LocationNotFound'
+    parameters:
+      - $ref: '#/components/parameters/location_id'
   /location/{location_id}/rooms:
     get:
       tags:
@@ -1314,6 +1416,21 @@ paths:
           $ref: '#/components/responses/LocationNotFound'
     parameters:
       - $ref: '#/components/parameters/location_id'
+  /location/{location_id}/rooms/count:
+    get:
+      tags:
+        - room
+      summary: Get count of rooms by location ID
+      operationId: get-rooms-by-location-id-count
+      responses:
+        '200':
+          $ref: '#/components/responses/Count'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/LocationNotFound'
+    parameters:
+      - $ref: '#/components/parameters/location_id'
   /location/{location_id}/devices:
     get:
       tags:
@@ -1353,6 +1470,21 @@ paths:
                 data: []
                 id: req-12345
                 result: success
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/LocationNotFound'
+    parameters:
+      - $ref: '#/components/parameters/location_id'
+  /location/{location_id}/devices/count:
+    get:
+      tags:
+        - device
+      summary: Get count of devices by location ID
+      operationId: get-devices-by-location-id-count
+      responses:
+        '200':
+          $ref: '#/components/responses/Count'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
@@ -1484,6 +1616,21 @@ paths:
           description: Parent location not found
     parameters:
       - $ref: '#/components/parameters/parent_id'
+  /parent/{parent_id}/locations/count:
+    get:
+      tags:
+        - location
+      summary: Get count of locations by parent ID
+      operationId: get-locations-by-parent-id-count
+      responses:
+        '200':
+          $ref: '#/components/responses/Count'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/LocationNotFound'
+    parameters:
+      - $ref: '#/components/parameters/parent_id'
   /groups:
     get:
       tags:
@@ -1523,6 +1670,17 @@ paths:
                 data: []
                 id: req-12345
                 result: success
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /groups/count:
+    get:
+      tags:
+        - group
+      summary: Get count of groups
+      operationId: get-groups-count
+      responses:
+        '200':
+          $ref: '#/components/responses/Count'
         '401':
           $ref: '#/components/responses/Unauthorized'
   /group:
@@ -1699,6 +1857,17 @@ paths:
                 data: []
                 id: req-12345
                 result: success
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /networks/count:
+    get:
+      tags:
+        - network
+      summary: Get count of networks
+      operationId: get-networks-count
+      responses:
+        '200':
+          $ref: '#/components/responses/Count'
         '401':
           $ref: '#/components/responses/Unauthorized'
   /network:
@@ -1881,6 +2050,17 @@ paths:
                 result: success
         '401':
           $ref: '#/components/responses/Unauthorized'
+  /rooms/count:
+    get:
+      tags:
+        - room
+      summary: Get count of rooms
+      operationId: get-rooms-count
+      responses:
+        '200':
+          $ref: '#/components/responses/Count'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
   /room:
     post:
       tags:
@@ -2058,6 +2238,21 @@ paths:
           $ref: '#/components/responses/RoomNotFound'
     parameters:
       - $ref: '#/components/parameters/room_id'
+  /room/{room_id}/devices/count:
+    get:
+      tags:
+        - device
+      summary: Get count of devices by room ID
+      operationId: get-devices-by-room-id-count
+      responses:
+        '200':
+          $ref: '#/components/responses/Count'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/RoomNotFound'
+    parameters:
+      - $ref: '#/components/parameters/room_id'
   /devices:
     get:
       tags:
@@ -2097,6 +2292,17 @@ paths:
                 data: []
                 id: req-12345
                 result: success
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /devices/count:
+    get:
+      tags:
+        - device
+      summary: Get count of devices
+      operationId: get-devices-count
+      responses:
+        '200':
+          $ref: '#/components/responses/Count'
         '401':
           $ref: '#/components/responses/Unauthorized'
   /device:
@@ -2276,6 +2482,21 @@ paths:
           $ref: '#/components/responses/NotFound'
     parameters:
       - $ref: '#/components/parameters/device_id'
+  /device/{device_id}/device-commissions/count:
+    get:
+      tags:
+        - commissioning
+      summary: Get count of device commissions by device ID
+      operationId: get-device-commissions-by-device-id-count
+      responses:
+        '200':
+          $ref: '#/components/responses/Count'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    parameters:
+      - $ref: '#/components/parameters/device_id'
   /application-configurations:
     get:
       tags:
@@ -2313,6 +2534,15 @@ paths:
                 data: []
                 id: req-12345
                 result: success
+  /application-configurations/count:
+    get:
+      tags:
+        - configuration
+      summary: Get count of application configurations
+      operationId: get-application-configurations-count
+      responses:
+        '200':
+          $ref: '#/components/responses/Count'
   /application-configuration:
     post:
       tags:
@@ -2561,6 +2791,19 @@ paths:
                 result: success
         '401':
           $ref: '#/components/responses/Unauthorized'
+  /content/count:
+    get:
+      tags:
+        - content
+      summary: Get count of content files
+      operationId: get-content-count
+      responses:
+        '200':
+          $ref: '#/components/responses/Count'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
   /content/{content_id}:
     get:
       tags:
@@ -2742,6 +2985,19 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
+  /generic-products/count:
+    get:
+      tags:
+        - products
+      summary: Get count of generic products
+      operationId: get-generic-products-count
+      responses:
+        '200':
+          $ref: '#/components/responses/Count'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
   /generic-products/types:
     get:
       tags:
@@ -2781,6 +3037,17 @@ paths:
                 result: success
         '401':
           $ref: '#/components/responses/Unauthorized'
+  /generic-products/types/count:
+    get:
+      tags:
+        - products
+      summary: Get count of generic product types
+      operationId: get-generic-products-types-count
+      responses:
+        '200':
+          $ref: '#/components/responses/Count'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
   /generic-products/subtypes:
     get:
       tags:
@@ -2818,6 +3085,17 @@ paths:
                 data: []
                 id: req-12345
                 result: success
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /generic-products/subtypes/count:
+    get:
+      tags:
+        - products
+      summary: Get count of generic product subtypes
+      operationId: get-generic-products-subtypes-count
+      responses:
+        '200':
+          $ref: '#/components/responses/Count'
         '401':
           $ref: '#/components/responses/Unauthorized'
   /generic-product:
@@ -3000,6 +3278,15 @@ paths:
                 data: []
                 id: req-12345
                 result: success
+  /specific-products/count:
+    get:
+      tags:
+        - products
+      summary: Get count of specific products
+      operationId: get-specific-products-count
+      responses:
+        '200':
+          $ref: '#/components/responses/Count'
   /specific-product:
     post:
       tags:
@@ -3168,6 +3455,15 @@ paths:
                 data: []
                 id: req-12345
                 result: success
+  /device-commissions/count:
+    get:
+      tags:
+        - commissioning
+      summary: Get count of device commissions
+      operationId: get-device-commissions-count
+      responses:
+        '200':
+          $ref: '#/components/responses/Count'
   /device-commission:
     post:
       tags:
@@ -3338,6 +3634,17 @@ paths:
                 data: []
                 id: req-12345
                 result: success
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /commission-projects/count:
+    get:
+      tags:
+        - commissioning
+      summary: Get count of commission projects
+      operationId: get-commission-projects-count
+      responses:
+        '200':
+          $ref: '#/components/responses/Count'
         '401':
           $ref: '#/components/responses/Unauthorized'
   /commission-project:
@@ -5909,6 +6216,27 @@ components:
       description: Device not found
     Accepted:
       description: Content accepted.
+    Count:
+      description: Count of the items available
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: string
+              result:
+                type: string
+                enum:
+                  - error
+                  - success
+              count:
+                type: integer
+                format: int64
+                default: 0
+            required:
+              - result
+              - count
   parameters:
     page:
       name: page
