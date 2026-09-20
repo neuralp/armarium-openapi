@@ -1516,9 +1516,16 @@ paths:
                   format: binary
                   example: (binary file content)
                 headerRow:
+                  description: Zero-based index of the worksheet row containing column headers.
                   type: integer
                   format: int32
+                  minimum: 0
                   example: 1
+                sheetName:
+                  description: Exact worksheet name to parse. When omitted, parses the first worksheet for backward compatibility.
+                  type: string
+                  minLength: 1
+                  example: Cameras
                 columnMapping:
                   description: JSON-encoded object mapping each device field key to its spreadsheet column header, e.g. {"name":"Device Name"}. Kept as a string rather than a nested object so the multipart form field generates cleanly across clients.
                   type: string
